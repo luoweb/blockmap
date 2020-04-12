@@ -22,9 +22,17 @@ http://173.193.109.188:30657/geoserver/web/
 kubectl exec -it geoserver /bin/bash
 apt update;apt install ftp ssh unzip
 scp ftp@*.*.*.*:/data/data.zip /opt/geoserver/data_dir/uploads/
-
+scp geoserver-2.16.1-vectortiles-plugin.zip ubuntu@118.89.37.37:/home/ubuntu/
+scp ubuntu@118.89.37.37:/home/ubuntu/ncov_china_data.zip /opt/geoserver/data_dir/uploads/
+scp ubuntu@118.89.37.37:/home/ubuntu/geoserver-2.16.1-vectortiles-plugin.zip /opt/geoserver/data_dir/uploads/
 
 6、Import data:
 http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Aprovincepoint&bbox=87.57610581400151%2C19.97015545046543%2C126.56611953177881%2C45.6934683793407&width=768&height=506&srs=EPSG%3A4326&format=application/openlayers
 
 http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Acounty&bbox=73.45169014816452%2C18.163529073724895%2C134.9754744649509%2C53.53138693255646&width=768&height=441&srs=EPSG%3A4326&format=application/openlayers
+
+
+7、Plugins
+Plugins Dir: <Geoserver安装目录>/webapps/geoserver/WEB-INF/lib
+/usr/local/tomcat/webapps/geoserver/WEB-INF/lib
+

@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/css/ol.css" type="text/css">
+    <style>
+        .map {
+            height: 400px;
+            width: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <h2>Block Map</h2>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        //加载天地地图
+        var tdRoadMapLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd'
+            }),
+            isGroup: true,
+            name: '天地图路网'
+        });
+        var tdMarkerMapLayer = new ol.layer.Tile({
+            source: new ol.source.XYZ({
+                url: 'https://t0.tianditu.gov.cn/DataServer?T=cia_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd'
+            }),
+            isGroup: true,
+            name: '天地图文字标注'
+        });
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+                tdRoadMapLayer,
+                tdMarkerMapLayer
+            ],
+            // 23.13, 113.27
+            view: new ol.View({
+                center: ol.proj.fromLonLat([113.27, 23.13]),
+                // center: ol.proj.fromLonLat([23.13, 113.27]),
+                zoom: 11
+            })
+        });
+        var wfsVectorLayer = "";
+        var ncovVectorLayer = "";
+
+        addWms();
+
+        function addWms() {
+            wfsVectorLayer = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Acitypoint&bbox=75.98661000295887%2C18.237933465971842%2C131.1558999965443%2C52.3403555239211&width=768&height=474&srs=EPSG%3A4326',
+                    projection: 'EPSG:4326',
+                    params: {
+                        'LAYERS': 'citypoint',
+                        'VERSION': '1.1.0'
+                    }
+                })
+            });
+            ncovVectorLayer = new ol.layer.Tile({
+                source: new ol.source.TileWMS({
+                    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Ancov_china_data&bbox=97.84623%2C18.23975%2C132.218597%2C50.42918&width=768&height=719&srs=EPSG%3A4326',
+                    projection: 'EPSG:4326',
+                    params: {
+                        'LAYERS': 'ncov_china_data',
+                        'VERSION': '1.1.0'
+                    }
+                })
+            });
+            map.addLayer(wfsVectorLayer);
+            map.addLayer(ncovVectorLayer);
+        }
+
+        //地图单机事件
+        map.on('singleclick', mapClick);
+
+        function mapClick(e) {
+            var pixel = map.getEventPixel(e.originalEvent);
+            var featureInfo = map.forEachFeatureAtPixel(pixel,
+                function (feature, layer) {
+                    return {
+                        feature: feature,
+                        layer: layer
+                    };
+                });
+            if (featureInfo !== undefined && featureInfo !== null &&
+                featureInfo.layer !== null) {
+                console.log('打印选择要素');
+                console.log(featureInfo.feature);
+                console.log('打印选择要素所属Layer');
+                console.log(featureInfo.layer);
+            }
+        }
+    </script>
+</body>
+
+</html>

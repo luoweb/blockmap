@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>LeaFlet加载矢量切片</title>
+    <!-- <link href="./leaflet/leaflet.css" rel="stylesheet" />
+    <script src="./leaflet/leaflet.js"></script> -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.bundled.js"></script>
+    <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
+</head>
+
+<body>
+    <div id="map" style="width: 100%; height: 1000px"></div>
+    <script>
+        //  var latlng = L.latLng(39.92, 116.46);
+        //Guangzhou
+        var latlng = L.latLng(23.13, 113.27);
+
+        var map = L.map('map', {
+            center: latlng,
+            zoom: 11,
+            maxZoom: 22,
+            crs: L.CRS.EPSG4326
+        });
+        L.tileLayer(
+            'http://t1.tianditu.com/vec_c/wmts?layer=vec&style=default&tilematrixset=c&Service=WMTS&Request=GetTile&Version=1.0.0&Format=tiles&TileMatrix={z}&TileCol={x}&TileRow={y}&tk=320109f58cbb412b31e478ddc5c651bd', {
+                maxZoom: 20,
+                tileSize: 256,
+                zoomOffset: 1
+            }).addTo(map);
+        var normalMapa = L.tileLayer(
+            'http://t0.tianditu.gov.cn/cva_c/wmts?layer=cva&style=default&tilematrixset=c&Service=WMTS&Request=GetTile&Version=1.0.0&Format=tiles&TileMatrix={z}&TileCol={x}&TileRow={y}&tk=320109f58cbb412b31e478ddc5c651bd', {
+                maxZoom: 20,
+                tileSize: 256,
+                zoomOffset: 1
+            }).addTo(map);
+
+        let provincepoint = L.tileLayer.wms("http://173.193.109.188:30657/geoserver/blockmap/wms", {
+            layers: 'blockmap:provincepoint',
+            format: 'image/png',
+            transparent: true
+        }).addTo(map);
+
+        let ncov_china_data = L.tileLayer.wms("http://173.193.109.188:30657/geoserver/blockmap/wms", {
+            layers: 'blockmap:ncov_china_data',
+            format: 'image/png',
+            transparent: true
+        }).addTo(map);
+
+        //  var provinceMapa = L.tileLayer('http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Aprovincepoint&bbox=87.57610581400151%2C19.97015545046543%2C126.56611953177881%2C45.6934683793407&width=768&height=506&srs=EPSG%3A4326&format=application/openlayers', {
+        //      maxZoom: 20,
+        //      tileSize: 256,
+        //      zoomOffset: 1
+        //  }).addTo(map);
+        //  var ncovMapa = L.tileLayer('http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Ancov_china_data&bbox=97.84623%2C18.23975%2C132.218597%2C50.42918&width=768&height=719&srs=EPSG%3A4326&format=application/openlayers', {
+        //      maxZoom: 20,
+        //      tileSize: 256,
+        //      zoomOffset: 1
+        //  }).addTo(map);
+
+        //  var url = "http://173.193.109.188:30657/geoserver/gwc/service/tms/1.0.0/blockmap:provincepoint@EPSG:4326@pbf/{z}/{x}/{y}.pbf";
+        var url =
+            "http://173.193.109.188:30657/geoserver/gwc/service/tms/1.0.0/blockmap%3Ancov_china_data@EPSG%3A4326@pbf/{z}/{x}/{y}.pbf";
+
+
+        var marker = L.marker(center, {icon: new L.Icon.Default()}).addTo(map);
+
+        var vectorTileOptions = {
+            layerURL: url,
+            rendererFactory: L.canvas.tile,
+            tms: true,
+            vectorTileLayerStyles: {
+                'blockmap_ncov_china_data': function (properties, zoom) {
+                    var city = properties.city;
+                    if (city == "广州市") {
+                        return {
+                            weight: 2,
+                            color: 'red',
+                            opacity: 1,
+                            fillColor: 'yellow',
+                            fill: true,
+                            radius: 6,
+                            fillOpacity: 0.7
+                        }
+                    } else {
+                        return {
+                            weight: 2,
+                            color: 'red',
+                            opacity: 1,
+                            fillColor: 'green',
+                            fill: true,
+                            radius: 6,
+                            fillOpacity: 0.7
+                        }
+                    }
+                },
+            },
+            interactive: true//开启VectorGrid触发mouse/pointer事件
+            // getFeatureId: function (f) {
+            //     return f.properties.doc_id;
+            // }
+        };
+        var vectorTile = new L.vectorGrid.protobuf(url, vectorTileOptions).addTo(map);
+
+
+        //为每个点注册一个mouseover事件
+        // vectorTile.on('mouseover', function (e) {
+        //     console.log(e)
+        //     var properties = e.layer.properties;
+        //     L.popup()
+        //         .setContent(properties.fulladdre || properties.city)
+        //         .setLatLng(e.latlng)
+        //         .openOn(map);
+        // });
+
+        vectorTile.on('click', function(e) {	// The .on method attaches an event handler
+            L.popup()
+                .setContent((e.layer.properties.doc_id || e.layer.properties.city) + "<br/>" + e.layer.properties.fulladdre)
+                .setLatLng(e.latlng)
+                .openOn(map);
+            L.DomEvent.stop(e);
+        });
+
+        //注册map的缩放事件
+        map.on("zoom", function () {
+            map.closePopup();
+        });
+    </script>
+</body>
+
+</html>
