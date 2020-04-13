@@ -11,21 +11,23 @@ data:
   default.conf: |-
 
     upstream geoserver {
-        server 1.2.3.4:32766;
+        server 173.193.109.188:30657;
     }
     server {
         listen       80;
         server_name  localhost;
-
 
         location / {
             root   /usr/share/nginx/html;
             index  index.html index.htm;
         }
 
-        location /check {
-            default_type text/plain;
-            return 200 "serving is ok!";
+        location /geoserver {
+            proxy_pass http://geoserver;
+            proxy_set_header   Host $host;
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET,POST,DELETE';
+            add_header 'Access-Control-Allow-Header' 'Content-Type,*';
         }
 
         location /status {
@@ -33,11 +35,6 @@ data:
             access_log off;
         }
         
-        location  /nginx {
-            proxy_pass http://nginx;
-            proxy_set_header   Host $host;
-        }
-   
         # redirect server error pages to the static page /50x.html
         # chengang from k8s config map file
         error_page   500 502 503 504  /50x.html;

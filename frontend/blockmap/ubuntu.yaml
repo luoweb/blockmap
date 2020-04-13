@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ubuntu
+  labels:
+    app.kubernetes.io/name: ubuntu
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ubuntu
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ubuntu
+    spec:
+      containers:
+        - name: ubuntu
+          image: ubuntu:18.04
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/bash
+            - '-c'
+            - tail -f /etc/hosts
+          volumeMounts:
+            - mountPath: "/data"
+              name: host-volume
+      volumes:
+        - name: host-volume
+          hostPath:
+            path: /

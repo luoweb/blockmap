@@ -26,6 +26,7 @@ scp geoserver-2.16.1-vectortiles-plugin.zip ubuntu@118.89.37.37:/home/ubuntu/
 scp ubuntu@118.89.37.37:/home/ubuntu/ncov_china_data.zip /opt/geoserver/data_dir/uploads/
 scp ubuntu@118.89.37.37:/home/ubuntu/geoserver-2.16.1-vectortiles-plugin.zip /opt/geoserver/data_dir/uploads/
 
+
 7. Import data:
 http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Aprovincepoint&bbox=87.57610581400151%2C19.97015545046543%2C126.56611953177881%2C45.6934683793407&width=768&height=506&srs=EPSG%3A4326&format=application/openlayers
 
