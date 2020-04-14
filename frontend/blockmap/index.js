@@ -1,122 +1,101 @@
-import 'ol/ol.css';
-import Map from 'ol/Map';
-import View from 'ol/View';
+import "ol/ol.css";
+import Map from "ol/Map";
+import View from "ol/View";
 // import TileLayer from 'ol/layer/Tile';
-import XYZ from 'ol/source/XYZ';
-import {
-  fromLonLat
-} from 'ol/proj';
-import GeoJSON from 'ol/format/GeoJSON';
+import XYZ from "ol/source/XYZ";
+import { fromLonLat } from "ol/proj";
+import GeoJSON from "ol/format/GeoJSON";
 // import VectorLayer from 'ol/layer/Vector';
 // import VectorSource from 'ol/source/Vector';
 // import {Fill, Stroke, Style, Text} from 'ol/style';
-import ImageLayer from 'ol/layer/Image';
-import ImageWMS from 'ol/source/ImageWMS';
+import ImageLayer from "ol/layer/Image";
+import ImageWMS from "ol/source/ImageWMS";
+import FullScreen from "ol/control/FullScreen";
+import * as olControl from "ol/control";
+import Zoom from "ol/control/Zoom";
+import ZoomToExtent from "ol/control/ZoomToExtent";
 
-import Feature from 'ol/Feature';
-import {
-  unByKey
-} from 'ol/Observable';
-import {
-  easeOut
-} from 'ol/easing';
-import Point from 'ol/geom/Point';
-import {
-  Tile as TileLayer,
-  Vector as VectorLayer
-} from 'ol/layer';
-import {
-  OSM,
-  Vector as VectorSource
-} from 'ol/source';
-import {
-  getVectorContext
-} from 'ol/render';
-import {
-  Circle as CircleStyle,
-  Stroke,
-  Style,
-  Fill,
-  Text
-} from 'ol/style';
-
-
-
+import Feature from "ol/Feature";
+import { unByKey } from "ol/Observable";
+import { easeOut } from "ol/easing";
+import Point from "ol/geom/Point";
+import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
+import { OSM, Vector as VectorSource } from "ol/source";
+import { getVectorContext } from "ol/render";
+import { Circle as CircleStyle, Stroke, Style, Fill, Text } from "ol/style";
 
 var tdRoadMapLayer = new TileLayer({
   source: new XYZ({
-    url: 'https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd'
+    url:
+      "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
   }),
   isGroup: true,
-  name: '天地图路网'
+  name: "天地图路网",
 });
 
 var borderLayer = new ImageLayer({
   source: new ImageWMS({
-    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms',
+    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
     params: {
-      'LAYERS': 'border'
+      LAYERS: "border",
     },
-    serverType: 'geoserver',
-    crossOrigin: 'anonymous'
-  })
+    serverType: "geoserver",
+    crossOrigin: "anonymous",
+  }),
 });
-
 
 var provinceLayer = new ImageLayer({
   source: new ImageWMS({
-    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms',
+    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
     params: {
-      'LAYERS': 'province0'
+      LAYERS: "province0",
     },
-    serverType: 'geoserver',
-    crossOrigin: 'anonymous'
-  })
+    serverType: "geoserver",
+    crossOrigin: "anonymous",
+  }),
 });
-
 
 var cityLayer = new ImageLayer({
   source: new ImageWMS({
-    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms',
+    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
     params: {
-      'LAYERS': 'city'
+      LAYERS: "city",
     },
-    serverType: 'geoserver',
-    crossOrigin: 'anonymous'
-  })
+    serverType: "geoserver",
+    crossOrigin: "anonymous",
+  }),
 });
 
 var ncovSource = new ImageWMS({
-  url: 'http://173.193.109.188:30657/geoserver/blockmap/wms',
+  url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
   params: {
-    'LAYERS': 'ncov_china_data'
+    LAYERS: "ncov_china_data",
   },
-  serverType: 'geoserver',
-  crossOrigin: 'anonymous'
-})
-var ncovLayer = new ImageLayer({
-  source: ncovSource
+  serverType: "geoserver",
+  crossOrigin: "anonymous",
 });
-
+var ncovLayer = new ImageLayer({
+  source: ncovSource,
+});
 
 var style = new Style({
   fill: new Fill({
-    color: 'rgba(255, 255, 255, 0.6)'
+    color: "rgba(255, 255, 255, 0.6)",
   }),
   stroke: new Stroke({
-    color: '#319FD3',
-    width: 1
+    color: "#319FD3",
+    width: 1,
   }),
   text: new Text({
-    font: '12px Calibri,sans-serif',
+    font: "12px Calibri,sans-serif",
     fill: new Fill({
-      color: '#000'
+      color: "#000",
     }),
     stroke: new Stroke({
-      color: '#fff',
-      width: 3
-    })
-  })
+      color: "#fff",
+      width: 3,
+    }),
+  }),
 });
 
 // var provinceWfsLayer = new VectorLayer({
@@ -134,55 +113,82 @@ var style = new Style({
 
 var ncovWfsLayer = new VectorLayer({
   source: new VectorSource({
-    url: 'http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326',
+    url:
+      "http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326",
     format: new GeoJSON({
-      geometryName: 'the_geom'
-    })
+      geometryName: "the_geom",
+    }),
   }),
   style: function (feature) {
     // style.getText().setText(feature.get('city'));
     return style;
-  }
+  },
 });
 
 var view = new View({
-  center: fromLonLat([113.30, 23.12]),
-  zoom: 12
+  center: fromLonLat([113.3, 23.12]),
+  zoom: 12,
 });
+console.log(fromLonLat([113.3, 23.12]));
 
+var fullScreenControl = new FullScreen();
+var zoomControl = new Zoom();
 var map = new Map({
-  layers: [tdRoadMapLayer,
+  layers: [
+    tdRoadMapLayer,
     // borderLayer,
     provinceLayer,
     // provinceWfsLayer,
     // cityLayer,
     ncovWfsLayer,
-    ncovLayer
+    ncovLayer,
   ],
-  target: 'map',
-  view: view
+  target: "map",
+  controls: olControl.defaults().extend([
+    // 将用于将地图定位到指定范围的ZoomToExtent控件加入到地图的默认控件中
+    new ZoomToExtent({
+      extent: [
+        // 指定要定位到的范围-广州
+        12602498.306877896,
+        2636537.0728182457,
+        12622498.306877896,
+        2656537.0728182457,
+        // 813079.7791264898,
+        // 5929220.284081122,
+        // 848966.9639063801,
+        // 5936863.986909639,
+      ],
+    }),
+  ]),
+  view: view,
 });
 
+map.addControl(fullScreenControl);
+map.addControl(zoomControl);
 
-map.on('singleclick', function (evt) {
-  document.getElementById('info').innerHTML = '';
+map.on("singleclick", function (evt) {
+  document.getElementById("info").innerHTML = "";
   var viewResolution = /** @type {number} */ (view.getResolution());
   var url = ncovSource.getFeatureInfoUrl(
-    evt.coordinate, viewResolution, 'EPSG:3857', {
-      'INFO_FORMAT': 'text/html'
-    });
+    evt.coordinate,
+    viewResolution,
+    "EPSG:3857",
+    {
+      INFO_FORMAT: "text/html",
+    }
+  );
   if (url) {
     fetch(url)
       .then(function (response) {
         return response.text();
       })
       .then(function (html) {
-        document.getElementById('info').innerHTML = html;
+        document.getElementById("info").innerHTML = html;
       });
   }
 });
 
-map.on('pointermove', function (evt) {
+map.on("pointermove", function (evt) {
   if (evt.dragging) {
     return;
   }
@@ -190,9 +196,8 @@ map.on('pointermove', function (evt) {
   var hit = map.forEachLayerAtPixel(pixel, function () {
     return true;
   });
-  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+  map.getTargetElement().style.cursor = hit ? "pointer" : "";
 });
-
 
 // var source = new VectorSource({
 //   wrapX: false
@@ -254,43 +259,42 @@ map.on('pointermove', function (evt) {
 
 var highlightStyle = new Style({
   stroke: new Stroke({
-    color: '#f00',
-    width: 1
+    color: "#f00",
+    width: 1,
   }),
   fill: new Fill({
-    color: 'rgba(255,0,0,0.1)'
+    color: "rgba(255,0,0,0.1)",
   }),
   text: new Text({
-    font: '12px Calibri,sans-serif',
+    font: "12px Calibri,sans-serif",
     fill: new Fill({
-      color: '#000'
+      color: "#000",
     }),
     stroke: new Stroke({
-      color: '#f00',
-      width: 3
-    })
-  })
+      color: "#f00",
+      width: 3,
+    }),
+  }),
 });
 
 var featureOverlay = new VectorLayer({
   source: new VectorSource(),
   map: map,
   style: function (feature) {
-    highlightStyle.getText().setText(feature.get('name'));
+    highlightStyle.getText().setText(feature.get("name"));
     return highlightStyle;
-  }
+  },
 });
 
 var highlight;
 var displayFeatureInfo = function (pixel) {
-
   ncovWfsLayer.getFeatures(pixel).then(function (features) {
     var feature = features.length ? features[0] : undefined;
-    var info = document.getElementById('info');
+    var info = document.getElementById("info");
     if (features.length) {
-      info.innerHTML = feature.getId() + ': ' + feature.get('name');
+      info.innerHTML = feature.getId() + ": " + feature.get("name");
     } else {
-      info.innerHTML = '&nbsp;';
+      info.innerHTML = "&nbsp;";
     }
 
     if (feature !== highlight) {
@@ -303,10 +307,9 @@ var displayFeatureInfo = function (pixel) {
       highlight = feature;
     }
   });
-
 };
 
-map.on('pointermove', function (evt) {
+map.on("pointermove", function (evt) {
   if (evt.dragging) {
     return;
   }
