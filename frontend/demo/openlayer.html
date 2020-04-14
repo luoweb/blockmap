@@ -33,26 +33,11 @@
             isGroup: true,
             name: '天地图文字标注'
         });
-        var map = new ol.Map({
-            target: 'map',
-            layers: [
-                tdRoadMapLayer,
-                tdMarkerMapLayer
-            ],
-            // 23.13, 113.27
-            view: new ol.View({
-                center: ol.proj.fromLonLat([113.27, 23.13]),
-                // center: ol.proj.fromLonLat([23.13, 113.27]),
-                zoom: 11
-            })
-        });
+        console.log("############")
+
         var wfsVectorLayer = "";
         var ncovVectorLayer = "";
-
-        addWms();
-
-        function addWms() {
-            wfsVectorLayer = new ol.layer.Tile({
+        wfsVectorLayer = new ol.layer.Tile({
                 source: new ol.source.TileWMS({
                     url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Acitypoint&bbox=75.98661000295887%2C18.237933465971842%2C131.1558999965443%2C52.3403555239211&width=768&height=474&srs=EPSG%3A4326',
                     projection: 'EPSG:4326',
@@ -72,13 +57,123 @@
                     }
                 })
             });
-            map.addLayer(wfsVectorLayer);
-            map.addLayer(ncovVectorLayer);
-        }
+
+        //热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
+        var heatData = [{
+            type: "FeatureCollection",
+            features: [{
+                    type: "Point",
+                    "coordinates": [117.363228, 32.939667],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.359623, 32.941612],
+                    count: 60
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.365631, 32.94651],
+                    count: 90
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.36443, 32.928789],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.351212, 32.95328],
+                    count: 60
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.363228, 32.936281],
+                    count: 90
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.385029, 32.948383],
+                    count: 60
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.370781, 32.920144],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.393097, 32.936137],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.373528, 32.919856],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.353443, 32.916541],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.397217, 32.913803],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [117.35207, 32.904148],
+                    count: 80
+                },
+                {
+                    type: "Point",
+                    "coordinates": [113.27, 23.13],
+                    count: 80
+                }
+            ]
+        }];
+
+        var vectorSource = new ol.source.Vector({
+            features: (new ol.format.GeoJSON()).readFeatures(heatData[0], {
+                dataProjection: 'EPSG:4326',
+                featureProjection: 'EPSG:4326'
+            })
+        });
+
+        // Heatmap热力图             
+        var vectorHeat = new ol.layer.Heatmap({
+            source: vectorSource,
+            opacity: 0, //透明度
+            blur: 15, //模糊大小（以像素为单位）,默认15
+            radius: 20, //半径大小（以像素为单位,默认8
+            shadow: 250, //阴影像素大小，默认250
+            //矢量图层的渲染模式：
+            //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
+            //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
+            renderMode: 'vector'
+        });
 
 
-        
+
         //地图单机事件
+        var map = new ol.Map({
+            target: 'map',
+            layers: [
+                // tdRoadMapLayer,
+                wfsVectorLayer,
+                ncovVectorLayer,
+                vectorHeat
+                // tdMarkerMapLayer
+            ],
+            // 23.13, 113.27
+            view: new ol.View({
+                center: new ol.proj.fromLonLat([113.27, 23.13]),
+                // center: ol.proj.fromLonLat([23.13, 113.27]),
+                zoom: 11
+            })
+        });
+
         map.on('singleclick', mapClick);
 
         function mapClick(e) {
