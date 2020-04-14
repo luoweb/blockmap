@@ -4,7 +4,7 @@ metadata:
   name: geoserver
   labels:
     app.kubernetes.io/name: geoserver
-    app.kubernetes.io/instance: 2.16.1
+    app.kubernetes.io/instance: 2.16.2
 spec:
   type: NodePort
   ports:
@@ -12,6 +12,7 @@ spec:
       targetPort: http
       protocol: TCP
       name: http
+      nodePort: 30657
   selector:
     app.kubernetes.io/name: geoserver
-    app.kubernetes.io/instance: 2.16.1
+    app.kubernetes.io/instance: 2.16.2

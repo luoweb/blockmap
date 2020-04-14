@@ -4,24 +4,24 @@ metadata:
   name: geoserver
   labels:
     app.kubernetes.io/name: geoserver
-    app.kubernetes.io/instance: 2.16.1
+    app.kubernetes.io/instance: 2.16.2
 spec:
   replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: geoserver
-      app.kubernetes.io/instance: 2.16.1
+      app.kubernetes.io/instance: 2.16.2
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app.kubernetes.io/name: geoserver
-        app.kubernetes.io/instance: 2.16.1
+        app.kubernetes.io/instance: 2.16.2
     spec:
       containers:
         - name: geoserver
-          image: kartoza/geoserver:2.16.1
+          image: kartoza/geoserver:2.16.2
           imagePullPolicy: IfNotPresent
           env:
             - name: GEOSERVER_DATA_DIR
@@ -43,6 +43,13 @@ spec:
           volumeMounts:
             - mountPath: "/opt/geoserver/data_dir"
               name: geoserver-volume
+      resources:
+        limits:
+          cpu: 2000m
+          memory: 3000Mi
+        requests:
+          cpu: 1000m
+          memory: 1024Mi
       volumes:
         - name: geoserver-volume
           hostPath:
