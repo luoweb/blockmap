@@ -9,6 +9,55 @@
             height: 400px;
             width: 100%;
         }
+
+      .ol-popup {
+            position: absolute;
+            background-color: #eeeeee;
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #cccccc;
+            bottom: 12px;
+            left: -50px;
+            min-width: 280px;
+        }
+
+        .ol-popup:after,
+        .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .ol-popup:after {
+            border-top-color: #eeeeee;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+
+        .ol-popup:before {
+            border-top-color: #cccccc;
+            border-width: 11px;
+            left: 48px;
+            margin-left: -11px;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+        }
+
+        .ol-popup-closer:after {
+            content: "✖";
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.3.1/build/ol.js"></script>
     <title>OpenLayers example</title>
@@ -17,6 +66,11 @@
 <body>
     <h2>Block Map</h2>
     <div id="map" class="map"></div>
+    <div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content"></div>
+    </div>
+
     <script type="text/javascript">
         //加载天地地图
         var tdRoadMapLayer = new ol.layer.Tile({
@@ -33,7 +87,6 @@
             isGroup: true,
             name: '天地图文字标注'
         });
-        console.log("############")
 
         var wfsVectorLayer = "";
         var ncovVectorLayer = "";
@@ -58,93 +111,99 @@
                 })
             });
 
+        var vectorEarthQuake = new ol.layer.Heatmap({
+        source: new ol.source.Vector({
+            url: 'https://openlayers.org/en/latest/examples/data/kml/2012_Earthquakes_Mag5.kml',
+            format: new ol.format.KML({
+                extractStyles: false
+            })
+        }),
+        blur: 15,
+        radius: 20,
+        weight: function(feature) {
+            // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
+            // standards-violating <magnitude> tag in each Placemark.  We extract it from
+            // the Placemark's name instead.
+            var name = feature.get('name');
+            var magnitude = parseFloat(name.substr(2));
+            return magnitude - 5;
+        }
+        });
+
+        // Heatmap热力图 
         //热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
         var heatData = [{
             type: "FeatureCollection",
-            features: [{
+            features: [                {
                     type: "Point",
-                    "coordinates": [117.363228, 32.939667],
+                    "coordinates": new ol.proj.fromLonLat([113.25, 23.11]),
                     count: 80
-                },
+                },    
                 {
                     type: "Point",
-                    "coordinates": [117.359623, 32.941612],
-                    count: 60
-                },
+                    "coordinates": new ol.proj.fromLonLat([113.29, 23.14]),
+                    count: 80
+                },      
                 {
                     type: "Point",
-                    "coordinates": [117.365631, 32.94651],
+                    "coordinates": new ol.proj.fromLonLat([113.30, 23.14]),
+                    count: 80
+                },  
+                {
+                    type: "Point",
+                    "coordinates": new ol.proj.fromLonLat([113.31, 23.11]),
+                    count: 80
+                },  
+                {
+                    type: "Point",
+                    "coordinates": new ol.proj.fromLonLat([113.32, 23.12]),
+                    count: 80
+                },  
+                {
+                    type: "Point",
+                    "coordinates": new ol.proj.fromLonLat([112.15, 22.21]),
                     count: 90
                 },
                 {
                     type: "Point",
-                    "coordinates": [117.36443, 32.928789],
-                    count: 80
-                },
-                {
-                    type: "Point",
-                    "coordinates": [117.351212, 32.95328],
-                    count: 60
-                },
-                {
-                    type: "Point",
-                    "coordinates": [117.363228, 32.936281],
+                    "coordinates": new ol.proj.fromLonLat([112.17, 22.23]),
                     count: 90
                 },
                 {
                     type: "Point",
-                    "coordinates": [117.385029, 32.948383],
-                    count: 60
-                },
+                    "coordinates": new ol.proj.fromLonLat([112.27, 22.13]),
+                    count: 80
+                },        
                 {
                     type: "Point",
-                    "coordinates": [117.370781, 32.920144],
+                    "coordinates": new ol.proj.fromLonLat([113.27, 23.13]),
                     count: 80
                 },
                 {
                     type: "Point",
-                    "coordinates": [117.393097, 32.936137],
+                    "coordinates": new ol.proj.fromLonLat([112.29, 22.57]),
                     count: 80
                 },
                 {
                     type: "Point",
-                    "coordinates": [117.373528, 32.919856],
-                    count: 80
-                },
-                {
-                    type: "Point",
-                    "coordinates": [117.353443, 32.916541],
-                    count: 80
-                },
-                {
-                    type: "Point",
-                    "coordinates": [117.397217, 32.913803],
-                    count: 80
-                },
-                {
-                    type: "Point",
-                    "coordinates": [117.35207, 32.904148],
-                    count: 80
-                },
-                {
-                    type: "Point",
-                    "coordinates": [113.27, 23.13],
+                    "coordinates": new ol.proj.fromLonLat([112.29, 24.17]),
                     count: 80
                 }
             ]
-        }];
+        }];  
 
-        var vectorSource = new ol.source.Vector({
-            features: (new ol.format.GeoJSON()).readFeatures(heatData[0], {
-                dataProjection: 'EPSG:4326',
-                featureProjection: 'EPSG:4326'
-            })
-        });
+        // var vectorLayer = new ol.layer.Vector({
+        //         source: new ol.source.Vector({
+        //                 url: 'data/geojson/countries.geojson',
+        //                 format: new ol.format.GeoJSON()
+        //         })
+        // });
 
-        // Heatmap热力图             
-        var vectorHeat = new ol.layer.Heatmap({
-            source: vectorSource,
-            opacity: 0, //透明度
+        var heatMapLayer = new ol.layer.Heatmap({
+            source: new ol.source.Vector({
+                 features: (new ol.format.GeoJSON()).readFeatures(heatData[0]),
+            }),
+            opacity: 0.8, //透明度
             blur: 15, //模糊大小（以像素为单位）,默认15
             radius: 20, //半径大小（以像素为单位,默认8
             shadow: 250, //阴影像素大小，默认250
@@ -156,14 +215,50 @@
 
 
 
+        var vectorSource = new ol.source.Vector({});
+        //创建图标特性
+        var iconFeature = new ol.Feature({
+            geometry: new ol.geom.Point(new ol.proj.fromLonLat([113.27, 23.13]), "XY"),
+            name: "my Icon",
+        });
+        //将图标特性添加进矢量中
+        vectorSource.addFeature(iconFeature);
+        //创建图标样式
+        var iconStyle = new ol.style.Style({
+            image: new ol.style.Icon({
+                opacity: 0.75,
+                src: "https://openlayers.org/en/latest/examples/data/icon.png"
+            }),
+        });
+        //创建矢量层
+        var vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+            style: iconStyle
+        });
+        
+        /*********************显示弹出层**************************/
+        var container = document.getElementById("popup");
+        var content = document.getElementById("popup-content");
+        var popupCloser = document.getElementById("popup-closer");
+
+        var overlay = new ol.Overlay({
+            element: container,
+            autoPan: true
+        });
+    
+
+
+
         //地图单机事件
         var map = new ol.Map({
             target: 'map',
             layers: [
-                // tdRoadMapLayer,
+                tdRoadMapLayer,
                 wfsVectorLayer,
                 ncovVectorLayer,
-                vectorHeat
+                heatMapLayer
+                // vectorEarthQuake
+                // vectorHeat
                 // tdMarkerMapLayer
             ],
             // 23.13, 113.27
@@ -172,6 +267,29 @@
                 // center: ol.proj.fromLonLat([23.13, 113.27]),
                 zoom: 11
             })
+        });
+
+        //添加热力图
+        // map.addLayer(heatMapLayer);
+
+        //添加进map层
+        map.addLayer(vectorLayer);
+
+        map.on('click',function(e){
+            var pixel = map.getEventPixel(e.originalEvent);
+            console.log(pixel);
+            map.forEachFeatureAtPixel(pixel,function(feature){
+                //console.log(feature);
+                //return feature;
+                var coodinate = e.coordinate;
+                content.innerHTML = "<p>你点击的坐标为：" + new ol.proj.toLonLat(coodinate) + "</p>";
+                overlay.setPosition(coodinate);
+                map.addOverlay(overlay);
+            });
+        });
+
+        popupCloser.addEventListener('click',function(){
+            overlay.setPosition(undefined);
         });
 
         map.on('singleclick', mapClick);
@@ -192,7 +310,7 @@
                 console.log('打印选择要素所属Layer');
                 console.log(featureInfo.layer);
             }
-        }
+        } 
     </script>
 </body>
 

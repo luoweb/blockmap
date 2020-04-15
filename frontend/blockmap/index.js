@@ -4,6 +4,7 @@ import View from "ol/View";
 // import TileLayer from 'ol/layer/Tile';
 import XYZ from "ol/source/XYZ";
 import { fromLonLat } from "ol/proj";
+import { toLonLat } from "ol/proj";
 import GeoJSON from "ol/format/GeoJSON";
 // import VectorLayer from 'ol/layer/Vector';
 // import VectorSource from 'ol/source/Vector';
@@ -14,6 +15,7 @@ import FullScreen from "ol/control/FullScreen";
 import * as olControl from "ol/control";
 import Zoom from "ol/control/Zoom";
 import ZoomToExtent from "ol/control/ZoomToExtent";
+import Heatmap from 'ol/layer/Heatmap';
 
 import Feature from "ol/Feature";
 import { unByKey } from "ol/Observable";
@@ -23,6 +25,17 @@ import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
 import { OSM, Vector as VectorSource } from "ol/source";
 import { getVectorContext } from "ol/render";
 import { Circle as CircleStyle, Stroke, Style, Fill, Text } from "ol/style";
+import Overlay from 'ol/Overlay';
+
+/*********************显示弹出层**************************/
+var container = document.getElementById("popup");
+var content = document.getElementById("popup-content");
+var popupCloser = document.getElementById("popup-closer");
+
+var overlay = new Overlay({
+  element: container,
+  autoPan: true
+});
 
 var tdRoadMapLayer = new TileLayer({
   source: new XYZ({
@@ -76,6 +89,92 @@ var ncovSource = new ImageWMS({
 });
 var ncovLayer = new ImageLayer({
   source: ncovSource,
+});
+
+// Heatmap热力图
+//热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
+var heatData = [
+  {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Point",
+        coordinates: fromLonLat([113.25, 23.11]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([113.29, 23.14]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([113.3, 23.14]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([113.31, 23.11]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([113.32, 23.12]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([112.15, 22.21]),
+        count: 90,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([112.17, 22.23]),
+        count: 90,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([112.27, 22.13]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([113.27, 23.13]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([112.29, 22.57]),
+        count: 80,
+      },
+      {
+        type: "Point",
+        coordinates: fromLonLat([112.29, 24.17]),
+        count: 80,
+      },
+    ],
+  },
+];
+
+// var vectorLayer = new ol.layer.Vector({
+//         source: new ol.source.Vector({
+//                 url: 'data/geojson/countries.geojson',
+//                 format: new ol.format.GeoJSON()
+//         })
+// });
+
+var heatMapLayer = new Heatmap({
+  source: new VectorSource({
+    features: new GeoJSON().readFeatures(heatData[0]),
+  }),
+  opacity: 0.8, //透明度
+  blur: 15, //模糊大小（以像素为单位）,默认15
+  radius: 20, //半径大小（以像素为单位,默认8
+  shadow: 250, //阴影像素大小，默认250
+  //矢量图层的渲染模式：
+  //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
+  //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
+  renderMode: "vector",
 });
 
 var style = new Style({
@@ -142,6 +241,7 @@ var map = new Map({
     // cityLayer,
     ncovWfsLayer,
     ncovLayer,
+    heatMapLayer
   ],
   target: "map",
   controls: olControl.defaults().extend([
@@ -308,6 +408,24 @@ var displayFeatureInfo = function (pixel) {
     }
   });
 };
+
+map.on("click", function (e) {
+  var pixel = map.getEventPixel(e.originalEvent);
+  console.log(pixel);
+  map.forEachFeatureAtPixel(pixel, function (feature) {
+    //console.log(feature);
+    //return feature;
+    var coodinate = e.coordinate;
+    content.innerHTML =
+      "<p>你点击的坐标为：" + new toLonLat(coodinate) + "</p>";
+    overlay.setPosition(coodinate);
+    map.addOverlay(overlay);
+  });
+});
+
+popupCloser.addEventListener("click", function () {
+  overlay.setPosition(undefined);
+});
 
 map.on("pointermove", function (evt) {
   if (evt.dragging) {
