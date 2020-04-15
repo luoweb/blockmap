@@ -3,8 +3,12 @@ import Map from "ol/Map";
 import View from "ol/View";
 // import TileLayer from 'ol/layer/Tile';
 import XYZ from "ol/source/XYZ";
-import { fromLonLat } from "ol/proj";
-import { toLonLat } from "ol/proj";
+import {
+  fromLonLat
+} from "ol/proj";
+import {
+  toLonLat
+} from "ol/proj";
 import GeoJSON from "ol/format/GeoJSON";
 // import VectorLayer from 'ol/layer/Vector';
 // import VectorSource from 'ol/source/Vector';
@@ -18,14 +22,35 @@ import ZoomToExtent from "ol/control/ZoomToExtent";
 import Heatmap from 'ol/layer/Heatmap';
 
 import Feature from "ol/Feature";
-import { unByKey } from "ol/Observable";
-import { easeOut } from "ol/easing";
+import {
+  unByKey
+} from "ol/Observable";
+import {
+  easeOut
+} from "ol/easing";
 import Point from "ol/geom/Point";
-import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer";
-import { OSM, Vector as VectorSource } from "ol/source";
-import { getVectorContext } from "ol/render";
-import { Circle as CircleStyle, Stroke, Style, Fill, Text } from "ol/style";
+import {
+  Tile as TileLayer,
+  Vector as VectorLayer
+} from "ol/layer";
+import {
+  OSM,
+  Vector as VectorSource
+} from "ol/source";
+import {
+  getVectorContext
+} from "ol/render";
+import {
+  Circle as CircleStyle,
+  Stroke,
+  Style,
+  Fill,
+  Text
+} from "ol/style";
 import Overlay from 'ol/Overlay';
+
+import * as olLoadingstrategy from 'ol/loadingstrategy';
+import * as olTilegrid from 'ol/tilegrid';
 
 /*********************显示弹出层**************************/
 var container = document.getElementById("popup");
@@ -39,8 +64,7 @@ var overlay = new Overlay({
 
 var tdRoadMapLayer = new TileLayer({
   source: new XYZ({
-    url:
-      "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
+    url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
   }),
   isGroup: true,
   name: "天地图路网",
@@ -93,68 +117,65 @@ var ncovLayer = new ImageLayer({
 
 // Heatmap热力图
 //热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
-var heatData = [
-  {
-    type: "FeatureCollection",
-    features: [
-      {
-        type: "Point",
-        coordinates: fromLonLat([113.25, 23.11]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([113.29, 23.14]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([113.3, 23.14]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([113.31, 23.11]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([113.32, 23.12]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([112.15, 22.21]),
-        count: 90,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([112.17, 22.23]),
-        count: 90,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([112.27, 22.13]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([113.27, 23.13]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([112.29, 22.57]),
-        count: 80,
-      },
-      {
-        type: "Point",
-        coordinates: fromLonLat([112.29, 24.17]),
-        count: 80,
-      },
-    ],
-  },
-];
+var heatData = [{
+  type: "FeatureCollection",
+  features: [{
+      type: "Point",
+      coordinates: fromLonLat([113.25, 23.11]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.29, 23.14]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.3, 23.14]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.31, 23.11]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.32, 23.12]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.15, 22.21]),
+      count: 90,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.17, 22.23]),
+      count: 90,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.27, 22.13]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.27, 23.13]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.29, 22.57]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.29, 24.17]),
+      count: 80,
+    }
+  ],
+}, ];
 
 // var vectorLayer = new ol.layer.Vector({
 //         source: new ol.source.Vector({
@@ -210,10 +231,11 @@ var style = new Style({
 //   }
 // });
 
+
+
 var ncovWfsLayer = new VectorLayer({
   source: new VectorSource({
-    url:
-      "http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326",
+    url: "http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326",
     format: new GeoJSON({
       geometryName: "the_geom",
     }),
@@ -222,6 +244,51 @@ var ncovWfsLayer = new VectorLayer({
     // style.getText().setText(feature.get('city'));
     return style;
   },
+});
+
+var wfsParams = {
+  service: 'WFS',
+  version: '1.1.1',
+  request: 'GetFeature',
+  typeName: 'blockmap:ncov_china_data', //图层名称，可以是单个或多个
+  outputFormat: 'text/javascript', //重点，不要改变
+  format_options: 'callback:loadFeatures' //回调函数声明
+};
+
+var ncovVectorSource = new VectorSource({
+  format: new GeoJSON(),
+  loader: function (extent, resolution, projection) { //加载函数
+    var url = 'http://173.193.109.188:30657/geoserver/blockmap/wms';
+    $.ajax({
+      url: url,
+      data: $.param(wfsParams), //传参
+      type: 'GET',
+      dataType: 'jsonp', //解决跨域的关键
+      jsonpCallback: 'loadFeatures' //回调
+
+    });
+  },
+  strategy: olLoadingstrategy.tile(new olTilegrid.createXYZ({
+    maxZoom: 20
+  })),
+  projection: 'EPSG:4326'
+});
+
+//回调函数使用
+window.loadFeatures = function (response) {
+  console.log("##############")
+  console.log(response)
+  ncovVectorSource.addFeatures((new GeoJSON()).readFeatures(response)); //载入要素
+};
+
+var wfsVectorLayer = new VectorLayer({
+  source: ncovVectorSource,
+  style: new Style({
+    stroke: new Stroke({
+      color: 'rgba(0, 0, 255, 1.0)',
+      width: 2
+    })
+  })
 });
 
 var view = new View({
@@ -241,7 +308,8 @@ var map = new Map({
     // cityLayer,
     ncovWfsLayer,
     ncovLayer,
-    heatMapLayer
+    heatMapLayer,
+    wfsVectorLayer
   ],
   target: "map",
   controls: olControl.defaults().extend([
@@ -272,8 +340,7 @@ map.on("singleclick", function (evt) {
   var url = ncovSource.getFeatureInfoUrl(
     evt.coordinate,
     viewResolution,
-    "EPSG:3857",
-    {
+    "EPSG:3857", {
       INFO_FORMAT: "text/html",
     }
   );
@@ -288,16 +355,16 @@ map.on("singleclick", function (evt) {
   }
 });
 
-map.on("pointermove", function (evt) {
-  if (evt.dragging) {
-    return;
-  }
-  var pixel = map.getEventPixel(evt.originalEvent);
-  var hit = map.forEachLayerAtPixel(pixel, function () {
-    return true;
-  });
-  map.getTargetElement().style.cursor = hit ? "pointer" : "";
-});
+// map.on("pointermove", function (evt) {
+//   if (evt.dragging) {
+//     return;
+//   }
+//   var pixel = map.getEventPixel(evt.originalEvent);
+//   var hit = map.forEachLayerAtPixel(pixel, function () {
+//     return true;
+//   });
+//   map.getTargetElement().style.cursor = hit ? "pointer" : "";
+// });
 
 // var source = new VectorSource({
 //   wrapX: false

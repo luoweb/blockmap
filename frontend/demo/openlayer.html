@@ -10,7 +10,7 @@
             width: 100%;
         }
 
-      .ol-popup {
+        .ol-popup {
             position: absolute;
             background-color: #eeeeee;
             -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
@@ -67,8 +67,8 @@
     <h2>Block Map</h2>
     <div id="map" class="map"></div>
     <div id="popup" class="ol-popup">
-    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-    <div id="popup-content"></div>
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
     </div>
 
     <script type="text/javascript">
@@ -91,74 +91,74 @@
         var wfsVectorLayer = "";
         var ncovVectorLayer = "";
         wfsVectorLayer = new ol.layer.Tile({
-                source: new ol.source.TileWMS({
-                    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Acitypoint&bbox=75.98661000295887%2C18.237933465971842%2C131.1558999965443%2C52.3403555239211&width=768&height=474&srs=EPSG%3A4326',
-                    projection: 'EPSG:4326',
-                    params: {
-                        'LAYERS': 'citypoint',
-                        'VERSION': '1.1.0'
-                    }
-                })
-            });
-            ncovVectorLayer = new ol.layer.Tile({
-                source: new ol.source.TileWMS({
-                    url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Ancov_china_data&bbox=97.84623%2C18.23975%2C132.218597%2C50.42918&width=768&height=719&srs=EPSG%3A4326',
-                    projection: 'EPSG:4326',
-                    params: {
-                        'LAYERS': 'ncov_china_data',
-                        'VERSION': '1.1.0'
-                    }
-                })
-            });
+            source: new ol.source.TileWMS({
+                url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Acitypoint&bbox=75.98661000295887%2C18.237933465971842%2C131.1558999965443%2C52.3403555239211&width=768&height=474&srs=EPSG%3A4326',
+                projection: 'EPSG:4326',
+                params: {
+                    'LAYERS': 'citypoint',
+                    'VERSION': '1.1.0'
+                }
+            })
+        });
+        ncovVectorLayer = new ol.layer.Tile({
+            source: new ol.source.TileWMS({
+                url: 'http://173.193.109.188:30657/geoserver/blockmap/wms?service=WMS&version=1.1.0&request=GetMap&layers=blockmap%3Ancov_china_data&bbox=97.84623%2C18.23975%2C132.218597%2C50.42918&width=768&height=719&srs=EPSG%3A4326',
+                projection: 'EPSG:4326',
+                params: {
+                    'LAYERS': 'ncov_china_data',
+                    'VERSION': '1.1.0'
+                }
+            })
+        });
 
         var vectorEarthQuake = new ol.layer.Heatmap({
-        source: new ol.source.Vector({
-            url: 'https://openlayers.org/en/latest/examples/data/kml/2012_Earthquakes_Mag5.kml',
-            format: new ol.format.KML({
-                extractStyles: false
-            })
-        }),
-        blur: 15,
-        radius: 20,
-        weight: function(feature) {
-            // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
-            // standards-violating <magnitude> tag in each Placemark.  We extract it from
-            // the Placemark's name instead.
-            var name = feature.get('name');
-            var magnitude = parseFloat(name.substr(2));
-            return magnitude - 5;
-        }
+            source: new ol.source.Vector({
+                url: 'https://openlayers.org/en/latest/examples/data/kml/2012_Earthquakes_Mag5.kml',
+                format: new ol.format.KML({
+                    extractStyles: false
+                })
+            }),
+            blur: 15,
+            radius: 20,
+            weight: function (feature) {
+                // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
+                // standards-violating <magnitude> tag in each Placemark.  We extract it from
+                // the Placemark's name instead.
+                var name = feature.get('name');
+                var magnitude = parseFloat(name.substr(2));
+                return magnitude - 5;
+            }
         });
 
         // Heatmap热力图 
         //热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
         var heatData = [{
             type: "FeatureCollection",
-            features: [                {
+            features: [{
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([113.25, 23.11]),
                     count: 80
-                },    
+                },
                 {
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([113.29, 23.14]),
                     count: 80
-                },      
+                },
                 {
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([113.30, 23.14]),
                     count: 80
-                },  
+                },
                 {
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([113.31, 23.11]),
                     count: 80
-                },  
+                },
                 {
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([113.32, 23.12]),
                     count: 80
-                },  
+                },
                 {
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([112.15, 22.21]),
@@ -173,7 +173,7 @@
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([112.27, 22.13]),
                     count: 80
-                },        
+                },
                 {
                     type: "Point",
                     "coordinates": new ol.proj.fromLonLat([113.27, 23.13]),
@@ -190,7 +190,7 @@
                     count: 80
                 }
             ]
-        }];  
+        }];
 
         // var vectorLayer = new ol.layer.Vector({
         //         source: new ol.source.Vector({
@@ -201,7 +201,7 @@
 
         var heatMapLayer = new ol.layer.Heatmap({
             source: new ol.source.Vector({
-                 features: (new ol.format.GeoJSON()).readFeatures(heatData[0]),
+                features: (new ol.format.GeoJSON()).readFeatures(heatData[0]),
             }),
             opacity: 0.8, //透明度
             blur: 15, //模糊大小（以像素为单位）,默认15
@@ -235,7 +235,7 @@
             source: vectorSource,
             style: iconStyle
         });
-        
+
         /*********************显示弹出层**************************/
         var container = document.getElementById("popup");
         var content = document.getElementById("popup-content");
@@ -245,8 +245,6 @@
             element: container,
             autoPan: true
         });
-    
-
 
 
         //地图单机事件
@@ -269,16 +267,83 @@
             })
         });
 
+        map.on("pointermove", function (evt) {
+            if (evt.dragging) {
+
+                var mapExtent = map.getView().calculateExtent(map.getSize());
+                console.log(mapExtent)
+
+                // Openlayer4的wfs属性查询和空间查询
+                //测试用的geometry类型数据 （Polygon）
+                var newPoly = new ol.geom.Polygon([
+                    [
+                        [119.89817, 31.91181],
+                        [119.81655, 31.85485],
+                        [119.95809, 31.84721],
+                        [119.89817, 31.91181]
+                    ]
+                ]);
+                // //创建字符过滤器 可以过滤字段 添加%%可以模糊查询
+                // var fcodeFilter = ol.format.filter.equalTo('fcode', value)
+                // //创建空间过滤器 可以查询特定区域下的数据
+                // var areaFilter = ol.format.filter.intersects(
+                //     'points',
+                //     newPoly
+                // )
+                //来自官网Example
+                // generate a GetFeature request
+                let featureRequest = new ol.format.WFS().writeGetFeature({
+                    srsName: 'EPSG:4326',
+                    featureNS: 'blockmap', //命名空间
+                    featurePrefix: 'blockmap', //工作区域
+                    featureTypes: ['blockmap:ncov_china_data'], //图层名
+                    outputFormat: 'application/json',
+                    // filter:
+                    //     // fcodeFilter
+                    //     //     areaFilter
+                    //     //组合两种过滤器
+                    //     new ol.format.filter.and(fcodeFilter, areaFilter) //todo 条件查询过滤
+
+                });
+
+                // then post the request and add the received features to a layer
+                fetch('http://173.193.109.188:30657/geoserver/wfs', {
+                    method: 'POST',
+                    body: new XMLSerializer().serializeToString(featureRequest)
+                }).then(function (response) {
+                    return response.json();
+                }).then(function (json) {
+                    features = new ol.format.GeoJSON().readFeatures(json);
+                    if (features.length === 0) {
+                        layer.msg('此区域暂无相关地物数据！', {
+                            icon: 2
+                        });
+                        return;
+                    }
+                    vectorSource.addFeatures(features);
+                    facilities.set(value, features);
+                    map.getView().fit(vectorSource.getExtent());
+                });
+                return;
+            }
+            // var pixel = map.getEventPixel(evt.originalEvent);
+            // var hit = map.forEachLayerAtPixel(pixel, function () {
+            //     return true;
+            // });
+            // map.getTargetElement().style.cursor = hit ? "pointer" : "";
+
+        });
+
         //添加热力图
         // map.addLayer(heatMapLayer);
 
         //添加进map层
         map.addLayer(vectorLayer);
 
-        map.on('click',function(e){
+        map.on('click', function (e) {
             var pixel = map.getEventPixel(e.originalEvent);
             console.log(pixel);
-            map.forEachFeatureAtPixel(pixel,function(feature){
+            map.forEachFeatureAtPixel(pixel, function (feature) {
                 //console.log(feature);
                 //return feature;
                 var coodinate = e.coordinate;
@@ -288,7 +353,7 @@
             });
         });
 
-        popupCloser.addEventListener('click',function(){
+        popupCloser.addEventListener('click', function () {
             overlay.setPosition(undefined);
         });
 
@@ -310,7 +375,7 @@
                 console.log('打印选择要素所属Layer');
                 console.log(featureInfo.layer);
             }
-        } 
+        }
     </script>
 </body>
 
