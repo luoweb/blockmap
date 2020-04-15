@@ -1,4 +1,4 @@
-# blockmap(疫情地图)
+# blockmap 疫情地图
 
 - 常规疫情浏览查询功能，疫情点，人员热力图，颜色显示
 - 复工评估：银行网点复工选择，通过疫情点，人口密度，交通便利情况分析
@@ -6,20 +6,24 @@
 - 风险扩散趋势图：人员迁徙图，根据热力图生成迁徙地图
 
 ## frontend
-- vuejs + openlayer
-
+- web(nginx):
+    vuejs + openlayers.js
+- app(ios&android):
+    cordova + h5 + js
 
 ## backend
 ### geo server 地图服务
 - 发布地图服务：基础地图图层，疫情点图层，道路图层，
-- 展示地图信息
+- 展示地图信息: 地图浏览，疫情点
 - 空间分析：最短路径分析，疫情趋势分析，复工评估
   
 ### app server 应用服务
-- 导入数据到地图服务-- 通过接口自动导入到GeoServer中
-- 调用大数据分析接口-- 前端调用数据实时分析预测服务
+- 导入数据到地图服务：通过接口自动导入到GeoServer中
+- 调用大数据分析接口：前端调用数据实时分析预测服务
+- 前端web和app接口：支持前端页面和APP数据交换
   
-### 数据存储：
+
+### data server 数据存储
 - PostgreSQL/MySQL
 - BigData/IBM Watson
 
@@ -52,3 +56,9 @@
 | :-----------------------------------------------------: | :----------------------------------------------------------: |
 | [![用户出示防疫二维码视频预览](https://github.com/luoweb/blockmap/blob/master/res/show.jpg)](http://q8mix8qp7.bkt.clouddn.com/show.mp4)| [![用户出示防疫二维码视频预览](https://github.com/luoweb/blockmap/blob/master/res/verify.jpg)](http://q8mix8qp7.bkt.clouddn.com/verification.mp4) |
 
+
+# IBM Tech Stack
+- kubernetes
+- db(MySQL/PostreSQL)
+- hyperledger fabric(Blockchain)
+- CD(DevOps)
