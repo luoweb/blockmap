@@ -266,14 +266,12 @@
                 zoom: 11
             })
         });
-
-        map.on("pointermove", function (evt) {
-            if (evt.dragging) {
+        
+        map.on("moveend", function (evt) {
 
                 var mapExtent = map.getView().calculateExtent(map.getSize());
                 console.log(mapExtent)
-
-                // Openlayer4的wfs属性查询和空间查询
+ // Openlayer4的wfs属性查询和空间查询
                 //测试用的geometry类型数据 （Polygon）
                 var newPoly = new ol.geom.Polygon([
                     [
@@ -314,6 +312,7 @@
                     return response.json();
                 }).then(function (json) {
                     features = new ol.format.GeoJSON().readFeatures(json);
+                    console.log(json)
                     if (features.length === 0) {
                         layer.msg('此区域暂无相关地物数据！', {
                             icon: 2
@@ -324,6 +323,14 @@
                     facilities.set(value, features);
                     map.getView().fit(vectorSource.getExtent());
                 });
+            })
+        map.on("pointermove", function (evt) {
+            if (evt.dragging) {
+
+                //var mapExtent = map.getView().calculateExtent(map.getSize());
+                //console.log(mapExtent)
+
+               
                 return;
             }
             // var pixel = map.getEventPixel(evt.originalEvent);

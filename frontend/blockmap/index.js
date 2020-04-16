@@ -3,13 +3,18 @@ import Map from "ol/Map";
 import View from "ol/View";
 // import TileLayer from 'ol/layer/Tile';
 import XYZ from "ol/source/XYZ";
+import Icon from 'ol/style/Icon';
+import {
+  equalTo as equalToFilter,
+  like as likeFilter,
+  and as andFilter
+} from 'ol/format/filter';
 import {
   fromLonLat
 } from "ol/proj";
 import {
   toLonLat
 } from "ol/proj";
-import GeoJSON from "ol/format/GeoJSON";
 // import VectorLayer from 'ol/layer/Vector';
 // import VectorSource from 'ol/source/Vector';
 // import {Fill, Stroke, Style, Text} from 'ol/style';
@@ -49,8 +54,11 @@ import {
 } from "ol/style";
 import Overlay from 'ol/Overlay';
 
+import Polygon from 'ol/geom/Polygon';
+
 import * as olLoadingstrategy from 'ol/loadingstrategy';
 import * as olTilegrid from 'ol/tilegrid';
+import { WFS, GeoJSON } from 'ol/format';
 
 /*********************显示弹出层**************************/
 var container = document.getElementById("popup");
@@ -120,62 +128,62 @@ var ncovLayer = new ImageLayer({
 var heatData = [{
   type: "FeatureCollection",
   features: [{
-      type: "Point",
-      coordinates: fromLonLat([113.25, 23.11]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.29, 23.14]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.3, 23.14]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.31, 23.11]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.32, 23.12]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.15, 22.21]),
-      count: 90,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.17, 22.23]),
-      count: 90,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.27, 22.13]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.27, 23.13]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.29, 22.57]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.29, 24.17]),
-      count: 80,
-    }
+    type: "Point",
+    coordinates: fromLonLat([113.25, 23.11]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([113.29, 23.14]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([113.3, 23.14]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([113.31, 23.11]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([113.32, 23.12]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([112.15, 22.21]),
+    count: 90,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([112.17, 22.23]),
+    count: 90,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([112.27, 22.13]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([113.27, 23.13]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([112.29, 22.57]),
+    count: 80,
+  },
+  {
+    type: "Point",
+    coordinates: fromLonLat([112.29, 24.17]),
+    count: 80,
+  }
   ],
-}, ];
+},];
 
 // var vectorLayer = new ol.layer.Vector({
 //         source: new ol.source.Vector({
@@ -246,50 +254,73 @@ var ncovWfsLayer = new VectorLayer({
   },
 });
 
-var wfsParams = {
-  service: 'WFS',
-  version: '1.1.1',
-  request: 'GetFeature',
-  typeName: 'blockmap:ncov_china_data', //图层名称，可以是单个或多个
-  outputFormat: 'text/javascript', //重点，不要改变
-  format_options: 'callback:loadFeatures' //回调函数声明
-};
 
-var ncovVectorSource = new VectorSource({
-  format: new GeoJSON(),
-  loader: function (extent, resolution, projection) { //加载函数
-    var url = 'http://173.193.109.188:30657/geoserver/blockmap/wms';
-    $.ajax({
-      url: url,
-      data: $.param(wfsParams), //传参
-      type: 'GET',
-      dataType: 'jsonp', //解决跨域的关键
-      jsonpCallback: 'loadFeatures' //回调
 
-    });
-  },
-  strategy: olLoadingstrategy.tile(new olTilegrid.createXYZ({
-    maxZoom: 20
-  })),
-  projection: 'EPSG:4326'
+var vectorSource = new VectorSource({});
+//创建图标特性
+var iconFeature = new Feature({
+  geometry: new Point(new fromLonLat([113.27, 23.13]), "XY"),
+  name: "my Icon",
+});
+//将图标特性添加进矢量中
+vectorSource.addFeature(iconFeature);
+//创建图标样式
+var iconStyle = new Style({
+  image: new Icon({
+    opacity: 0.75,
+    src: "https://openlayers.org/en/latest/examples/data/icon.png"
+  }),
+});
+//创建矢量层
+var vectorLayer = new VectorLayer({
+  source: vectorSource,
+  style: iconStyle
 });
 
-//回调函数使用
-window.loadFeatures = function (response) {
-  console.log("##############")
-  console.log(response)
-  ncovVectorSource.addFeatures((new GeoJSON()).readFeatures(response)); //载入要素
-};
+// var wfsParams = {
+//   service: 'WFS',
+//   version: '1.1.1',
+//   request: 'GetFeature',
+//   typeName: 'blockmap:ncov_china_data', //图层名称，可以是单个或多个
+//   outputFormat: 'text/javascript', //重点，不要改变
+//   format_options: 'callback:loadFeatures' //回调函数声明
+// };
 
-var wfsVectorLayer = new VectorLayer({
-  source: ncovVectorSource,
-  style: new Style({
-    stroke: new Stroke({
-      color: 'rgba(0, 0, 255, 1.0)',
-      width: 2
-    })
-  })
-});
+// var ncovVectorSource = new VectorSource({
+//   format: new GeoJSON(),
+//   loader: function (extent, resolution, projection) { //加载函数
+//     var url = 'http://173.193.109.188:30657/geoserver/blockmap/wms';
+//     $.ajax({
+//       url: url,
+//       data: $.param(wfsParams), //传参
+//       type: 'GET',
+//       dataType: 'jsonp', //解决跨域的关键
+//       jsonpCallback: 'loadFeatures' //回调
+
+//     });
+//   },
+//   strategy: olLoadingstrategy.tile(new olTilegrid.createXYZ({
+//     maxZoom: 20
+//   })),
+//   projection: 'EPSG:4326'
+// });
+
+// //回调函数使用
+// window.loadFeatures = function (response) {
+//   console.log("##############")
+//   console.log(response)
+//   ncovVectorSource.addFeatures((new GeoJSON()).readFeatures(response)); //载入要素
+// };
+
+// var wfsVectorLayer = new VectorLayer({
+//   source: ncovVectorSource,
+//   style: new Style({
+//     stroke: new Stroke({
+//       color: 'rgba(0, 0, 255, 1.0)',
+//       width: 2
+//     })
+//   })
+// });
 
 var view = new View({
   center: fromLonLat([113.3, 23.12]),
@@ -309,7 +340,7 @@ var map = new Map({
     ncovWfsLayer,
     ncovLayer,
     heatMapLayer,
-    wfsVectorLayer
+    // wfsVectorLayer
   ],
   target: "map",
   controls: olControl.defaults().extend([
@@ -341,8 +372,8 @@ map.on("singleclick", function (evt) {
     evt.coordinate,
     viewResolution,
     "EPSG:3857", {
-      INFO_FORMAT: "text/html",
-    }
+    INFO_FORMAT: "text/html",
+  }
   );
   if (url) {
     fetch(url)
@@ -494,6 +525,9 @@ popupCloser.addEventListener("click", function () {
   overlay.setPosition(undefined);
 });
 
+
+
+
 map.on("pointermove", function (evt) {
   if (evt.dragging) {
     return;
@@ -501,6 +535,80 @@ map.on("pointermove", function (evt) {
   var pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
 });
+
+map.on("moveend", function (evt) {
+
+  var mapExtent = map.getView().calculateExtent(map.getSize());
+  console.log(mapExtent)
+  // Openlayer4的wfs属性查询和空间查询
+  //测试用的geometry类型数据 （Polygon）
+  var newPoly = new Polygon([
+    [
+      [119.89817, 31.91181],
+      [119.81655, 31.85485],
+      [119.95809, 31.84721],
+      [119.89817, 31.91181]
+    ]
+  ]);
+  // //创建字符过滤器 可以过滤字段 添加%%可以模糊查询
+  // var fcodeFilter = ol.format.filter.equalTo('fcode', value)
+  // //创建空间过滤器 可以查询特定区域下的数据
+  // var areaFilter = ol.format.filter.intersects(
+  //   'points',
+  //   newPoly
+  // )
+  //来自官网Example
+  // generate a GetFeature request
+  var featureRequest = new WFS().writeGetFeature({
+    srsName: 'EPSG:4326',
+    // featureNS: 'http://173.193.109.188:30657', //命名空间
+    featurePrefix: 'blockmap', //工作区域
+    featureTypes: ['ncov_china_data'], //图层名
+    outputFormat: 'application/json',
+    filter: andFilter(
+      // likeFilter('fulladdr', '广东省*'),
+      equalToFilter('province', '广东省'),
+      equalToFilter('city', '广州市')
+    )
+  });
+
+  // then post the request and add the received features to a layer
+  fetch('http://173.193.109.188:30657/geoserver/wfs', {
+    method: 'POST',
+    body: new XMLSerializer().serializeToString(featureRequest)
+  }).then(function (response) {
+    console.log(response)
+    return response.json();
+  }).then(function (json) {
+
+    var features = new GeoJSON().readFeatures(json, {
+      dataProjection: 'EPSG:4528',
+      featureProjection: 'EPSG:3857'
+    });
+    console.log(json)
+    if (features.length === 0) {
+      layer.msg('此区域暂无相关地物数据！', {
+        icon: 2
+      });
+      return;
+    }
+    vectorSource.addFeatures(features);
+    // facilities.set(value, features);
+    var iconStyle = new Style({
+      image: new Icon({
+        opacity: 0.75,
+        src: "https://openlayers.org/en/latest/examples/data/icon.png"
+      }),
+    });
+    //创建矢量层
+    var vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: iconStyle
+    });
+    map.addLayer(vectorLayer)
+    // map.getView().fit(vectorSource.getExtent());
+  });
+})
 
 // map.on('click', function (evt) {
 //   displayFeatureInfo(evt.pixel);
