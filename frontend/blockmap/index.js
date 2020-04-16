@@ -58,7 +58,12 @@ import Polygon from 'ol/geom/Polygon';
 
 import * as olLoadingstrategy from 'ol/loadingstrategy';
 import * as olTilegrid from 'ol/tilegrid';
-import { WFS, GeoJSON } from 'ol/format';
+import {
+  WFS,
+  GeoJSON
+} from 'ol/format';
+
+import {bbox as bboxStrategy} from 'ol/loadingstrategy';
 
 /*********************显示弹出层**************************/
 var container = document.getElementById("popup");
@@ -128,62 +133,62 @@ var ncovLayer = new ImageLayer({
 var heatData = [{
   type: "FeatureCollection",
   features: [{
-    type: "Point",
-    coordinates: fromLonLat([113.25, 23.11]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([113.29, 23.14]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([113.3, 23.14]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([113.31, 23.11]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([113.32, 23.12]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([112.15, 22.21]),
-    count: 90,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([112.17, 22.23]),
-    count: 90,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([112.27, 22.13]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([113.27, 23.13]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([112.29, 22.57]),
-    count: 80,
-  },
-  {
-    type: "Point",
-    coordinates: fromLonLat([112.29, 24.17]),
-    count: 80,
-  }
+      type: "Point",
+      coordinates: fromLonLat([113.25, 23.11]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.29, 23.14]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.3, 23.14]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.31, 23.11]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.32, 23.12]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.15, 22.21]),
+      count: 90,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.17, 22.23]),
+      count: 90,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.27, 22.13]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([113.27, 23.13]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.29, 22.57]),
+      count: 80,
+    },
+    {
+      type: "Point",
+      coordinates: fromLonLat([112.29, 24.17]),
+      count: 80,
+    }
   ],
-},];
+}, ];
 
 // var vectorLayer = new ol.layer.Vector({
 //         source: new ol.source.Vector({
@@ -322,6 +327,30 @@ var vectorLayer = new VectorLayer({
 //   })
 // });
 
+var vectorSource = new VectorSource({
+  format: new GeoJSON(),
+  url: function (extent) {
+    return 'http://173.193.109.188:30657/geoserver/wfs?service=WFS&' +
+      'version=1.1.0&request=GetFeature&typename=blockmap:ncov_china_data&' +
+      'outputFormat=application/json&srsname=EPSG:4326&' +
+      'bbox=' + extent.join(',') + ',EPSG:3857';
+  },
+  strategy: bboxStrategy
+});
+
+var iconStyle = new Style({
+  image: new Icon({
+    opacity: 0.75,
+    src: "https://openlayers.org/en/latest/examples/data/icon.png"
+  }),
+});
+//创建矢量层
+var vectorLayer = new VectorLayer({
+  source: vectorSource,
+  style: iconStyle
+});
+
+
 var view = new View({
   center: fromLonLat([113.3, 23.12]),
   zoom: 12,
@@ -340,6 +369,7 @@ var map = new Map({
     ncovWfsLayer,
     ncovLayer,
     heatMapLayer,
+    vectorLayer
     // wfsVectorLayer
   ],
   target: "map",
@@ -372,8 +402,8 @@ map.on("singleclick", function (evt) {
     evt.coordinate,
     viewResolution,
     "EPSG:3857", {
-    INFO_FORMAT: "text/html",
-  }
+      INFO_FORMAT: "text/html",
+    }
   );
   if (url) {
     fetch(url)
@@ -537,78 +567,86 @@ map.on("pointermove", function (evt) {
 });
 
 map.on("moveend", function (evt) {
+ 
+  // map.getView().fit(vectorSource.getExtent());
 
-  var mapExtent = map.getView().calculateExtent(map.getSize());
-  console.log(mapExtent)
-  // Openlayer4的wfs属性查询和空间查询
-  //测试用的geometry类型数据 （Polygon）
-  var newPoly = new Polygon([
-    [
-      [119.89817, 31.91181],
-      [119.81655, 31.85485],
-      [119.95809, 31.84721],
-      [119.89817, 31.91181]
-    ]
-  ]);
-  // //创建字符过滤器 可以过滤字段 添加%%可以模糊查询
-  // var fcodeFilter = ol.format.filter.equalTo('fcode', value)
-  // //创建空间过滤器 可以查询特定区域下的数据
-  // var areaFilter = ol.format.filter.intersects(
-  //   'points',
-  //   newPoly
-  // )
-  //来自官网Example
-  // generate a GetFeature request
-  var featureRequest = new WFS().writeGetFeature({
-    srsName: 'EPSG:4326',
-    // featureNS: 'http://173.193.109.188:30657', //命名空间
-    featurePrefix: 'blockmap', //工作区域
-    featureTypes: ['ncov_china_data'], //图层名
-    outputFormat: 'application/json',
-    filter: andFilter(
-      // likeFilter('fulladdr', '广东省*'),
-      equalToFilter('province', '广东省'),
-      equalToFilter('city', '广州市')
-    )
-  });
-
-  // then post the request and add the received features to a layer
-  fetch('http://173.193.109.188:30657/geoserver/wfs', {
-    method: 'POST',
-    body: new XMLSerializer().serializeToString(featureRequest)
-  }).then(function (response) {
-    console.log(response)
-    return response.json();
-  }).then(function (json) {
-
-    var features = new GeoJSON().readFeatures(json, {
-      dataProjection: 'EPSG:4528',
-      featureProjection: 'EPSG:3857'
-    });
-    console.log(json)
-    if (features.length === 0) {
-      layer.msg('此区域暂无相关地物数据！', {
-        icon: 2
-      });
-      return;
-    }
-    vectorSource.addFeatures(features);
-    // facilities.set(value, features);
-    var iconStyle = new Style({
-      image: new Icon({
-        opacity: 0.75,
-        src: "https://openlayers.org/en/latest/examples/data/icon.png"
-      }),
-    });
-    //创建矢量层
-    var vectorLayer = new VectorLayer({
-      source: vectorSource,
-      style: iconStyle
-    });
-    map.addLayer(vectorLayer)
-    // map.getView().fit(vectorSource.getExtent());
-  });
 })
+
+// map.on("moveend", function (evt) {
+
+//   var mapExtent = map.getView().calculateExtent(map.getSize());
+//   console.log(mapExtent)
+
+
+//   // Openlayer4的wfs属性查询和空间查询
+//   //测试用的geometry类型数据 （Polygon）
+//   var newPoly = new Polygon([
+//     [
+//       [119.89817, 31.91181],
+//       [119.81655, 31.85485],
+//       [119.95809, 31.84721],
+//       [119.89817, 31.91181]
+//     ]
+//   ]);
+//   // //创建字符过滤器 可以过滤字段 添加%%可以模糊查询
+//   // var fcodeFilter = ol.format.filter.equalTo('fcode', value)
+//   // //创建空间过滤器 可以查询特定区域下的数据
+//   // var areaFilter = ol.format.filter.intersects(
+//   //   'points',
+//   //   newPoly
+//   // )
+//   //来自官网Example
+//   // generate a GetFeature request
+//   var featureRequest = new WFS().writeGetFeature({
+//     srsName: 'EPSG:4326',
+//     // featureNS: 'http://173.193.109.188:30657', //命名空间
+//     featurePrefix: 'blockmap', //工作区域
+//     featureTypes: ['ncov_china_data'], //图层名
+//     outputFormat: 'application/json',
+//     filter: andFilter(
+//       // likeFilter('fulladdr', '广东省*'),
+//       equalToFilter('province', '广东省'),
+//       equalToFilter('city', '广州市')
+//     )
+//   });
+
+//   // then post the request and add the received features to a layer
+//   fetch('http://173.193.109.188:30657/geoserver/wfs', {
+//     method: 'POST',
+//     body: new XMLSerializer().serializeToString(featureRequest)
+//   }).then(function (response) {
+//     console.log(response)
+//     return response.json();
+//   }).then(function (json) {
+
+//     var features = new GeoJSON().readFeatures(json, {
+//       dataProjection: 'EPSG:4326',
+//       featureProjection: 'EPSG:3857'
+//     });
+//     console.log(features)
+//     if (features.length === 0) {
+//       layer.msg('此区域暂无相关地物数据！', {
+//         icon: 2
+//       });
+//       return;
+//     }
+//     vectorSource.addFeatures(features);
+//     // facilities.set(value, features);
+//     var iconStyle = new Style({
+//       image: new Icon({
+//         opacity: 0.75,
+//         src: "https://openlayers.org/en/latest/examples/data/icon.png"
+//       }),
+//     });
+//     //创建矢量层
+//     var vectorLayer = new VectorLayer({
+//       source: vectorSource,
+//       style: iconStyle
+//     });
+//     map.addLayer(vectorLayer)
+//     // map.getView().fit(vectorSource.getExtent());
+//   });
+// })
 
 // map.on('click', function (evt) {
 //   displayFeatureInfo(evt.pixel);
