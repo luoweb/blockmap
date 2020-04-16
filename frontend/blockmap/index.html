@@ -5,26 +5,27 @@
   <title>BlockMap</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Access-Control-Allow-Origin" content="http://127.0.0.1:1234">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
   <script
     src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL">
   </script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
   <style>
-
-    html,body{
-   		height:100%;
+    html,
+    body {
+      height: 100%;
       padding: 0;
       margin: 0;
-   	}
+    }
 
     .outer {
       height: 100%;
       width: 100%;
       padding: 0 0;
       margin: 0 0;
-      background-color:lightblue;
+      background-color: lightblue;
       box-sizing: border-box;
     }
 
@@ -32,6 +33,7 @@
       width: 100%;
       height: 100%;
     }
+
     * {
       padding: 0;
       margin: 0;
@@ -43,7 +45,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient( 90deg, #673ab7, #783be6);
+      background: linear-gradient(90deg, #673ab7, #783be6);
     }
 
     #m_nav a {
@@ -90,58 +92,152 @@
     }
 
     .ol-popup {
-            position: absolute;
-            background-color: #eeeeee;
-            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #cccccc;
-            bottom: 12px;
-            left: -50px;
-            min-width: 280px;
-        }
+      position: absolute;
+      background-color: #eeeeee;
+      -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #cccccc;
+      bottom: 12px;
+      left: -50px;
+      min-width: 280px;
+    }
 
-        .ol-popup:after,
-        .ol-popup:before {
-            top: 100%;
-            border: solid transparent;
-            content: " ";
-            height: 0;
-            width: 0;
-            position: absolute;
-            pointer-events: none;
-        }
+    .ol-popup:after,
+    .ol-popup:before {
+      top: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+    }
 
-        .ol-popup:after {
-            border-top-color: #eeeeee;
-            border-width: 10px;
-            left: 48px;
-            margin-left: -10px;
-        }
+    .ol-popup:after {
+      border-top-color: #eeeeee;
+      border-width: 10px;
+      left: 48px;
+      margin-left: -10px;
+    }
 
-        .ol-popup:before {
-            border-top-color: #cccccc;
-            border-width: 11px;
-            left: 48px;
-            margin-left: -11px;
-        }
+    .ol-popup:before {
+      border-top-color: #cccccc;
+      border-width: 11px;
+      left: 48px;
+      margin-left: -11px;
+    }
 
-        .ol-popup-closer {
-            text-decoration: none;
-            position: absolute;
-            top: 2px;
-            right: 8px;
-        }
+    .ol-popup-closer {
+      text-decoration: none;
+      position: absolute;
+      top: 2px;
+      right: 8px;
+    }
 
-        .ol-popup-closer:after {
-            content: "✖";
-        }
+    .ol-popup-closer:after {
+      content: "✖";
+    }
+
+
+		div.search{
+			height: 40px;
+			width: 60%;		
+		}
+
+		div.search form{
+			width: 100%;
+			height: 100%;
+		}
+
+		div.search form input:nth-child(2){
+			width: 80%;
+			height: 100%;
+			font-size: 16px;
+			text-indent: 40px;
+			border: none;
+			float: left;
+		}
+
+		div.search form input:nth-child(3){
+			width: 20%;
+			height: 100%;
+			font-size: 16px;
+			letter-spacing: 5px;
+			border: none;
+		}
+
+		div.search form img{
+			position: absolute;
+			left: 50vw;
+			transform: translateX(-100%);
+			margin-top: 10px;
+			margin-left: 10px;
+			height: 20px;
+		}
+
   </style>
 </head>
 
 <body>
   <div class="outer">
+
+    <div id="searchDiv"
+      style="position:absolute;left:50px;text-align:center;vertical-align:middle;width:100%;height:200px;z-index:99999; padding: 1em;">
+
+      <div class="search" style="align:center;">
+        <form action="#" method="post">
+          <img src="http://github.roweb.cn/mapblock/assets/xcov_small.png" alt="">
+          <input type="text" name="condition" placeholder="请输入搜索条件">
+          <input type="submit" value="搜索">
+        </form>	
+      </div>
+      <!-- <ul id="controls"  style="align:center;">
+          
+            <li>
+                <label for="pointToggle">关键字:</label>
+                <input name="searchkey" style="align:center;" id="searchkey" type="text">
+                <input name="type" value="搜索" id="polygonToggle" οnclick="search()" type="button">
+            </li>
+              <li>
+                <input name="type" value="point" id="free" checked="checked" type="radio" οnclick="setfree();">
+                <label for="pointToggle">不限</label>
+            </li>
+            <li>
+                <input name="type" value="point" id="nearbySearch" οnclick="drawCircle();" type="radio">
+                <label for="nearbySearch">周边搜索</label>
+                <select id="radius" οnchange="setSize(parseFloat(this.value))" style="width:100px">
+                    <option value="0.01000">1000</option>
+                    <option value="0.02000">2000</option>
+                    <option value="0.03000">3000</option>
+                </select>
+                <label for="pointToggle">以内</label>
+            </li>
+            <li>
+                <input name="type" value="polygon" id="polygonSearch" οnclick="drawPolyon();" type="radio">
+                <label for="polygonSearch">多边形搜索</label>
+            </li>
+        </ul> -->
+    </div>
+    <div id="directionDiv"
+      style="display:none;position:absolute;top:200px;left:80px;width:300px;z-index:99999;border: 1px solid #ccc; padding: 1em;">
+      <table>
+        <tr>
+          <td> 起点:</td>
+          <td><input id="start" type="text"></input><input id="starthidden" type="text" style="display:none"></input>
+          </td>
+          <td rowspan="2"> <input id="direction" style="width:80px;height:40px" type="button" value="搜索路径"
+              οnclick="direction()"></input>
+        </tr>
+        <tr>
+          <td> 终点:</td>
+          <td><input id="end" type="text"></input><input id="endhidden" type="text" style="display:none"></input>
+          </td>
+        </tr>
+
+      </table>
+    </div>
     <div id="map" class="map"></div>
     <div id="info">&nbsp;</div>
     <div id="m_nav">
@@ -151,11 +247,11 @@
     </div>
     <!-- 弹出框 -->
     <div id="popup" class="ol-popup">
-    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-    <div id="popup-content"></div>
+      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+      <div id="popup-content"></div>
 
-    <script src="index.js"></script>
-  </div>
+      <script src="index.js"></script>
+    </div>
 
 </body>
 

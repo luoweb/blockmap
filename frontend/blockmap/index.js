@@ -63,7 +63,9 @@ import {
   GeoJSON
 } from 'ol/format';
 
-import {bbox as bboxStrategy} from 'ol/loadingstrategy';
+import {
+  bbox as bboxStrategy
+} from 'ol/loadingstrategy';
 
 /*********************显示弹出层**************************/
 var container = document.getElementById("popup");
@@ -246,7 +248,7 @@ var style = new Style({
 
 
 
-var ncovWfsLayer = new VectorLayer({
+var ncovWmsLayer = new VectorLayer({
   source: new VectorSource({
     url: "http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326",
     format: new GeoJSON({
@@ -273,8 +275,9 @@ vectorSource.addFeature(iconFeature);
 var iconStyle = new Style({
   image: new Icon({
     opacity: 0.75,
-    src: "https://openlayers.org/en/latest/examples/data/icon.png"
-  }),
+    src: "http://github.roweb.cn/mapblock/assets/ncov.png",
+    // size: 5,
+  })
 });
 //创建矢量层
 var vectorLayer = new VectorLayer({
@@ -341,7 +344,8 @@ var vectorSource = new VectorSource({
 var iconStyle = new Style({
   image: new Icon({
     opacity: 0.75,
-    src: "https://openlayers.org/en/latest/examples/data/icon.png"
+    src: "http://github.roweb.cn/mapblock/assets/ncov.png",
+    // size: 10
   }),
 });
 //创建矢量层
@@ -366,8 +370,8 @@ var map = new Map({
     provinceLayer,
     // provinceWfsLayer,
     // cityLayer,
-    ncovWfsLayer,
-    ncovLayer,
+    // ncovWmsLayer,
+    // ncovLayer,
     heatMapLayer,
     vectorLayer
     // wfsVectorLayer
@@ -505,43 +509,43 @@ var highlightStyle = new Style({
   }),
 });
 
-var featureOverlay = new VectorLayer({
-  source: new VectorSource(),
-  map: map,
-  style: function (feature) {
-    highlightStyle.getText().setText(feature.get("name"));
-    return highlightStyle;
-  },
-});
+// var featureOverlay = new VectorLayer({
+//   source: new VectorSource(),
+//   map: map,
+//   style: function (feature) {
+//     highlightStyle.getText().setText(feature.get("name"));
+//     return highlightStyle;
+//   },
+// });
 
-var highlight;
-var displayFeatureInfo = function (pixel) {
-  ncovWfsLayer.getFeatures(pixel).then(function (features) {
-    var feature = features.length ? features[0] : undefined;
-    var info = document.getElementById("info");
-    if (features.length) {
-      info.innerHTML = feature.getId() + ": " + feature.get("name");
-    } else {
-      info.innerHTML = "&nbsp;";
-    }
+// var highlight;
+// var displayFeatureInfo = function (pixel) {
+//   ncovWmsLayer.getFeatures(pixel).then(function (features) {
+//     var feature = features.length ? features[0] : undefined;
+//     var info = document.getElementById("info");
+//     if (features.length) {
+//       info.innerHTML = feature.getId() + ": " + feature.get("name");
+//     } else {
+//       info.innerHTML = "&nbsp;";
+//     }
 
-    if (feature !== highlight) {
-      if (highlight) {
-        featureOverlay.getSource().removeFeature(highlight);
-      }
-      if (feature) {
-        featureOverlay.getSource().addFeature(feature);
-      }
-      highlight = feature;
-    }
-  });
-};
+//     if (feature !== highlight) {
+//       if (highlight) {
+//         featureOverlay.getSource().removeFeature(highlight);
+//       }
+//       if (feature) {
+//         featureOverlay.getSource().addFeature(feature);
+//       }
+//       highlight = feature;
+//     }
+//   });
+// };
 
 map.on("click", function (e) {
   var pixel = map.getEventPixel(e.originalEvent);
   console.log(pixel);
   map.forEachFeatureAtPixel(pixel, function (feature) {
-    //console.log(feature);
+    console.log(feature);
     //return feature;
     var coodinate = e.coordinate;
     content.innerHTML =
@@ -556,18 +560,18 @@ popupCloser.addEventListener("click", function () {
 });
 
 
-
-
 map.on("pointermove", function (evt) {
   if (evt.dragging) {
+    // var mapExtent = map.getView().calculateExtent(map.getSize());
+    // console.log(mapExtent)
     return;
   }
   var pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  // displayFeatureInfo(pixel);
 });
 
 map.on("moveend", function (evt) {
- 
+
   // map.getView().fit(vectorSource.getExtent());
 
 })
