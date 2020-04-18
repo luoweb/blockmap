@@ -25,7 +25,9 @@ import * as olControl from "ol/control";
 import Zoom from "ol/control/Zoom";
 import ZoomToExtent from "ol/control/ZoomToExtent";
 import Heatmap from 'ol/layer/Heatmap';
-
+import LayerSwitcher from 'ol-layerswitcher';
+import 'ol-layerswitcher/src/ol-layerswitcher.css';
+// import LayerSwitcher from 'ol/control/LayerSwitcher';
 import Feature from "ol/Feature";
 import {
   unByKey
@@ -35,6 +37,7 @@ import {
 } from "ol/easing";
 import Point from "ol/geom/Point";
 import {
+  Group as LayerGroup,
   Tile as TileLayer,
   Vector as VectorLayer
 } from "ol/layer";
@@ -78,49 +81,51 @@ var overlay = new Overlay({
 });
 
 /*********************图层选择**************************/
-var layer=new Array();//图层数组
-var layerName=new Array();//图层名称数组
-var layerVisibility=new Array();//图层可见数组
-function loadLayersControl(map,id){
-    var treeContent=document.getElementById(id);
-    var layers=map.getLayers();//获取地图中的所有图层
-    for(var i=0;i<layers.getLength();i++){
-            layer[i]=layers.item(i);
-        layerName[i]=layer[i].get('name');
-        layerVisibility[i]=layer[i].getVisible();//获取每个图层的名称及是否可见
-        var elementLi=document.createElement("li");
-        treeContent.appendChild(elementLi);
-        var elementInput=document.createElement("input");
-        elementInput.type="checkbox";
-        elementInput.name="layers";
-        elementLi.appendChild(elementInput);
-        var elementLabel=document.createElement("label");
-        elementLabel.className="layer";
-        setInnerText(elementLabel,layerName[i]);
-        elementLi.appendChild(elementLabel);
-        //<ul><li><input type="checkbox" name="layers"/><label class="layer"></label></li></ul>
-        if(layerVisibility[i]){
-            elementInput.checked=true;
-        }
-        addChangeEvent(elementInput,layer[i]);
+var layer = new Array(); //图层数组
+var layerName = new Array(); //图层名称数组
+var layerVisibility = new Array(); //图层可见数组
+function loadLayersControl(map, id) {
+  var treeContent = document.getElementById(id);
+  var layers = map.getLayers(); //获取地图中的所有图层
+  for (var i = 0; i < layers.getLength(); i++) {
+    layer[i] = layers.item(i);
+    layerName[i] = layer[i].get('name');
+    layerVisibility[i] = layer[i].getVisible(); //获取每个图层的名称及是否可见
+    var elementLi = document.createElement("li");
+    treeContent.appendChild(elementLi);
+    var elementInput = document.createElement("input");
+    elementInput.type = "checkbox";
+    elementInput.name = "layers";
+    elementLi.appendChild(elementInput);
+    var elementLabel = document.createElement("label");
+    elementLabel.className = "layer";
+    setInnerText(elementLabel, layerName[i]);
+    elementLi.appendChild(elementLabel);
+    //<ul><li><input type="checkbox" name="layers"/><label class="layer"></label></li></ul>
+    if (layerVisibility[i]) {
+      elementInput.checked = true;
     }
+    addChangeEvent(elementInput, layer[i]);
+  }
 }
-function  addChangeEvent(element,layer){
-    element.onclick=function(){
-      console.log("click")
-        if(element.checked){
-            layer.setVisible(true);
-        }else{
-            layer.setVisible(false);
-        }
+
+function addChangeEvent(element, layer) {
+  element.onclick = function () {
+    console.log("click")
+    if (element.checked) {
+      layer.setVisible(true);
+    } else {
+      layer.setVisible(false);
     }
+  }
 }
-function setInnerText(element,text){
-    if(typeof element.textContent=="string"){
-        element.textContent=text;
-    }else{
-        element.innerText=text;//FireFox不支持innerText方法,兼容
-    }
+
+function setInnerText(element, text) {
+  if (typeof element.textContent == "string") {
+    element.textContent = text;
+  } else {
+    element.innerText = text; //FireFox不支持innerText方法,兼容
+  }
 }
 
 
@@ -129,6 +134,13 @@ var tdRoadMapLayer = new TileLayer({
   source: new XYZ({
     url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
   }),
+  type: 'base',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  title: '天地图路网',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: true,
   isGroup: true,
   name: "天地图路网",
 });
@@ -153,6 +165,12 @@ var provinceLayer = new ImageLayer({
     serverType: "geoserver",
     crossOrigin: "anonymous",
   }),
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  title: '省份矢量图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: false,
   name: "省份矢量图",
 });
 
@@ -165,6 +183,10 @@ var cityLayer = new ImageLayer({
     serverType: "geoserver",
     crossOrigin: "anonymous",
   }),
+  title: '城市矢量图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: false,
 });
 
 var ncovSource = new ImageWMS({
@@ -177,8 +199,17 @@ var ncovSource = new ImageWMS({
 });
 var ncovLayer = new ImageLayer({
   source: ncovSource,
+  type: 'base',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: true,
   name: "疫情点",
 });
+
+var layerGroup = new LayerGroup({
+  title: 'Base maps',
+  layers: [tdRoadMapLayer,provinceLayer],
+})
 
 // Heatmap热力图
 //热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
@@ -325,14 +356,26 @@ vectorSource.addFeature(iconFeature);
 var iconStyle = new Style({
   image: new Icon({
     opacity: 0.75,
-    src: "http://github.roweb.cn/mapblock/public/assets/ncov.png",
+    src: "http://github.roweb.cn/mapblock/public/assets/ncov_small.png",
     // size: 5,
+    size: [20, 40],
+    scale: 0.05,
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+
   })
 });
 //创建矢量层
 var vectorLayer = new VectorLayer({
   source: vectorSource,
-  style: iconStyle
+  style: iconStyle,
+  // A layer must have a title to appear in the layerswitcher
+  title: '疫情矢量图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: true,
+  name:'疫情矢量图'
 });
 
 // var wfsParams = {
@@ -394,14 +437,23 @@ var vectorSource = new VectorSource({
 var iconStyle = new Style({
   image: new Icon({
     opacity: 0.75,
-    src: "http://github.roweb.cn/mapblock/public/assets/ncov.png",
-  }),
+    src: "http://github.roweb.cn/mapblock/public/assets/ncov_small.png",
+    // size: 5,
+    size: [30, 60],
+    scale: 1,
+    anchor: [0.5, 30],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+
+  })
 });
 //创建矢量层
 var vectorLayer = new VectorLayer({
   source: vectorSource,
   style: iconStyle,
-  name: "疫情点矢量图",
+  name: "疫情矢量图",
+  title: '疫情矢量图',
+  visible: true,
 });
 
 var heatMapLayer = new Heatmap({
@@ -414,13 +466,17 @@ var heatMapLayer = new Heatmap({
   //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
   //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
   renderMode: "vector",
-  name: "疫情点热力图",
+  name: "疫情风险图",
+  title: '疫情风险图',
+  visible: true,
 });
+
+
 
 
 var view = new View({
   center: fromLonLat([113.3, 23.12]),
-  zoom: 12,
+  zoom: 14,
 });
 console.log(fromLonLat([113.3, 23.12]));
 
@@ -435,8 +491,8 @@ var map = new Map({
     // cityLayer,
     // ncovWmsLayer,
     // ncovLayer,
-    
-    
+
+
     heatMapLayer,
     vectorLayer,
     // wfsVectorLayer
@@ -464,8 +520,13 @@ var map = new Map({
 map.addControl(fullScreenControl);
 map.addControl(zoomControl);
 
+var layerSwitcher = new LayerSwitcher({
+  tipLabel: 'MapSelector', // Optional label for button
+  groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
+});
+map.addControl(layerSwitcher);
 
-loadLayersControl(map,"layerTree");
+// loadLayersControl(map, "layerTree");
 
 map.on("singleclick", function (evt) {
   document.getElementById("info").innerHTML = "";
@@ -614,11 +675,20 @@ map.on("click", function (e) {
   console.log(pixel);
   map.forEachFeatureAtPixel(pixel, function (feature) {
     console.log(feature);
-    //return feature;
     var coodinate = e.coordinate;
-    content.innerHTML =
-      "<p>你点击的坐标为：" + new toLonLat(coodinate) + "</p>";
-    overlay.setPosition(coodinate);
+    //return feature;
+    if (feature != null && feature.getProperties('full_addre') != null) {
+      var fullAddr = feature.getProperties('full_addre').full_addre;
+      console.log(fullAddr);
+      content.innerHTML =
+        "<p>疫情点地址为：" + fullAddr + "</p>";
+      overlay.setPosition(coodinate);
+    } else {
+      content.innerHTML =
+        "<p>你点击的坐标为：" + new toLonLat(coodinate) + "</p>";
+      overlay.setPosition(coodinate);
+    }
+
     map.addOverlay(overlay);
   });
 });
