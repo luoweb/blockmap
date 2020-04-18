@@ -141,57 +141,58 @@
     }
 
 
-		div.search{
-			height: 40px;
-			width: 60%;		
-		}
+    div.search {
+      height: 40px;
+      width: 60%;
+    }
 
-		div.search form{
-			width: 100%;
-			height: 100%;
-		}
+    div.search form {
+      width: 100%;
+      height: 100%;
+    }
 
-		div.search form input:nth-child(2){
-			width: 80%;
-			height: 100%;
-			font-size: 16px;
-			text-indent: 40px;
-			border: none;
-			float: left;
-		}
+    div.search form input:nth-child(2) {
+      width: 70%;
+      height: 100%;
+      font-size: 16px;
+      text-indent: 40px;
+      border: none;
+      float: left;
+    }
 
-		div.search form input:nth-child(3){
-			width: 20%;
-			height: 100%;
-			font-size: 16px;
-			letter-spacing: 5px;
-			border: none;
-		}
+    div.search form input:nth-child(3) {
+      width: 30%;
+      height: 100%;
+      font-size: 16px;
+      letter-spacing: 5px;
+      border: none;
+    }
 
-		div.search form img{
-			position: absolute;
-			left: 50vw;
-			transform: translateX(-100%);
-			margin-top: 10px;
-			margin-left: 10px;
-			height: 20px;
-		}
-
+    div.search form img {
+      position: absolute;
+      left: 50vw;
+      transform: translateX(-100%);
+      margin-top: 10px;
+      margin-left: 10px;
+      height: 20px;
+    }
   </style>
 </head>
 
 <body>
   <div class="outer">
-
+    <div id="layerControl" class="layerControl" style="position:absolute;right:50px;text-align:center;vertical-align:middle;width:200px;height:200px;z-index:99999; padding: 1em;">
+      <ul id="layerTree" class="layerTree"></ul>
+    </div>
     <div id="searchDiv"
-      style="position:absolute;left:50px;text-align:center;vertical-align:middle;width:100%;height:200px;z-index:99999; padding: 1em;">
+      style="position:absolute;text-align:center;vertical-align:middle;width:100%;height:200px;z-index:99999; padding: 1em;">
 
-      <div class="search" style="align:center;">
+      <div class="search" style="align:center;padding-left:50px">
         <form action="#" method="post">
-          <img src="http://github.roweb.cn/mapblock/assets/xcov_small.png" alt="">
+          <img src="http://github.roweb.cn/mapblock/public/assets/xcov_small.png" alt="">
           <input type="text" name="condition" placeholder="请输入搜索条件">
           <input type="submit" value="搜索">
-        </form>	
+        </form>
       </div>
       <!-- <ul id="controls"  style="align:center;">
           

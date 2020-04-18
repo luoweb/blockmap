@@ -77,6 +77,54 @@ var overlay = new Overlay({
   autoPan: true
 });
 
+/*********************图层选择**************************/
+var layer=new Array();//图层数组
+var layerName=new Array();//图层名称数组
+var layerVisibility=new Array();//图层可见数组
+function loadLayersControl(map,id){
+    var treeContent=document.getElementById(id);
+    var layers=map.getLayers();//获取地图中的所有图层
+    for(var i=0;i<layers.getLength();i++){
+            layer[i]=layers.item(i);
+        layerName[i]=layer[i].get('name');
+        layerVisibility[i]=layer[i].getVisible();//获取每个图层的名称及是否可见
+        var elementLi=document.createElement("li");
+        treeContent.appendChild(elementLi);
+        var elementInput=document.createElement("input");
+        elementInput.type="checkbox";
+        elementInput.name="layers";
+        elementLi.appendChild(elementInput);
+        var elementLabel=document.createElement("label");
+        elementLabel.className="layer";
+        setInnerText(elementLabel,layerName[i]);
+        elementLi.appendChild(elementLabel);
+        //<ul><li><input type="checkbox" name="layers"/><label class="layer"></label></li></ul>
+        if(layerVisibility[i]){
+            elementInput.checked=true;
+        }
+        addChangeEvent(elementInput,layer[i]);
+    }
+}
+function  addChangeEvent(element,layer){
+    element.onclick=function(){
+      console.log("click")
+        if(element.checked){
+            layer.setVisible(true);
+        }else{
+            layer.setVisible(false);
+        }
+    }
+}
+function setInnerText(element,text){
+    if(typeof element.textContent=="string"){
+        element.textContent=text;
+    }else{
+        element.innerText=text;//FireFox不支持innerText方法,兼容
+    }
+}
+
+
+
 var tdRoadMapLayer = new TileLayer({
   source: new XYZ({
     url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
@@ -105,6 +153,7 @@ var provinceLayer = new ImageLayer({
     serverType: "geoserver",
     crossOrigin: "anonymous",
   }),
+  name: "省份矢量图",
 });
 
 var cityLayer = new ImageLayer({
@@ -128,69 +177,70 @@ var ncovSource = new ImageWMS({
 });
 var ncovLayer = new ImageLayer({
   source: ncovSource,
+  name: "疫情点",
 });
 
 // Heatmap热力图
 //热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
-var heatData = [{
-  type: "FeatureCollection",
-  features: [{
-      type: "Point",
-      coordinates: fromLonLat([113.25, 23.11]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.29, 23.14]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.3, 23.14]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.31, 23.11]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.32, 23.12]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.15, 22.21]),
-      count: 90,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.17, 22.23]),
-      count: 90,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.27, 22.13]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([113.27, 23.13]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.29, 22.57]),
-      count: 80,
-    },
-    {
-      type: "Point",
-      coordinates: fromLonLat([112.29, 24.17]),
-      count: 80,
-    }
-  ],
-}, ];
+// var heatData = [{
+//   type: "FeatureCollection",
+//   features: [{
+//       type: "Point",
+//       coordinates: fromLonLat([113.25, 23.11]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([113.29, 23.14]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([113.3, 23.14]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([113.31, 23.11]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([113.32, 23.12]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([112.15, 22.21]),
+//       count: 90,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([112.17, 22.23]),
+//       count: 90,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([112.27, 22.13]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([113.27, 23.13]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([112.29, 22.57]),
+//       count: 80,
+//     },
+//     {
+//       type: "Point",
+//       coordinates: fromLonLat([112.29, 24.17]),
+//       count: 80,
+//     }
+//   ],
+// }, ];
 
 // var vectorLayer = new ol.layer.Vector({
 //         source: new ol.source.Vector({
@@ -199,19 +249,19 @@ var heatData = [{
 //         })
 // });
 
-var heatMapLayer = new Heatmap({
-  source: new VectorSource({
-    features: new GeoJSON().readFeatures(heatData[0]),
-  }),
-  opacity: 0.8, //透明度
-  blur: 15, //模糊大小（以像素为单位）,默认15
-  radius: 20, //半径大小（以像素为单位,默认8
-  shadow: 250, //阴影像素大小，默认250
-  //矢量图层的渲染模式：
-  //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
-  //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
-  renderMode: "vector",
-});
+// var heatMapLayer = new Heatmap({
+//   source: new VectorSource({
+//     features: new GeoJSON().readFeatures(heatData[0]),
+//   }),
+//   opacity: 0.8, //透明度
+//   blur: 15, //模糊大小（以像素为单位）,默认15
+//   radius: 20, //半径大小（以像素为单位,默认8
+//   shadow: 250, //阴影像素大小，默认250
+//   //矢量图层的渲染模式：
+//   //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
+//   //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
+//   renderMode: "vector",
+// });
 
 var style = new Style({
   fill: new Fill({
@@ -275,7 +325,7 @@ vectorSource.addFeature(iconFeature);
 var iconStyle = new Style({
   image: new Icon({
     opacity: 0.75,
-    src: "http://github.roweb.cn/mapblock/assets/ncov.png",
+    src: "http://github.roweb.cn/mapblock/public/assets/ncov.png",
     // size: 5,
   })
 });
@@ -344,14 +394,27 @@ var vectorSource = new VectorSource({
 var iconStyle = new Style({
   image: new Icon({
     opacity: 0.75,
-    src: "http://github.roweb.cn/mapblock/assets/ncov.png",
-    // size: 10
+    src: "http://github.roweb.cn/mapblock/public/assets/ncov.png",
   }),
 });
 //创建矢量层
 var vectorLayer = new VectorLayer({
   source: vectorSource,
-  style: iconStyle
+  style: iconStyle,
+  name: "疫情点矢量图",
+});
+
+var heatMapLayer = new Heatmap({
+  source: vectorSource,
+  opacity: 0.8, //透明度
+  blur: 30, //模糊大小（以像素为单位）,默认15
+  radius: 40, //半径大小（以像素为单位,默认8
+  shadow: 300, //阴影像素大小，默认250
+  //矢量图层的渲染模式：
+  //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
+  //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
+  renderMode: "vector",
+  name: "疫情点热力图",
 });
 
 
@@ -372,8 +435,10 @@ var map = new Map({
     // cityLayer,
     // ncovWmsLayer,
     // ncovLayer,
+    
+    
     heatMapLayer,
-    vectorLayer
+    vectorLayer,
     // wfsVectorLayer
   ],
   target: "map",
@@ -398,6 +463,9 @@ var map = new Map({
 
 map.addControl(fullScreenControl);
 map.addControl(zoomControl);
+
+
+loadLayersControl(map,"layerTree");
 
 map.on("singleclick", function (evt) {
   document.getElementById("info").innerHTML = "";
