@@ -6,9 +6,9 @@
 - 风险扩散趋势图：人员迁徙图，根据热力图生成迁徙地图
 
 ### Application Architecture (功能架构图)
-![app_arch](./public/assets/app_arch_v1.png)
+![app_arch](http://github.roweb.cn/mapblock/public/assets/app_arch_v1.png)
 ### Data Architecture (数据架构图)
-![data_arch](./public/assets/data_arch_v1.png)
+![data_arch](http://github.roweb.cn/mapblock/public/assets/data_arch_v1.png)
 
 ## Frontend (前端架构)
 - web(nginx):
@@ -38,13 +38,13 @@
 
 可信数字身份服务，依托于成熟的区块链技术，提供稳定完善的分布式数字身份和可验证声明的全周期管理，用以支持金融、电子政务、医疗等行业的业务场景。
 
-![ar](https://github.com/luoweb/blockmap/blob/master/public/assets/ar.png)
+![ar](http://github.roweb.cn/mapblock/public/assets/ar.png)
 
 ## 2.2 可信数字身份防疫二维码
 
 用户可以不依赖三方中心机构，真正掌握数字身份所有权。同时，用户可在个人隐私信息受到高度保护的情况下进行身份验证。
 
-![ibm-qr](https://github.com/luoweb/blockmap/blob/master/public/assets/ibm-qr.png)
+![ibm-qr](http://github.roweb.cn/mapblock/public/assets/ibm-qr.png)
 
 ## 2.3 防疫二维码方案使用入门
 
@@ -58,7 +58,7 @@
 
 |                   用户出示防疫二维码                    |                     机构验证防疫情二维码                     |
 | :-----------------------------------------------------: | :----------------------------------------------------------: |
-| [![用户出示防疫二维码视频预览](https://github.com/luoweb/blockmap/blob/master/public/assets/show.jpg)](http://q8mix8qp7.bkt.clouddn.com/show.mp4)| [![用户出示防疫二维码视频预览](https://github.com/luoweb/blockmap/blob/master/public/assets/verify.jpg)](http://q8mix8qp7.bkt.clouddn.com/verification.mp4) |
+| [![用户出示防疫二维码视频预览](http://github.roweb.cn/mapblock/public/assets/show.jpg)](http://q8mix8qp7.bkt.clouddn.com/show.mp4)| [![用户出示防疫二维码视频预览](http://github.roweb.cn/mapblock/public/assets/verify.jpg)](http://q8mix8qp7.bkt.clouddn.com/verification.mp4) |
 
 
 # Tech Stack
