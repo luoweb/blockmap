@@ -70,6 +70,9 @@ import {
   bbox as bboxStrategy
 } from 'ol/loadingstrategy';
 
+
+import OLCesium from 'olcs/OLCesium.js';
+
 /*********************显示弹出层**************************/
 var container = document.getElementById("popup");
 var content = document.getElementById("popup-content");
@@ -140,9 +143,25 @@ var tdRoadMapLayer = new TileLayer({
   title: '天地图路网',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
-  visible: true,
+  visible: false,
   isGroup: true,
   name: "天地图路网",
+});
+
+
+var tdImageLayer = new TileLayer({
+  source: new XYZ({
+    url: "https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
+  }),
+  type: 'base',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  title: '天地卫星图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: true,
+  isGroup: true,
+  name: "天地卫星图",
 });
 
 var borderLayer = new ImageLayer({
@@ -486,7 +505,7 @@ var heatMapLayer = new Heatmap({
   renderMode: "vector",
   name: "疫情风险图",
   title: '疫情风险图',
-  visible: true,
+  visible: false,
 });
 
 
@@ -500,8 +519,9 @@ console.log(fromLonLat([113.3, 23.12]));
 
 var fullScreenControl = new FullScreen();
 var zoomControl = new Zoom();
-var map = new Map({
+var ol2d = new Map({
   layers: [
+    tdImageLayer,
     tdRoadMapLayer,
     // borderLayer,
     provinceLayer,
@@ -534,18 +554,23 @@ var map = new Map({
   view: view,
 });
 
-map.addControl(fullScreenControl);
-map.addControl(zoomControl);
+
+ol2d.addControl(fullScreenControl);
+ol2d.addControl(zoomControl);
 
 var layerSwitcher = new LayerSwitcher({
   tipLabel: 'MapSelector', // Optional label for button
   groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
 });
-map.addControl(layerSwitcher);
+ol2d.addControl(layerSwitcher);
 
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
+
+const ol3d = new OLCesium({map: ol2d}); // ol2dMap is the ol.Map instance
+ol3d.setEnabled(true);
 // loadLayersControl(map, "layerTree");
 
-map.on("singleclick", function (evt) {
+ol2d.on("singleclick", function (evt) {
   document.getElementById("info").innerHTML = "";
   var viewResolution = /** @type {number} */ (view.getResolution());
   var url = ncovSource.getFeatureInfoUrl(
@@ -566,7 +591,7 @@ map.on("singleclick", function (evt) {
   }
 });
 
-// map.on("pointermove", function (evt) {
+// ol2d.on("pointermove", function (evt) {
 //   if (evt.dragging) {
 //     return;
 //   }
@@ -583,7 +608,7 @@ map.on("singleclick", function (evt) {
 // var vector = new VectorLayer({
 //   source: source
 // });
-// map.addLayer(vector);
+// ol2d.addLayer(vector);
 
 // function addRandomFeature() {
 //   var x = Math.random() * 360 - 180;
@@ -687,7 +712,7 @@ var highlightStyle = new Style({
 //   });
 // };
 
-map.on("click", function (e) {
+ol2d.on("click", function (e) {
   var pixel = map.getEventPixel(e.originalEvent);
   console.log(pixel);
   map.forEachFeatureAtPixel(pixel, function (feature) {
@@ -715,7 +740,7 @@ popupCloser.addEventListener("click", function () {
 });
 
 
-map.on("pointermove", function (evt) {
+ol2d.on("pointermove", function (evt) {
   if (evt.dragging) {
     // var mapExtent = map.getView().calculateExtent(map.getSize());
     // console.log(mapExtent)
@@ -725,13 +750,13 @@ map.on("pointermove", function (evt) {
   // displayFeatureInfo(pixel);
 });
 
-map.on("moveend", function (evt) {
+ol2d.on("moveend", function (evt) {
 
   // map.getView().fit(vectorSource.getExtent());
 
 })
 
-// map.on("moveend", function (evt) {
+// ol2d.on("moveend", function (evt) {
 
 //   var mapExtent = map.getView().calculateExtent(map.getSize());
 //   console.log(mapExtent)
@@ -802,11 +827,11 @@ map.on("moveend", function (evt) {
 //       source: vectorSource,
 //       style: iconStyle
 //     });
-//     map.addLayer(vectorLayer)
+//     ol2d.addLayer(vectorLayer)
 //     // map.getView().fit(vectorSource.getExtent());
 //   });
 // })
 
-// map.on('click', function (evt) {
+// ol2d.on('click', function (evt) {
 //   displayFeatureInfo(evt.pixel);
 // });
