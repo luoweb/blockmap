@@ -183,7 +183,24 @@ var cityLayer = new ImageLayer({
     serverType: "geoserver",
     crossOrigin: "anonymous",
   }),
+  name: '城市矢量图',
   title: '城市矢量图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: false,
+});
+
+var ncovVoronoiLahyer = new ImageLayer({
+  source: new ImageWMS({
+    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+    params: {
+      LAYERS: "ncov_china_voronoi_multicolor",
+    },
+    serverType: "geoserver",
+    crossOrigin: "anonymous",
+  }),
+  name: '疫情泰森图',
+  title: '疫情泰森图',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
   visible: false,
@@ -197,6 +214,7 @@ var ncovSource = new ImageWMS({
   serverType: "geoserver",
   crossOrigin: "anonymous",
 });
+
 var ncovLayer = new ImageLayer({
   source: ncovSource,
   type: 'base',
@@ -488,11 +506,10 @@ var map = new Map({
     // borderLayer,
     provinceLayer,
     // provinceWfsLayer,
-    // cityLayer,
+    cityLayer,
     // ncovWmsLayer,
     // ncovLayer,
-
-
+    ncovVoronoiLahyer,
     heatMapLayer,
     vectorLayer,
     // wfsVectorLayer
