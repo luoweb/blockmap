@@ -173,20 +173,60 @@
     div.search form img {
       position: absolute;
       left: 50vw;
-      transform: translateX(-100%);
+      /* transform: translateX(-100%); */
       margin-top: 10px;
       margin-left: 10px;
       height: 20px;
+    }
+
+
+    /* cesium map viewer */
+    .cesium-viewer {
+      /* position:absolute;
+      z-index: 99; */
+    }
+
+    /* 不占据空间，无法点击 */
+
+    div.cesium-viewer-toolbar {
+      display: block;
+      z-index: 99;
+    }
+
+    /* 右上角按钮组 */
+    .cesium-viewer-animationContainer,
+    /* 左下角动画控件 */
+    .cesium-viewer-timelineContainer    
+    {
+      display: none;
+    }
+    /* 时间线 */
+    .cesium-viewer-bottom
+
+    /* logo信息 */
+    {
+      display: none;
+    }
+    div.cesium-credit-logoContainer{
+      display: none;
+    }
+    .cesium-viewer-fullscreenContainer
+
+    /* 全屏按钮 */
+      {
+      position: absolute;
+      top: -999em;
     }
   </style>
 </head>
 
 <body>
   <div class="outer">
-    <div id="layerControl" class="layerControl" style="position:absolute;right:50px;text-align:center;vertical-align:middle;width:200px;height:200px;z-index:99999; padding: 1em;">
+    <!-- <div id="layerControl" class="layerControl"
+      style="position:absolute;right:50px;text-align:center;vertical-align:middle;width:200px;height:200px;z-index:99999; padding: 1em;">
       <ul id="layerTree" class="layerTree"></ul>
-    </div>
-    <div id="searchDiv"
+    </div> -->
+    <!-- <div id="searchDiv"
       style="position:absolute;text-align:center;vertical-align:middle;width:80%;height:200px;z-index:99999; padding: 1em;">
 
       <div class="search" style="align:center;padding-left:50px">
@@ -196,34 +236,9 @@
           <input type="submit" value="搜索">
         </form>
       </div>
-      <!-- <ul id="controls"  style="align:center;">
-          
-            <li>
-                <label for="pointToggle">关键字:</label>
-                <input name="searchkey" style="align:center;" id="searchkey" type="text">
-                <input name="type" value="搜索" id="polygonToggle" οnclick="search()" type="button">
-            </li>
-              <li>
-                <input name="type" value="point" id="free" checked="checked" type="radio" οnclick="setfree();">
-                <label for="pointToggle">不限</label>
-            </li>
-            <li>
-                <input name="type" value="point" id="nearbySearch" οnclick="drawCircle();" type="radio">
-                <label for="nearbySearch">周边搜索</label>
-                <select id="radius" οnchange="setSize(parseFloat(this.value))" style="width:100px">
-                    <option value="0.01000">1000</option>
-                    <option value="0.02000">2000</option>
-                    <option value="0.03000">3000</option>
-                </select>
-                <label for="pointToggle">以内</label>
-            </li>
-            <li>
-                <input name="type" value="polygon" id="polygonSearch" οnclick="drawPolyon();" type="radio">
-                <label for="polygonSearch">多边形搜索</label>
-            </li>
-        </ul> -->
-    </div>
-    <div id="directionDiv"
+    </div> -->
+
+    <!-- <div id="directionDiv"
       style="display:none;position:absolute;top:200px;left:80px;width:300px;z-index:99999;border: 1px solid #ccc; padding: 1em;">
       <table>
         <tr>
@@ -240,14 +255,20 @@
         </tr>
 
       </table>
-    </div>
+    </div> -->
     <div id="map" class="map"></div>
+    <div id="cesiumContainer" style="width: 700px; height:400px"></div>
+    <!-- <div id="credit"></div>
+    <div id="cesiumContainer">
+      <div id="cesiumxin" style="position:fixed;left:0;z-index:99"><a href="http://cesium.xin"
+          style="color:aliceblue;text-decoration:none">cesium中文网 http://cesium.xin </a></div>
+    </div> -->
     <div id="info">&nbsp;</div>
-    <div id="m_nav">
+    <!-- <div id="m_nav">
       <a href="#" class="active"><i></i><span>个人</span></a>
       <a href="#"><i></i><span>扫一扫</span></a>
       <a href="#"><i></i><span>组织</span></a>
-    </div>
+    </div> -->
     <!-- 弹出框 -->
     <div id="popup" class="ol-popup">
       <a href="#" id="popup-closer" class="ol-popup-closer"></a>

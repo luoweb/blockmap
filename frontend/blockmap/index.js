@@ -7,8 +7,10 @@ import Icon from 'ol/style/Icon';
 import {
   equalTo as equalToFilter,
   like as likeFilter,
-  and as andFilter
+  and as andFilter,
+  intersects as intersects
 } from 'ol/format/filter';
+import Intersects from 'ol/format/filter/Intersects';
 import {
   fromLonLat
 } from "ol/proj";
@@ -57,7 +59,12 @@ import {
 } from "ol/style";
 import Overlay from 'ol/Overlay';
 
-import Polygon from 'ol/geom/Polygon';
+// import Polygon from 'ol/geom/Polygon';
+import {
+  Polygon,
+  fromExtent
+} from 'ol/geom/Polygon';
+
 
 import * as olLoadingstrategy from 'ol/loadingstrategy';
 import * as olTilegrid from 'ol/tilegrid';
@@ -74,6 +81,7 @@ import {
 import OLCesium from 'olcs/OLCesium.js';
 
 /*********************显示弹出层**************************/
+var tdToken = '320109f58cbb412b31e478ddc5c651bd';
 var container = document.getElementById("popup");
 var content = document.getElementById("popup-content");
 var popupCloser = document.getElementById("popup-closer");
@@ -89,7 +97,7 @@ var layerName = new Array(); //图层名称数组
 var layerVisibility = new Array(); //图层可见数组
 function loadLayersControl(map, id) {
   var treeContent = document.getElementById(id);
-  var layers = map.getLayers(); //获取地图中的所有图层
+  var layers = ol2d.getLayers(); //获取地图中的所有图层
   for (var i = 0; i < layers.getLength(); i++) {
     layer[i] = layers.item(i);
     layerName[i] = layer[i].get('name');
@@ -131,11 +139,9 @@ function setInnerText(element, text) {
   }
 }
 
-
-
 var tdRoadMapLayer = new TileLayer({
   source: new XYZ({
-    url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
+    url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tdToken,
   }),
   type: 'base',
   // Setting combine to true causes sub-layers to be hidden
@@ -143,7 +149,7 @@ var tdRoadMapLayer = new TileLayer({
   title: '天地图路网',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
-  visible: false,
+  visible: true,
   isGroup: true,
   name: "天地图路网",
 });
@@ -151,7 +157,7 @@ var tdRoadMapLayer = new TileLayer({
 
 var tdImageLayer = new TileLayer({
   source: new XYZ({
-    url: "https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=320109f58cbb412b31e478ddc5c651bd",
+    url: "https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tdToken,
   }),
   type: 'base',
   // Setting combine to true causes sub-layers to be hidden
@@ -159,7 +165,7 @@ var tdImageLayer = new TileLayer({
   title: '天地卫星图',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
-  visible: true,
+  visible: false,
   isGroup: true,
   name: "天地卫星图",
 });
@@ -173,6 +179,12 @@ var borderLayer = new ImageLayer({
     serverType: "geoserver",
     crossOrigin: "anonymous",
   }),
+  title: '中国边界图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: true,
+  isGroup: true,
+  name: "中国边界图",
 });
 
 var provinceLayer = new ImageLayer({
@@ -189,7 +201,7 @@ var provinceLayer = new ImageLayer({
   title: '省份矢量图',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
-  visible: false,
+  visible: true,
   name: "省份矢量图",
 });
 
@@ -225,111 +237,11 @@ var ncovVoronoiLahyer = new ImageLayer({
   visible: false,
 });
 
-var ncovSource = new ImageWMS({
-  url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
-  params: {
-    LAYERS: "ncov_china_data",
-  },
-  serverType: "geoserver",
-  crossOrigin: "anonymous",
-});
-
-var ncovLayer = new ImageLayer({
-  source: ncovSource,
-  type: 'base',
-  // Setting combine to true causes sub-layers to be hidden
-  // in the layerswitcher, only the parent is shown
-  visible: true,
-  name: "疫情点",
-});
-
 var layerGroup = new LayerGroup({
   title: 'Base maps',
-  layers: [tdRoadMapLayer,provinceLayer],
+  layers: [tdRoadMapLayer, provinceLayer],
 })
 
-// Heatmap热力图
-//热力图数据 GeoJSON默认参考坐标系为 EPSG:4326.，根据实际需要进行更改
-// var heatData = [{
-//   type: "FeatureCollection",
-//   features: [{
-//       type: "Point",
-//       coordinates: fromLonLat([113.25, 23.11]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([113.29, 23.14]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([113.3, 23.14]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([113.31, 23.11]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([113.32, 23.12]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([112.15, 22.21]),
-//       count: 90,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([112.17, 22.23]),
-//       count: 90,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([112.27, 22.13]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([113.27, 23.13]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([112.29, 22.57]),
-//       count: 80,
-//     },
-//     {
-//       type: "Point",
-//       coordinates: fromLonLat([112.29, 24.17]),
-//       count: 80,
-//     }
-//   ],
-// }, ];
-
-// var vectorLayer = new ol.layer.Vector({
-//         source: new ol.source.Vector({
-//                 url: 'data/geojson/countries.geojson',
-//                 format: new ol.format.GeoJSON()
-//         })
-// });
-
-// var heatMapLayer = new Heatmap({
-//   source: new VectorSource({
-//     features: new GeoJSON().readFeatures(heatData[0]),
-//   }),
-//   opacity: 0.8, //透明度
-//   blur: 15, //模糊大小（以像素为单位）,默认15
-//   radius: 20, //半径大小（以像素为单位,默认8
-//   shadow: 250, //阴影像素大小，默认250
-//   //矢量图层的渲染模式：
-//   //'image'：矢量图层呈现为图像。性能出色，但点符号和文本始终随视图一起旋转，像素在缩放动画期间缩放。
-//   //'vector'：矢量图层呈现为矢量。即使在动画期间也能获得最准确的渲染，但性能会降低。
-//   renderMode: "vector",
-// });
 
 var style = new Style({
   fill: new Fill({
@@ -351,20 +263,6 @@ var style = new Style({
   }),
 });
 
-// var provinceWfsLayer = new VectorLayer({
-//   source: new VectorSource({
-//     url: 'http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Anprovince&outputFormat=application/json&srsname=EPSG:4326',
-//     format: new GeoJSON({
-//       geometryName: 'the_geom'
-//     })
-//   }),
-//   style: function (feature) {
-//     style.getText().setText(feature.get('name'));
-//     return style;
-//   }
-// });
-
-
 
 var ncovWmsLayer = new VectorLayer({
   source: new VectorSource({
@@ -377,42 +275,6 @@ var ncovWmsLayer = new VectorLayer({
     // style.getText().setText(feature.get('city'));
     return style;
   },
-});
-
-
-
-var vectorSource = new VectorSource({});
-//创建图标特性
-var iconFeature = new Feature({
-  geometry: new Point(new fromLonLat([113.27, 23.13]), "XY"),
-  name: "my Icon",
-});
-//将图标特性添加进矢量中
-vectorSource.addFeature(iconFeature);
-//创建图标样式
-var iconStyle = new Style({
-  image: new Icon({
-    opacity: 0.75,
-    src: "http://github.roweb.cn/mapblock/public/assets/ncov_small.png",
-    // size: 5,
-    size: [20, 40],
-    scale: 0.05,
-    anchor: [0.5, 46],
-    anchorXUnits: 'fraction',
-    anchorYUnits: 'pixels',
-
-  })
-});
-//创建矢量层
-var vectorLayer = new VectorLayer({
-  source: vectorSource,
-  style: iconStyle,
-  // A layer must have a title to appear in the layerswitcher
-  title: '疫情矢量图',
-  // Setting combine to true causes sub-layers to be hidden
-  // in the layerswitcher, only the parent is shown
-  visible: true,
-  name:'疫情矢量图'
 });
 
 // var wfsParams = {
@@ -443,33 +305,21 @@ var vectorLayer = new VectorLayer({
 //   projection: 'EPSG:4326'
 // });
 
-// //回调函数使用
-// window.loadFeatures = function (response) {
-//   console.log("##############")
-//   console.log(response)
-//   ncovVectorSource.addFeatures((new GeoJSON()).readFeatures(response)); //载入要素
-// };
 
-// var wfsVectorLayer = new VectorLayer({
-//   source: ncovVectorSource,
-//   style: new Style({
-//     stroke: new Stroke({
-//       color: 'rgba(0, 0, 255, 1.0)',
-//       width: 2
-//     })
-//   })
+// var ncovVectorSource = new VectorSource({
+//   format: new GeoJSON(),
+//   url: function (extent) {
+//     console.log("extent");
+//     console.log(extent);
+//     return 'http://173.193.109.188:30657/geoserver/wfs?service=WFS&' +
+//       'version=1.1.0&request=GetFeature&typename=blockmap:ncov_china_data&' +
+//       'outputFormat=application/json&srsname=EPSG:4326&' +
+//       'bbox=' + extent.join(',') + ',EPSG:3857';
+//   },
+//   strategy: bboxStrategy
 // });
 
-var vectorSource = new VectorSource({
-  format: new GeoJSON(),
-  url: function (extent) {
-    return 'http://173.193.109.188:30657/geoserver/wfs?service=WFS&' +
-      'version=1.1.0&request=GetFeature&typename=blockmap:ncov_china_data&' +
-      'outputFormat=application/json&srsname=EPSG:4326&' +
-      'bbox=' + extent.join(',') + ',EPSG:3857';
-  },
-  strategy: bboxStrategy
-});
+var ncovVectorSource = new VectorSource({});
 
 var iconStyle = new Style({
   image: new Icon({
@@ -485,8 +335,8 @@ var iconStyle = new Style({
   })
 });
 //创建矢量层
-var vectorLayer = new VectorLayer({
-  source: vectorSource,
+var ncovVectorLayer = new VectorLayer({
+  source: ncovVectorSource,
   style: iconStyle,
   name: "疫情矢量图",
   title: '疫情矢量图',
@@ -494,7 +344,7 @@ var vectorLayer = new VectorLayer({
 });
 
 var heatMapLayer = new Heatmap({
-  source: vectorSource,
+  source: ncovVectorSource,
   opacity: 0.8, //透明度
   blur: 30, //模糊大小（以像素为单位）,默认15
   radius: 40, //半径大小（以像素为单位,默认8
@@ -509,11 +359,9 @@ var heatMapLayer = new Heatmap({
 });
 
 
-
-
 var view = new View({
   center: fromLonLat([113.3, 23.12]),
-  zoom: 14,
+  zoom: 3,
 });
 console.log(fromLonLat([113.3, 23.12]));
 
@@ -530,8 +378,9 @@ var ol2d = new Map({
     // ncovWmsLayer,
     // ncovLayer,
     ncovVoronoiLahyer,
+    borderLayer,
     heatMapLayer,
-    vectorLayer,
+    ncovVectorLayer,
     // wfsVectorLayer
   ],
   target: "map",
@@ -544,16 +393,11 @@ var ol2d = new Map({
         2636537.0728182457,
         12622498.306877896,
         2656537.0728182457,
-        // 813079.7791264898,
-        // 5929220.284081122,
-        // 848966.9639063801,
-        // 5936863.986909639,
       ],
     }),
   ]),
   view: view,
 });
-
 
 ol2d.addControl(fullScreenControl);
 ol2d.addControl(zoomControl);
@@ -564,42 +408,15 @@ var layerSwitcher = new LayerSwitcher({
 });
 ol2d.addControl(layerSwitcher);
 
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
-
-const ol3d = new OLCesium({map: ol2d}); // ol2dMap is the ol.Map instance
-ol3d.setEnabled(true);
-// loadLayersControl(map, "layerTree");
-
-ol2d.on("singleclick", function (evt) {
-  document.getElementById("info").innerHTML = "";
-  var viewResolution = /** @type {number} */ (view.getResolution());
-  var url = ncovSource.getFeatureInfoUrl(
-    evt.coordinate,
-    viewResolution,
-    "EPSG:3857", {
-      INFO_FORMAT: "text/html",
-    }
-  );
-  if (url) {
-    fetch(url)
-      .then(function (response) {
-        return response.text();
-      })
-      .then(function (html) {
-        document.getElementById("info").innerHTML = html;
-      });
-  }
-});
-
 // ol2d.on("pointermove", function (evt) {
 //   if (evt.dragging) {
 //     return;
 //   }
-//   var pixel = map.getEventPixel(evt.originalEvent);
-//   var hit = map.forEachLayerAtPixel(pixel, function () {
+//   var pixel = ol2d.getEventPixel(evt.originalEvent);
+//   var hit = ol2d.forEachLayerAtPixel(pixel, function () {
 //     return true;
 //   });
-//   map.getTargetElement().style.cursor = hit ? "pointer" : "";
+//   ol2d.getTargetElement().style.cursor = hit ? "pointer" : "";
 // });
 
 // var source = new VectorSource({
@@ -650,7 +467,7 @@ ol2d.on("singleclick", function (evt) {
 //       return;
 //     }
 //     // tell OpenLayers to continue postrender animation
-//     map.render();
+//     ol2d.render();
 //   }
 // }
 
@@ -682,7 +499,7 @@ var highlightStyle = new Style({
 
 // var featureOverlay = new VectorLayer({
 //   source: new VectorSource(),
-//   map: map,
+//   map: ol2d,
 //   style: function (feature) {
 //     highlightStyle.getText().setText(feature.get("name"));
 //     return highlightStyle;
@@ -713,9 +530,9 @@ var highlightStyle = new Style({
 // };
 
 ol2d.on("click", function (e) {
-  var pixel = map.getEventPixel(e.originalEvent);
+  var pixel = ol2d.getEventPixel(e.originalEvent);
   console.log(pixel);
-  map.forEachFeatureAtPixel(pixel, function (feature) {
+  ol2d.forEachFeatureAtPixel(pixel, function (feature) {
     console.log(feature);
     var coodinate = e.coordinate;
     //return feature;
@@ -731,7 +548,7 @@ ol2d.on("click", function (e) {
       overlay.setPosition(coodinate);
     }
 
-    map.addOverlay(overlay);
+    ol2d.addOverlay(overlay);
   });
 });
 
@@ -742,96 +559,300 @@ popupCloser.addEventListener("click", function () {
 
 ol2d.on("pointermove", function (evt) {
   if (evt.dragging) {
-    // var mapExtent = map.getView().calculateExtent(map.getSize());
-    // console.log(mapExtent)
+    var mapExtent = ol2d.getView().calculateExtent(ol2d.getSize());
+    console.log(mapExtent)
     return;
   }
-  var pixel = map.getEventPixel(evt.originalEvent);
+  var pixel = ol2d.getEventPixel(evt.originalEvent);
   // displayFeatureInfo(pixel);
 });
 
+// ########################### openlayer conflict with cesium  ########################### 
+// OK, I understand now.
+// OL-Cesium has two modes:
+
+// stacked mode: either OpenLayers or Cesium is displayed (no target used for OL-Cesium);
+// side-by-side mode: moth OpenLayers and Cesium are displayed at the same time (a target is used for OL-Cesium).
+// In side-by-side mode OpenLayers is fully active so it will fetch the source data.
+// In stacked mode OpenLayers is partially active: it will not fetch new data and thus they will not be converted to Cesium.
+
+// I see 2 solutions:
+// 1- implement fetching of vector source data in OL-Cesium based on the area displayed in Cesium (most complicate);
+// 2- load the data in the vector source yourself (easy).
+
+// With 2 you should get the features and add them to the source:
+// vectorSource.setFeatures(theFeaturesYouLoadedManually);
+
 ol2d.on("moveend", function (evt) {
 
-  // map.getView().fit(vectorSource.getExtent());
+  var mapExtent = ol2d.getView().calculateExtent(ol2d.getSize());
+  console.log(mapExtent)
+  console.log("new Polygon")
+  var newPoly = fromExtent(mapExtent);
+  console.log(newPoly)
+  // Openlayer4的wfs属性查询和空间查询
+  //测试用的geometry类型数据 （Polygon）
+  // var newPoly2 = new Polygon([
+  //   [
+  //     [119.89817, 31.91181],
+  //     [119.81655, 31.85485],
+  //     [119.95809, 31.84721],
+  //     [119.89817, 31.91181]
+  //   ]
+  // ]);
+  // console.log(newPoly2)
+  // //创建字符过滤器 可以过滤字段 添加%%可以模糊查询
+  // var fcodeFilter = ol.format.filter.equalTo('fcode', value)
+  // //创建空间过滤器 可以查询特定区域下的数据
+  var areaFilter = new intersects(
+    'the_geom',
+    newPoly,
+    'EPSG:3857'
+  )
+  //来自官网Example
+  // generate a GetFeature request
+  var featureRequest = new WFS().writeGetFeature({
+    srsName: 'EPSG:4326',
+    // featureNS: 'http://173.193.109.188:30657', //命名空间
+    featurePrefix: 'blockmap', //工作区域
+    featureTypes: ['ncov_china_data'], //图层名
+    outputFormat: 'application/json',
+    filter: andFilter(
+      // likeFilter('fulladdr', '广东省*'),
+      areaFilter,
+      areaFilter,
+      // equalToFilter('province', '广东省'),
+      // equalToFilter('city', '广州市')
+    )
+  });
 
+  // then post the request and add the received features to a layer
+  fetch('http://173.193.109.188:30657/geoserver/wfs', {
+    method: 'POST',
+    body: new XMLSerializer().serializeToString(featureRequest)
+  }).then(function (response) {
+    console.log(response)
+    return response.json();
+  }).then(function (json) {
+
+    var features = new GeoJSON().readFeatures(json, {
+      dataProjection: 'EPSG:4326',
+      featureProjection: 'EPSG:3857'
+    });
+    console.log(features)
+    if (features.length === 0) {
+      layer.msg('此区域暂无相关地物数据！', {
+        icon: 2
+      });
+      return;
+    }
+    ncovVectorSource.addFeatures(features);
+    // //创建矢量层
+    var vectorLayer = new VectorLayer({
+      source: ncovVectorSource,
+      style: iconStyle,
+      name: "疫情点地图",
+      title: '疫情点地图',
+      visible: false,
+    });
+    ol2d.addLayer(vectorLayer)
+    // ol2d.getView().fit(vectorSource.getExtent());
+  });
 })
-
-// ol2d.on("moveend", function (evt) {
-
-//   var mapExtent = map.getView().calculateExtent(map.getSize());
-//   console.log(mapExtent)
-
-
-//   // Openlayer4的wfs属性查询和空间查询
-//   //测试用的geometry类型数据 （Polygon）
-//   var newPoly = new Polygon([
-//     [
-//       [119.89817, 31.91181],
-//       [119.81655, 31.85485],
-//       [119.95809, 31.84721],
-//       [119.89817, 31.91181]
-//     ]
-//   ]);
-//   // //创建字符过滤器 可以过滤字段 添加%%可以模糊查询
-//   // var fcodeFilter = ol.format.filter.equalTo('fcode', value)
-//   // //创建空间过滤器 可以查询特定区域下的数据
-//   // var areaFilter = ol.format.filter.intersects(
-//   //   'points',
-//   //   newPoly
-//   // )
-//   //来自官网Example
-//   // generate a GetFeature request
-//   var featureRequest = new WFS().writeGetFeature({
-//     srsName: 'EPSG:4326',
-//     // featureNS: 'http://173.193.109.188:30657', //命名空间
-//     featurePrefix: 'blockmap', //工作区域
-//     featureTypes: ['ncov_china_data'], //图层名
-//     outputFormat: 'application/json',
-//     filter: andFilter(
-//       // likeFilter('fulladdr', '广东省*'),
-//       equalToFilter('province', '广东省'),
-//       equalToFilter('city', '广州市')
-//     )
-//   });
-
-//   // then post the request and add the received features to a layer
-//   fetch('http://173.193.109.188:30657/geoserver/wfs', {
-//     method: 'POST',
-//     body: new XMLSerializer().serializeToString(featureRequest)
-//   }).then(function (response) {
-//     console.log(response)
-//     return response.json();
-//   }).then(function (json) {
-
-//     var features = new GeoJSON().readFeatures(json, {
-//       dataProjection: 'EPSG:4326',
-//       featureProjection: 'EPSG:3857'
-//     });
-//     console.log(features)
-//     if (features.length === 0) {
-//       layer.msg('此区域暂无相关地物数据！', {
-//         icon: 2
-//       });
-//       return;
-//     }
-//     vectorSource.addFeatures(features);
-//     // facilities.set(value, features);
-//     var iconStyle = new Style({
-//       image: new Icon({
-//         opacity: 0.75,
-//         src: "https://openlayers.org/en/latest/examples/data/icon.png"
-//       }),
-//     });
-//     //创建矢量层
-//     var vectorLayer = new VectorLayer({
-//       source: vectorSource,
-//       style: iconStyle
-//     });
-//     ol2d.addLayer(vectorLayer)
-//     // map.getView().fit(vectorSource.getExtent());
-//   });
-// })
 
 // ol2d.on('click', function (evt) {
 //   displayFeatureInfo(evt.pixel);
 // });
+
+/* #################### Cesium Begin#################### */
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
+Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
+
+const ol3d = new OLCesium({
+  map: ol2d
+}); 
+// ol2dMap is the ol.Map instance
+// const scene = ol3d.getCesiumScene();
+// scene.terrainProvider = Cesium.createWorldTerrain();
+ol3d.setEnabled(true);
+// loadLayersControl(map, "layerTree");
+
+// //新建一个Cesium服务，将画布嵌入到id是cesiumContainer的DOM元素中
+// var viewer = new Cesium.Viewer('map', {
+//   // 查找位置工具，查找到之后会将镜头对准找到的地址，默认使用bing地图
+//   geocoder: true,
+//   // 视角返回初始位置
+//   homeButton: true,
+//   // 选择视角的模式，有三种：3D，2D，哥伦布视图（2.5D)
+//   sceneModePicker: true,
+//   // 图层选择器，选择要显示的地图服务和地形服务
+//   baseLayerPicker: true,
+//   // 导航帮助按钮，显示默认的地图控制帮助
+//   navigationHelpButton: false,
+//   animation: false, //左下角的动画控件的显示
+//   shouldAnimate: false, //控制模型动画
+//   timeline: false,
+//   // 全屏按钮
+//   fullscreenButton: false,
+//   imageryProvider: new Cesium.WebMapTileServiceImageryProvider({
+//     url: "http://t0.tianditu.gov.cn/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=" + tdToken,
+//     layer: "tdtImgBasicLayer",
+//     style: "default",
+//     format: "image/jpeg",
+//     show: false
+//   })
+// })
+// // 图层选择器出事图层
+// // viewer.baseLayerPicker.viewModel.selectedImagery = viewer.baseLayerPicker.viewModel.imageryProviderViewModels[9];
+
+// viewer.camera.flyHome(2);
+
+// var provider = new Cesium.WebMapServiceImageryProvider({
+//   url: 'http://173.193.109.188:30657/geoserver/blockmap/wms',
+//   layers: 'blockmap:province0',
+//   parameters: {
+//     service: 'WMS',
+//     format: 'image/png',
+//     transparent: true,
+//   }
+// });
+// viewer.imageryLayers.addImageryProvider(provider);
+
+// //监听地图移动完成事件
+// viewer.camera.moveEnd.addEventListener(function () {
+//   //获取当前相机高度
+//   let height = Math.ceil(viewer.camera.positionCartographic.height);
+//   //  let zoom = viewer.heightToZoom(height);
+//   let bounds = viewer.camera.computeViewRectangle();
+//   console.log('地图变化监听事件', bounds);
+// });
+
+// // AJAX获取GeoJson数据
+// //    $.ajax({
+// //            url:"http://localhost:8082/geoserver/mytest/ows?service=WFS&request=GetFeature&typeName=mytest:river4&outputFormat=application/json",
+// //            cache: false,
+// //            async: true,
+// //            success: function(data) {
+// //                  var datasource=Cesium.GeoJsonDataSource.load(data);
+// //                viewer.dataSources.add(datasource);
+// //            },
+// //            error: function(data) {
+// //                 console.log("error");
+// //            }
+// //    });
+
+// // 数据就被加载到cesium中了，然后使用 dataSource.entities.values，就可以对图层进行渲染了,代码如下:
+// // var entities = dataSource.entities.values;for (var i = 0; i < entities.length; i++) {
+// //   var entity = entities[i];
+// //   var polylineVolume = {
+// //                   positions:entity.polyline._positions,
+// //                   shape:computeCircle(50.0),
+// //                   material:Cesium.Color.RED
+// //                }
+// //   entity.polylineVolume=polylineVolume;
+// //   entity.polyline=null;
+// // }
+
+// //监听地图移动完成事件
+// // onMoveendMap = () => {
+// //   //获取当前相机高度
+// //   let height = Math.ceil(viewer.camera.positionCartographic.height);
+// //   let zoom = viewer.heightToZoom(height);
+// //   let bounds = viewer.getCurrentExtent();
+// //   console.log('地图变化监听事件', zoom, bounds);
+// // };
+
+// viewer.imageryLayers.addImageryProvider(new Cesium.WebMapTileServiceImageryProvider({
+//   url: "http://t0.tianditu.gov.cn/cia_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=cia&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=" +
+//     tdToken,
+//   layer: "tdtImgAnnoLayer",
+//   style: "default",
+//   format: "image/jpeg",
+//   tileMatrixSetID: "GoogleMapsCompatible",
+//   show: false
+// }));
+
+// /* 三维球转动添加监听事件 */
+// viewer.camera.changed.addEventListener(function (percentage) {
+//   getCenterPosition();
+//   getCurrentExtent();
+//   // 打印中心点坐标、高度、当前范围坐标
+//   console.log(getCenterPosition());
+//   console.log("bounds", getCurrentExtent());
+// });
+
+/* 获取camera高度  */
+function getHeight() {
+  if (viewer) {
+    var scene = viewer.scene;
+    var ellipsoid = scene.globe.ellipsoid;
+    var height = ellipsoid.cartesianToCartographic(viewer.camera.position).height;
+    return height;
+  }
+}
+
+/* 获取camera中心点坐标 */
+function getCenterPosition() {
+  var result = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(viewer.canvas.clientWidth / 2, viewer.canvas
+    .clientHeight / 2));
+  var curPosition = Cesium.Ellipsoid.WGS84.cartesianToCartographic(result);
+  var lon = curPosition.longitude * 180 / Math.PI;
+  var lat = curPosition.latitude * 180 / Math.PI;
+  var height = getHeight();
+  return {
+    lon: lon,
+    lat: lat,
+    height: height
+  };
+}
+
+function getCurrentExtent() {
+  // 范围对象
+  var extent = {};
+
+  // 得到当前三维场景
+  var scene = viewer.scene;
+
+  // 得到当前三维场景的椭球体
+  var ellipsoid = scene.globe.ellipsoid;
+  var canvas = scene.canvas;
+
+  // canvas左上角
+  var car3_lt = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(0, 0), ellipsoid);
+
+  // canvas右下角
+  var car3_rb = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(canvas.width, canvas.height), ellipsoid);
+
+  // 当canvas左上角和右下角全部在椭球体上
+  if (car3_lt && car3_rb) {
+    var carto_lt = ellipsoid.cartesianToCartographic(car3_lt);
+    var carto_rb = ellipsoid.cartesianToCartographic(car3_rb);
+    extent.xmin = Cesium.Math.toDegrees(carto_lt.longitude);
+    extent.ymax = Cesium.Math.toDegrees(carto_lt.latitude);
+    extent.xmax = Cesium.Math.toDegrees(carto_rb.longitude);
+    extent.ymin = Cesium.Math.toDegrees(carto_rb.latitude);
+  }
+
+  // 当canvas左上角不在但右下角在椭球体上
+  else if (!car3_lt && car3_rb) {
+    var car3_lt2 = null;
+    var yIndex = 0;
+    do {
+      // 这里每次10像素递加，一是10像素相差不大，二是为了提高程序运行效率
+      yIndex <= canvas.height ? yIndex += 10 : canvas.height;
+      car3_lt2 = viewer.camera.pickEllipsoid(new Cesium.Cartesian2(0, yIndex), ellipsoid);
+    } while (!car3_lt2);
+    var carto_lt2 = ellipsoid.cartesianToCartographic(car3_lt2);
+    var carto_rb2 = ellipsoid.cartesianToCartographic(car3_rb);
+    extent.xmin = Cesium.Math.toDegrees(carto_lt2.longitude);
+    extent.ymax = Cesium.Math.toDegrees(carto_lt2.latitude);
+    extent.xmax = Cesium.Math.toDegrees(carto_rb2.longitude);
+    extent.ymin = Cesium.Math.toDegrees(carto_rb2.latitude);
+  }
+
+  // 获取高度
+  extent.height = Math.ceil(viewer.camera.positionCartographic.height);
+  return extent;
+}
+
+/* #################### Cesium End#################### */
