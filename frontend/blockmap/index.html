@@ -93,6 +93,10 @@
       color: rgba(255, 255, 255, 1);
     }
 
+  #map > div > div.ol-overlaycontainer-stopevent > div.ol-zoomslider.ol-unselectable.ol-control{
+    top:155px;
+    left: 9px;
+  }
     .ol-popup {
       position: absolute;
       background-color: #eeeeee;
@@ -178,8 +182,14 @@
       margin-left: 10px;
       height: 20px;
     }
-
-
+    /* custom control*/
+      .rotate-north {
+        top: 115px;
+        left: .5em;
+      }
+      .ol-touch .rotate-north {
+        top: 80px;
+      }
     /* cesium map viewer */
     .cesium-viewer {
       /* position:absolute;
@@ -210,6 +220,10 @@
     div.cesium-credit-logoContainer{
       display: none;
     }
+    #map > div > div.ol-overlaycontainer-stopevent > div:nth-child(1) > div:nth-child(2) > div.cesium-credit-logoContainer > div > a > img{
+      display: none;
+    }
+
     .cesium-viewer-fullscreenContainer
 
     /* 全屏按钮 */
@@ -218,6 +232,23 @@
       top: -999em;
     }
   </style>
+  <script>
+  window.onload=function () {  
+        document.addEventListener('touchstart',function (event) {  
+            if(event.touches.length>1){  
+                event.preventDefault();  
+            }  
+        })  
+        var lastTouchEnd=0;  
+        document.addEventListener('touchend',function (event) {  
+            var now=(new Date()).getTime();  
+            if(now-lastTouchEnd<=300){  
+                event.preventDefault();  
+            }  
+            lastTouchEnd=now;  
+        },false)  
+    }
+  </script>
 </head>
 
 <body>

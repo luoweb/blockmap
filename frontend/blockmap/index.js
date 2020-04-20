@@ -22,10 +22,15 @@ import {
 // import {Fill, Stroke, Style, Text} from 'ol/style';
 import ImageLayer from "ol/layer/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import FullScreen from "ol/control/FullScreen";
+import { defaults as defaultControls, Control } from 'ol/control';
 import * as olControl from "ol/control";
-import Zoom from "ol/control/Zoom";
+import FullScreen from "ol/control/FullScreen";
+import ZoomSlider from "ol/control/ZoomSlider";
 import ZoomToExtent from "ol/control/ZoomToExtent";
+import MousePosition from "ol/control/MousePosition";
+import OverviewMap from "ol/control/OverviewMap";
+import ScaleLine from "ol/control/ScaleLine";
+import Rotate from "ol/control/Rotate";
 import Heatmap from 'ol/layer/Heatmap';
 import LayerSwitcher from 'ol-layerswitcher';
 import 'ol-layerswitcher/src/ol-layerswitcher.css';
@@ -91,6 +96,48 @@ var overlay = new Overlay({
   autoPan: true
 });
 
+
+/*********************控件自定义**************************/
+
+//
+// Define rotate to north control.
+//
+var RotateNorthControl = /*@__PURE__*/(function (Control) {
+  function RotateNorthControl(opt_options) {
+    var options = opt_options || {};
+
+    var button = document.createElement('button');
+    button.innerHTML = 'F';
+
+    var element = document.createElement('div');
+    element.className = 'rotate-north ol-unselectable ol-control';
+    element.appendChild(button);
+
+    Control.call(this, {
+      element: element,
+      target: options.target
+    });
+
+    button.addEventListener('click', this.handleRotateNorth.bind(this), false);
+  }
+
+  if (Control) RotateNorthControl.__proto__ = Control;
+  RotateNorthControl.prototype = Object.create(Control && Control.prototype);
+  RotateNorthControl.prototype.constructor = RotateNorthControl;
+
+  RotateNorthControl.prototype.handleRotateNorth = function handleRotateNorth() {
+    this.getMap().getView().setRotation(0);
+    this.getMap().getView().fit([
+      8092058.047621677, -67251.42979813833,
+      16697377.372842146, 9390079.709800594
+    ]);
+
+  };
+
+  return RotateNorthControl;
+}(Control));
+
+
 /*********************图层选择**************************/
 var layer = new Array(); //图层数组
 var layerName = new Array(); //图层名称数组
@@ -154,11 +201,11 @@ var tdRoadMapLayer = new TileLayer({
   name: "天地图路网",
 });
 
-
+var tdImageSource = new XYZ({
+  url: "https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tdToken,
+})
 var tdImageLayer = new TileLayer({
-  source: new XYZ({
-    url: "https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tdToken,
-  }),
+  source: tdImageSource,
   type: 'base',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
@@ -170,15 +217,16 @@ var tdImageLayer = new TileLayer({
   name: "天地卫星图",
 });
 
+var borderSource = new ImageWMS({
+  url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+  params: {
+    LAYERS: "border",
+  },
+  serverType: "geoserver",
+  // crossOrigin: "anonymous",
+})
 var borderLayer = new ImageLayer({
-  source: new ImageWMS({
-    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
-    params: {
-      LAYERS: "border",
-    },
-    serverType: "geoserver",
-    crossOrigin: "anonymous",
-  }),
+  source: borderSource,
   title: '中国边界图',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
@@ -194,7 +242,7 @@ var provinceLayer = new ImageLayer({
       LAYERS: "province0",
     },
     serverType: "geoserver",
-    crossOrigin: "anonymous",
+    // crossOrigin: "anonymous",
   }),
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
@@ -212,7 +260,7 @@ var cityLayer = new ImageLayer({
       LAYERS: "city",
     },
     serverType: "geoserver",
-    crossOrigin: "anonymous",
+    // crossOrigin: "anonymous",
   }),
   name: '城市矢量图',
   title: '城市矢量图',
@@ -228,7 +276,7 @@ var ncovVoronoiLahyer = new ImageLayer({
       LAYERS: "ncov_china_voronoi_multicolor",
     },
     serverType: "geoserver",
-    crossOrigin: "anonymous",
+    // crossOrigin: "anonymous",
   }),
   name: '疫情泰森图',
   title: '疫情泰森图',
@@ -319,7 +367,7 @@ var ncovWmsLayer = new VectorLayer({
 //   strategy: bboxStrategy
 // });
 
-var ncovVectorSource = new VectorSource({});
+
 
 var iconStyle = new Style({
   image: new Icon({
@@ -334,6 +382,19 @@ var iconStyle = new Style({
 
   })
 });
+
+var ncovVectorSource = new VectorSource({});
+
+var ncovPointVectorSource = new VectorSource({});
+//创建疫情点矢量层
+var ncovPointVectorLayer = new VectorLayer({
+  source: ncovPointVectorSource,
+  style: iconStyle,
+  name: "疫情点地图",
+  title: '疫情点地图',
+  visible: true,
+});
+
 //创建矢量层
 var ncovVectorLayer = new VectorLayer({
   source: ncovVectorSource,
@@ -358,15 +419,12 @@ var heatMapLayer = new Heatmap({
   visible: false,
 });
 
-
 var view = new View({
   center: fromLonLat([113.3, 23.12]),
   zoom: 3,
 });
 console.log(fromLonLat([113.3, 23.12]));
 
-var fullScreenControl = new FullScreen();
-var zoomControl = new Zoom();
 var ol2d = new Map({
   layers: [
     tdImageLayer,
@@ -381,9 +439,20 @@ var ol2d = new Map({
     borderLayer,
     heatMapLayer,
     ncovVectorLayer,
+    ncovPointVectorLayer,
     // wfsVectorLayer
   ],
   target: "map",
+  //   controldefaults，地图默认包含的控件，包含缩放控件和旋转控件；
+  //   fullscreencontrol，全屏控件，用于全屏幕查看地图；
+  //   mousepositioncontrol，鼠标位置控件，显示鼠标所在地图位置的坐标，可以自定义投影；
+  //   overviewmapcontrol，地图全局视图控件；
+  //   rotatecontrol，地图旋转控件；
+  //   scalelinecontrol，比例尺控件；
+  //   zoomcontrol，缩放控件；
+  //   zoomslidercontrol，缩放刻度控件；
+  //   zoomtoextentcontrol，缩放到全局控件。
+
   controls: olControl.defaults().extend([
     // 将用于将地图定位到指定范围的ZoomToExtent控件加入到地图的默认控件中
     new ZoomToExtent({
@@ -395,12 +464,22 @@ var ol2d = new Map({
         2656537.0728182457,
       ],
     }),
+    // new ZoomToExtent(),
+    new MousePosition(),
+    new FullScreen(),
+    new OverviewMap({
+      layers: [
+        new TileLayer({
+          source: borderSource
+        })
+      ]
+    }),
+    new ZoomSlider(),
+    new RotateNorthControl(),
   ]),
   view: view,
 });
 
-ol2d.addControl(fullScreenControl);
-ol2d.addControl(zoomControl);
 
 var layerSwitcher = new LayerSwitcher({
   tipLabel: 'MapSelector', // Optional label for button
@@ -646,16 +725,16 @@ ol2d.on("moveend", function (evt) {
       });
       return;
     }
-    ncovVectorSource.addFeatures(features);
+    ncovPointVectorSource.addFeatures(features);
     // //创建矢量层
-    var vectorLayer = new VectorLayer({
-      source: ncovVectorSource,
-      style: iconStyle,
-      name: "疫情点地图",
-      title: '疫情点地图',
-      visible: false,
-    });
-    ol2d.addLayer(vectorLayer)
+    // var vectorLayer = new VectorLayer({
+    //   source: ncovVectorSource,
+    //   style: iconStyle,
+    //   name: "疫情点地图",
+    //   title: '疫情点地图',
+    //   visible: false,
+    // });
+    // ol2d.addLayer(vectorLayer)
     // ol2d.getView().fit(vectorSource.getExtent());
   });
 })
@@ -670,7 +749,7 @@ Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110
 
 const ol3d = new OLCesium({
   map: ol2d
-}); 
+});
 // ol2dMap is the ol.Map instance
 // const scene = ol3d.getCesiumScene();
 // scene.terrainProvider = Cesium.createWorldTerrain();
