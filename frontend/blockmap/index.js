@@ -1,4 +1,5 @@
 import "ol/ol.css";
+import "ol-ext/dist/ol-ext.css";
 import Map from "ol/Map";
 import View from "ol/View";
 // import TileLayer from 'ol/layer/Tile';
@@ -22,7 +23,10 @@ import {
 // import {Fill, Stroke, Style, Text} from 'ol/style';
 import ImageLayer from "ol/layer/Image";
 import ImageWMS from "ol/source/ImageWMS";
-import { defaults as defaultControls, Control } from 'ol/control';
+import {
+  defaults as defaultControls,
+  Control
+} from 'ol/control';
 import * as olControl from "ol/control";
 import FullScreen from "ol/control/FullScreen";
 import ZoomSlider from "ol/control/ZoomSlider";
@@ -31,6 +35,8 @@ import MousePosition from "ol/control/MousePosition";
 import OverviewMap from "ol/control/OverviewMap";
 import ScaleLine from "ol/control/ScaleLine";
 import Rotate from "ol/control/Rotate";
+import SearchFeature from "ol-ext/control/SearchFeature";
+import GeolocationBar from "ol-ext/control/GeolocationBar";
 import Heatmap from 'ol/layer/Heatmap';
 import LayerSwitcher from 'ol-layerswitcher';
 import 'ol-layerswitcher/src/ol-layerswitcher.css';
@@ -63,7 +69,7 @@ import {
   Text
 } from "ol/style";
 import Overlay from 'ol/Overlay';
-
+import Select from 'ol/interaction/Select'
 // import Polygon from 'ol/geom/Polygon';
 import {
   Polygon,
@@ -102,7 +108,7 @@ var overlay = new Overlay({
 //
 // Define rotate to north control.
 //
-var RotateNorthControl = /*@__PURE__*/(function (Control) {
+var RotateNorthControl = /*@__PURE__*/ (function (Control) {
   function RotateNorthControl(opt_options) {
     var options = opt_options || {};
 
@@ -223,8 +229,8 @@ var borderSource = new ImageWMS({
     LAYERS: "border",
   },
   serverType: "geoserver",
-  // crossOrigin: "anonymous",
-})
+  crossOrigin: "anonymous",
+});
 var borderLayer = new ImageLayer({
   source: borderSource,
   title: '中国边界图',
@@ -242,7 +248,7 @@ var provinceLayer = new ImageLayer({
       LAYERS: "province0",
     },
     serverType: "geoserver",
-    // crossOrigin: "anonymous",
+    crossOrigin: "anonymous",
   }),
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
@@ -260,7 +266,7 @@ var cityLayer = new ImageLayer({
       LAYERS: "city",
     },
     serverType: "geoserver",
-    // crossOrigin: "anonymous",
+    crossOrigin: "anonymous",
   }),
   name: '城市矢量图',
   title: '城市矢量图',
@@ -276,7 +282,7 @@ var ncovVoronoiLahyer = new ImageLayer({
       LAYERS: "ncov_china_voronoi_multicolor",
     },
     serverType: "geoserver",
-    // crossOrigin: "anonymous",
+    crossOrigin: "anonymous",
   }),
   name: '疫情泰森图',
   title: '疫情泰森图',
@@ -288,7 +294,7 @@ var ncovVoronoiLahyer = new ImageLayer({
 var layerGroup = new LayerGroup({
   title: 'Base maps',
   layers: [tdRoadMapLayer, provinceLayer],
-})
+});
 
 
 var style = new Style({
@@ -354,20 +360,18 @@ var ncovWmsLayer = new VectorLayer({
 // });
 
 
-// var ncovVectorSource = new VectorSource({
-//   format: new GeoJSON(),
-//   url: function (extent) {
-//     console.log("extent");
-//     console.log(extent);
-//     return 'http://173.193.109.188:30657/geoserver/wfs?service=WFS&' +
-//       'version=1.1.0&request=GetFeature&typename=blockmap:ncov_china_data&' +
-//       'outputFormat=application/json&srsname=EPSG:4326&' +
-//       'bbox=' + extent.join(',') + ',EPSG:3857';
-//   },
-//   strategy: bboxStrategy
-// });
-
-
+var ncovVectorSource = new VectorSource({
+  format: new GeoJSON(),
+  url: function (extent) {
+    console.log("extent");
+    console.log(extent);
+    return 'http://173.193.109.188:30657/geoserver/wfs?service=WFS&' +
+      'version=1.1.0&request=GetFeature&typename=blockmap:ncov_china_data&' +
+      'outputFormat=application/json&srsname=EPSG:4326&' +
+      'bbox=' + extent.join(',') + ',EPSG:3857';
+  },
+  strategy: bboxStrategy
+});
 
 var iconStyle = new Style({
   image: new Icon({
@@ -383,7 +387,6 @@ var iconStyle = new Style({
   })
 });
 
-var ncovVectorSource = new VectorSource({});
 
 var ncovPointVectorSource = new VectorSource({});
 //创建疫情点矢量层
@@ -478,6 +481,35 @@ var ol2d = new Map({
     new RotateNorthControl(),
   ]),
   view: view,
+});
+
+
+ var geolocationBar =  new GeolocationBar({
+  source: tdRoadMapLayer.getSource(),
+  followTrack: 'auto',
+  minZoom: 16,
+  minAccuracy:10000
+ });
+ ol2d.addControl(geolocationBar);
+
+var select = new Select({});
+ol2d.addInteraction(select);
+var searchControl = new SearchFeature({ //target: $(".options").get(0),
+  source: ncovVectorSource,
+  property: "full_addre"
+});
+
+ol2d.addControl(searchControl);
+// Select feature when click on the reference index
+searchControl.on('select', function (e) {
+  select.getFeatures().clear();
+  // console.log("select");
+  // console.log(e)
+  select.getFeatures().push(e.search);
+  var p = e.search.getGeometry().getFirstCoordinate();
+  ol2d.getView().animate({
+    center: p
+  });
 });
 
 
@@ -639,7 +671,7 @@ popupCloser.addEventListener("click", function () {
 ol2d.on("pointermove", function (evt) {
   if (evt.dragging) {
     var mapExtent = ol2d.getView().calculateExtent(ol2d.getSize());
-    console.log(mapExtent)
+    // console.log(mapExtent)
     return;
   }
   var pixel = ol2d.getEventPixel(evt.originalEvent);
@@ -665,7 +697,7 @@ ol2d.on("pointermove", function (evt) {
 ol2d.on("moveend", function (evt) {
 
   var mapExtent = ol2d.getView().calculateExtent(ol2d.getSize());
-  console.log(mapExtent)
+  // console.log(mapExtent)
   var newPoly = fromExtent(mapExtent);
   // Openlayer4的wfs属性查询和空间查询
   //测试用的geometry类型数据 （Polygon）
@@ -685,7 +717,7 @@ ol2d.on("moveend", function (evt) {
     'the_geom',
     newPoly,
     'EPSG:3857'
-  )
+  );
   //来自官网Example
   // generate a GetFeature request
   var featureRequest = new WFS().writeGetFeature({
@@ -742,16 +774,18 @@ ol2d.on("moveend", function (evt) {
 // });
 
 /* #################### Cesium Begin#################### */
-Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
-Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
+// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
+// Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
 
-const ol3d = new OLCesium({
-  map: ol2d
-});
+// const ol3d = new OLCesium({
+//   map: ol2d
+// });
 // ol2dMap is the ol.Map instance
 // const scene = ol3d.getCesiumScene();
 // scene.terrainProvider = Cesium.createWorldTerrain();
-ol3d.setEnabled(true);
+// ol3d.setEnabled(true);
+
+
 // loadLayersControl(map, "layerTree");
 
 // //新建一个Cesium服务，将画布嵌入到id是cesiumContainer的DOM元素中

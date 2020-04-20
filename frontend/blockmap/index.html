@@ -5,6 +5,16 @@
   <title>BlockMap</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta http-equiv="Access-Control-Allow-Origin" content="http://127.0.0.1:1234">
+  <!-- android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="translucent-black">
+  <link rel="apple-touch-icon" href="https://openlayers.org/assets/theme/img/logo70.png" />
+  <link rel="apple-touch-startup-image" href="https://openlayers.org/assets/theme/img/logo70.png" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="msapplication-tap-highlight" content="no" />
+  
   <meta name="viewport"
     content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
@@ -12,8 +22,8 @@
     src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList,URL">
   </script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.1.min.js"></script>
-  <script src="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Cesium.js"></script>
-  <link href="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <!-- <script src="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Widgets/widgets.css" rel="stylesheet"> -->
   <style>
     html,
     body {
@@ -292,6 +302,23 @@
       </table>
     </div> -->
     <div id="map" class="map"></div>
+    <div class="options">
+      <h2>Options:</h2>
+      <ul>
+        <li>
+          maxInputs: <input type="number" onchange="search.set('maxItems', Number(this.value));" style="width:3em;" value="10" />
+        </li>
+        <li>
+          search property:
+          <select onchange="search.set('property',this.value); search.search();">
+            <option value="commune">commune</option>
+            <option value="region">region</option>
+            <option value="text">text</option>
+          </select>
+        </li>
+      </ul>
+      <i>Use the search control to start a new search.</i>
+    </div>
     <!-- <div id="credit"></div>
     <div id="cesiumContainer">
       <div id="cesiumxin" style="position:fixed;left:0;z-index:99"><a href="http://cesium.xin"

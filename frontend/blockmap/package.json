@@ -2,6 +2,7 @@
   "name": "hitdetect-vector",
   "dependencies": {
     "ol": "6.3.1",
+    "ol-ext": "^3.1.12",
     "ol-layerswitcher": "^3.6.0",
     "olcs": "^2.10.0"
   },
