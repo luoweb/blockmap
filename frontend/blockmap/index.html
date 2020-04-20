@@ -14,7 +14,7 @@
   <link rel="apple-touch-startup-image" href="https://openlayers.org/assets/theme/img/logo70.png" />
   <meta name="format-detection" content="telephone=no" />
   <meta name="msapplication-tap-highlight" content="no" />
-  
+
   <meta name="viewport"
     content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
@@ -190,17 +190,20 @@
       margin-left: 10px;
       height: 20px;
     }
-    #map > div > div.ol-overlaycontainer-stopevent > div.ol-zoom-extent.ol-unselectable.ol-control{
+
+    #map>div>div.ol-overlaycontainer-stopevent>div.ol-zoom-extent.ol-unselectable.ol-control {
       top: 85px;
       left: .5em;
-    
+
     }
-    #map > div > div.ol-overlaycontainer-stopevent > div.rotate-north.ol-unselectable.ol-control{
-      top:128px;
+
+    #map>div>div.ol-overlaycontainer-stopevent>div.rotate-north.ol-unselectable.ol-control {
+      top: 128px;
       left: 9px;
     }
-    #map > div > div.ol-overlaycontainer-stopevent > div.ol-zoomslider.ol-unselectable.ol-control{
-      top:171px;
+
+    #map>div>div.ol-overlaycontainer-stopevent>div.ol-zoomslider.ol-unselectable.ol-control {
+      top: 171px;
       left: 9px;
     }
 
@@ -220,21 +223,23 @@
     /* 右上角按钮组 */
     .cesium-viewer-animationContainer,
     /* 左下角动画控件 */
-    .cesium-viewer-timelineContainer    
-    {
+    .cesium-viewer-timelineContainer {
       display: none;
     }
+
     /* 时间线 */
     .cesium-viewer-bottom
 
     /* logo信息 */
-    {
+      {
       display: none;
     }
-    div.cesium-credit-logoContainer{
+
+    div.cesium-credit-logoContainer {
       display: none;
     }
-    #map > div > div.ol-overlaycontainer-stopevent > div:nth-child(1) > div:nth-child(2) > div.cesium-credit-logoContainer > div > a > img{
+
+    #map>div>div.ol-overlaycontainer-stopevent>div:nth-child(1)>div:nth-child(2)>div.cesium-credit-logoContainer>div>a>img {
       display: none;
     }
 
@@ -247,20 +252,20 @@
     }
   </style>
   <script>
-  window.onload=function () {  
-        document.addEventListener('touchstart',function (event) {  
-            if(event.touches.length>1){  
-                event.preventDefault();  
-            }  
-        })  
-        var lastTouchEnd=0;  
-        document.addEventListener('touchend',function (event) {  
-            var now=(new Date()).getTime();  
-            if(now-lastTouchEnd<=300){  
-                event.preventDefault();  
-            }  
-            lastTouchEnd=now;  
-        },false)  
+    window.onload = function () {
+      document.addEventListener('touchstart', function (event) {
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
+      })
+      var lastTouchEnd = 0;
+      document.addEventListener('touchend', function (event) {
+        var now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+      }, false)
     }
   </script>
 </head>
@@ -302,7 +307,7 @@
       </table>
     </div> -->
     <div id="map" class="map"></div>
-    <div class="options">
+    <!-- <div class="options">
       <h2>Options:</h2>
       <ul>
         <li>
@@ -318,7 +323,7 @@
         </li>
       </ul>
       <i>Use the search control to start a new search.</i>
-    </div>
+    </div> -->
     <!-- <div id="credit"></div>
     <div id="cesiumContainer">
       <div id="cesiumxin" style="position:fixed;left:0;z-index:99"><a href="http://cesium.xin"

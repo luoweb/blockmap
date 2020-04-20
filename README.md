@@ -7,11 +7,11 @@
 
 ### Application Architecture
 
-![app_arch](http://github.roweb.cn/mapblock/public/assets/app_arch_v1.png)
+![app_arch_en](http://github.roweb.cn/mapblock/public/assets/app_arch_en_v1.png)
 
 ### Data Architecture
 
-![data_arch](http://github.roweb.cn/mapblock/public/assets/data_arch_v1.png)
+![data_arch_en](http://github.roweb.cn/mapblock/public/assets/data_arch_en_v1.png)
 
 ## Frontend Architecture
 
