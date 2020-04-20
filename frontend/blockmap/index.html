@@ -93,10 +93,8 @@
       color: rgba(255, 255, 255, 1);
     }
 
-  #map > div > div.ol-overlaycontainer-stopevent > div.ol-zoomslider.ol-unselectable.ol-control{
-    top:155px;
-    left: 9px;
-  }
+
+
     .ol-popup {
       position: absolute;
       background-color: #eeeeee;
@@ -182,14 +180,20 @@
       margin-left: 10px;
       height: 20px;
     }
-    /* custom control*/
-      .rotate-north {
-        top: 115px;
-        left: .5em;
-      }
-      .ol-touch .rotate-north {
-        top: 80px;
-      }
+    #map > div > div.ol-overlaycontainer-stopevent > div.ol-zoom-extent.ol-unselectable.ol-control{
+      top: 85px;
+      left: .5em;
+    
+    }
+    #map > div > div.ol-overlaycontainer-stopevent > div.rotate-north.ol-unselectable.ol-control{
+      top:128px;
+      left: 9px;
+    }
+    #map > div > div.ol-overlaycontainer-stopevent > div.ol-zoomslider.ol-unselectable.ol-control{
+      top:171px;
+      left: 9px;
+    }
+
     /* cesium map viewer */
     .cesium-viewer {
       /* position:absolute;
@@ -288,7 +292,6 @@
       </table>
     </div> -->
     <div id="map" class="map"></div>
-    <div id="cesiumContainer" style="width: 700px; height:400px"></div>
     <!-- <div id="credit"></div>
     <div id="cesiumContainer">
       <div id="cesiumxin" style="position:fixed;left:0;z-index:99"><a href="http://cesium.xin"

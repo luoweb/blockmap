@@ -1,67 +1,74 @@
-# BlockMap 疫情地图
+# BlockMap
 
-- 常规疫情浏览查询功能，疫情点，人员热力图，颜色显示
-- 复工评估：银行网点复工选择，通过疫情点，人口密度，交通便利情况分析
-- 最佳上班路径：推荐最短路径+风险规避路径
-- 风险扩散趋势图：人员迁徙图，根据热力图生成迁徙地图
+- Regular epidemic situation browsing query function, epidemic situation point, personnel heat map, graded color display
+- Evaluation of resumption of work: selection of resumption of bank outlets, analysis of epidemic situation, population density, and convenient transportation
+- The best way to work: recommend the shortest path + risk avoidance path
+- Risk diffusion trend map: personnel migration map, generating migration map based on heat map
 
-### Application Architecture (功能架构图)
+### Application Architecture
+
 ![app_arch](http://github.roweb.cn/mapblock/public/assets/app_arch_v1.png)
-### Data Architecture (数据架构图)
+
+### Data Architecture
+
 ![data_arch](http://github.roweb.cn/mapblock/public/assets/data_arch_v1.png)
 
-## Frontend (前端架构)
-- web(nginx):
-    vuejs + openlayers.js
-- app(ios&android):
-    cordova + h5 + js
+## Frontend Architecture
 
-## Backend （后端架构）
-### Geo server (地图服务)
-- 发布地图服务：基础地图图层，疫情点图层，道路图层，
-- 展示地图信息: 地图浏览，疫情点
-- 空间分析：最短路径分析，疫情趋势分析，复工评估
-  
-### App server (应用服务)
-- 导入数据到地图服务：通过接口自动导入到GeoServer中
-- 调用大数据分析接口：前端调用数据实时分析预测服务
-- 前端web和app接口：支持前端页面和APP数据交换
-  
-### Data server (数据存储)
+- web(nginx):
+  vuejs + openlayers.js
+- app(ios&android):
+  cordova + h5 + js
+
+## Backend Architecture
+
+### Geo server Service
+
+- Publish map service: basic map layer, epidemic point layer, road layer,
+- Display map information: map browsing, epidemic situation
+- Spatial analysis: shortest path analysis, epidemic trend analysis, resumption assessment
+
+### App server Service
+
+- Import data into map service: automatically import into GeoServer through interface
+- Call big data analysis interface: front-end call data real-time analysis and prediction service
+- Front-end web and app interface: support front-end page and APP data exchange
+
+### Data Storage Service
+
 - PostgreSQL/MySQL
 - BigData/IBM Watson
 
-# BlockChain QrCode (区块链健康码)
+# BlockChain Health QrCode
 
+## Trusted digital identity scheme architecture
 
-## 2.1 可信数字身份方案架构
-
-可信数字身份服务，依托于成熟的区块链技术，提供稳定完善的分布式数字身份和可验证声明的全周期管理，用以支持金融、电子政务、医疗等行业的业务场景。
+Trusted digital identity service, relying on mature blockchain technology, provides stable and complete distributed digital identity and verifiable statement full-cycle management to support business scenarios in finance, e-government, medical and other industries.
 
 ![ar](http://github.roweb.cn/mapblock/public/assets/ar.png)
 
-## 2.2 可信数字身份防疫二维码
+## Anti-epidemic QR code of trusted digital identity
 
-用户可以不依赖三方中心机构，真正掌握数字身份所有权。同时，用户可在个人隐私信息受到高度保护的情况下进行身份验证。
+Users can truly rely on the ownership of digital identity without relying on a three-party central organization. At the same time, users can verify their identity while personal privacy information is highly protected.
 
 ![ibm-qr](http://github.roweb.cn/mapblock/public/assets/ibm-qr.png)
 
-## 2.3 防疫二维码方案使用入门
+## Getting started with the QR code for epidemic prevention
 
-### 2.3.1 使用步骤
+### Steps for usage
 
-- 新建区块链网络
-- 部署可信数字身份区块链智能合约
-- 调用SDK
+- New blockchain network
+- Deploy trusted digital identity blockchain smart contracts
+- Call SDK
 
-### 2.3.2 视频演示
+### Video demo
 
-|                   用户出示防疫二维码                    |                     机构验证防疫情二维码                     |
-| :-----------------------------------------------------: | :----------------------------------------------------------: |
-| [![用户出示防疫二维码视频预览](http://github.roweb.cn/mapblock/public/assets/show.jpg)](http://q8mix8qp7.bkt.clouddn.com/show.mp4)| [![用户出示防疫二维码视频预览](http://github.roweb.cn/mapblock/public/assets/verify.jpg)](http://q8mix8qp7.bkt.clouddn.com/verification.mp4) |
-
+|                                                                User presents epidemic prevention QrCode                                                                |                                                             Institutional verification of epidemic prevention QrCode                                                             |
+| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/show.jpg)](http://q8mix8qp7.bkt.clouddn.com/show.mp4) | [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/verify.jpg)](http://q8mix8qp7.bkt.clouddn.com/verification.mp4) |
 
 # Tech Stack
+
 - Kubernetes
 - DB(MySQL/PostreSQL)
 - Hyperledger Fabric(BlockChain)

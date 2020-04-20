@@ -666,9 +666,7 @@ ol2d.on("moveend", function (evt) {
 
   var mapExtent = ol2d.getView().calculateExtent(ol2d.getSize());
   console.log(mapExtent)
-  console.log("new Polygon")
   var newPoly = fromExtent(mapExtent);
-  console.log(newPoly)
   // Openlayer4的wfs属性查询和空间查询
   //测试用的geometry类型数据 （Polygon）
   // var newPoly2 = new Polygon([
@@ -705,38 +703,38 @@ ol2d.on("moveend", function (evt) {
     )
   });
 
-  // then post the request and add the received features to a layer
-  fetch('http://173.193.109.188:30657/geoserver/wfs', {
-    method: 'POST',
-    body: new XMLSerializer().serializeToString(featureRequest)
-  }).then(function (response) {
-    console.log(response)
-    return response.json();
-  }).then(function (json) {
+  // // then post the request and add the received features to a layer
+  // fetch('http://173.193.109.188:30657/geoserver/wfs', {
+  //   method: 'POST',
+  //   body: new XMLSerializer().serializeToString(featureRequest)
+  // }).then(function (response) {
+  //   console.log(response)
+  //   return response.json();
+  // }).then(function (json) {
 
-    var features = new GeoJSON().readFeatures(json, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857'
-    });
-    console.log(features)
-    if (features.length === 0) {
-      layer.msg('此区域暂无相关地物数据！', {
-        icon: 2
-      });
-      return;
-    }
-    ncovPointVectorSource.addFeatures(features);
-    // //创建矢量层
-    // var vectorLayer = new VectorLayer({
-    //   source: ncovVectorSource,
-    //   style: iconStyle,
-    //   name: "疫情点地图",
-    //   title: '疫情点地图',
-    //   visible: false,
-    // });
-    // ol2d.addLayer(vectorLayer)
-    // ol2d.getView().fit(vectorSource.getExtent());
-  });
+  //   var features = new GeoJSON().readFeatures(json, {
+  //     dataProjection: 'EPSG:4326',
+  //     featureProjection: 'EPSG:3857'
+  //   });
+  //   console.log(features)
+  //   if (features.length === 0) {
+  //     layer.msg('此区域暂无相关地物数据！', {
+  //       icon: 2
+  //     });
+  //     return;
+  //   }
+  //   ncovPointVectorSource.addFeatures(features);
+  //   // //创建矢量层
+  //   // var vectorLayer = new VectorLayer({
+  //   //   source: ncovVectorSource,
+  //   //   style: iconStyle,
+  //   //   name: "疫情点地图",
+  //   //   title: '疫情点地图',
+  //   //   visible: false,
+  //   // });
+  //   // ol2d.addLayer(vectorLayer)
+  //   // ol2d.getView().fit(vectorSource.getExtent());
+  // });
 })
 
 // ol2d.on('click', function (evt) {
