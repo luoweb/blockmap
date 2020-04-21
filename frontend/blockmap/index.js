@@ -552,15 +552,15 @@ ol2d.addControl(layerSwitcher);
 
 ol2d.getView().on('change:resolution', function () {
 
-  if (ol2d.getView().getZoom() < 3 && ol3d.getEnabled == false) {
+  if (ol2d.getView().getZoom() < 3) {
     ol3d.setEnabled(true)
-    console.log(ol2d.getView().getZoom())
-    console.log(ol3d.getEnabled)
+    // console.log(ol2d.getView().getZoom())
+    // console.log(ol3d.getEnabled)
   }
   if (ol2d.getView().getZoom() > 3) {
     ol3d.setEnabled(false)
-    console.log(ol2d.getView().getZoom())
-    console.log(ol3d.getEnabled)
+    // console.log(ol2d.getView().getZoom())
+    // console.log(ol3d.getEnabled)
   }
 
 })
