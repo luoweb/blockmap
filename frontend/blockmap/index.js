@@ -37,6 +37,8 @@ import ScaleLine from "ol/control/ScaleLine";
 import Rotate from "ol/control/Rotate";
 import SearchFeature from "ol-ext/control/SearchFeature";
 import GeolocationBar from "ol-ext/control/GeolocationBar";
+import extButton from "ol-ext/control/Button";
+
 import Heatmap from 'ol/layer/Heatmap';
 import LayerSwitcher from 'ol-layerswitcher';
 import 'ol-layerswitcher/src/ol-layerswitcher.css';
@@ -90,9 +92,18 @@ import {
 
 
 import OLCesium from 'olcs/OLCesium.js';
+// import Cesium from 'cesium/Build/Cesium/Cesium'
+// import 'cesium/Build/Cesium/Widgets/widgets.css'
+
+//天地图Token
+var tdToken = '320109f58cbb412b31e478ddc5c651bd';
+
+// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
+// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
+// Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
 
 /*********************显示弹出层**************************/
-var tdToken = '320109f58cbb412b31e478ddc5c651bd';
+
 var container = document.getElementById("popup");
 var content = document.getElementById("popup-content");
 var popupCloser = document.getElementById("popup-closer");
@@ -192,10 +203,11 @@ function setInnerText(element, text) {
   }
 }
 
+var tdRoadSource = new XYZ({
+  url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tdToken,
+});
 var tdRoadMapLayer = new TileLayer({
-  source: new XYZ({
-    url: "https://t0.tianditu.gov.cn/DataServer?T=vec_w&x={x}&y={y}&l={z}&tk=" + tdToken,
-  }),
+  source: tdRoadSource,
   type: 'base',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
@@ -221,6 +233,7 @@ var tdImageLayer = new TileLayer({
   visible: false,
   isGroup: true,
   name: "天地卫星图",
+  crossOrigin: "anonymous",
 });
 
 var borderSource = new ImageWMS({
@@ -428,6 +441,15 @@ var view = new View({
 });
 console.log(fromLonLat([113.3, 23.12]));
 
+var source = new OSM();
+var overviewMapControl = new OverviewMap({
+  layers: [
+    new TileLayer({
+      source: source
+    })
+  ]
+});
+
 var ol2d = new Map({
   layers: [
     tdImageLayer,
@@ -470,13 +492,7 @@ var ol2d = new Map({
     // new ZoomToExtent(),
     new MousePosition(),
     new FullScreen(),
-    new OverviewMap({
-      layers: [
-        new TileLayer({
-          source: borderSource
-        })
-      ]
-    }),
+    overviewMapControl,
     new ZoomSlider(),
     new RotateNorthControl(),
   ]),
@@ -484,13 +500,13 @@ var ol2d = new Map({
 });
 
 
- var geolocationBar =  new GeolocationBar({
+var geolocationBar = new GeolocationBar({
   source: tdRoadMapLayer.getSource(),
   followTrack: 'auto',
   minZoom: 16,
-  minAccuracy:10000
- });
- ol2d.addControl(geolocationBar);
+  minAccuracy: 10000
+});
+ol2d.addControl(geolocationBar);
 
 var select = new Select({});
 ol2d.addInteraction(select);
@@ -498,6 +514,8 @@ var searchControl = new SearchFeature({ //target: $(".options").get(0),
   source: ncovVectorSource,
   property: "full_addre"
 });
+
+
 
 ol2d.addControl(searchControl);
 // Select feature when click on the reference index
@@ -513,12 +531,39 @@ searchControl.on('select', function (e) {
 });
 
 
+
+var save = new extButton(
+  {
+    html: '<i class="fa fa-download"></i>',
+    className: "save",
+    title: "Save",
+    handleClick: function () {
+      ol3d.setEnabled(false)
+      console.log("Center: " + ol2d.getView().getCenter() + " - zoom: " + ol2d.getView().getZoom());
+    }
+  });
+ol2d.addControl(save)
+
 var layerSwitcher = new LayerSwitcher({
   tipLabel: 'MapSelector', // Optional label for button
   groupSelectStyle: 'children' // Can be 'children' [default], 'group' or 'none'
 });
 ol2d.addControl(layerSwitcher);
 
+ol2d.getView().on('change:resolution', function () {
+
+  if (ol2d.getView().getZoom() < 3 && ol3d.getEnabled == false) {
+    ol3d.setEnabled(true)
+    console.log(ol2d.getView().getZoom())
+    console.log(ol3d.getEnabled)
+  }
+  if (ol2d.getView().getZoom() > 3) {
+    ol3d.setEnabled(false)
+    console.log(ol2d.getView().getZoom())
+    console.log(ol3d.getEnabled)
+  }
+
+})
 // ol2d.on("pointermove", function (evt) {
 //   if (evt.dragging) {
 //     return;
@@ -699,6 +744,10 @@ ol2d.on("moveend", function (evt) {
   var mapExtent = ol2d.getView().calculateExtent(ol2d.getSize());
   // console.log(mapExtent)
   var newPoly = fromExtent(mapExtent);
+
+  //获取当前地图的缩放级别
+  var zoom = ol2d.getView().getZoom();
+
   // Openlayer4的wfs属性查询和空间查询
   //测试用的geometry类型数据 （Polygon）
   // var newPoly2 = new Polygon([
@@ -774,21 +823,56 @@ ol2d.on("moveend", function (evt) {
 // });
 
 /* #################### Cesium Begin#################### */
-// Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0OWY3ZDI5ZS01NjViLTQ2ZTUtODhmNi1kMjQwN2IzODdlNzAiLCJpZCI6MjYxMTUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1ODcyODMwMDR9.1sE41iO0myvjWB00X4l-S4IMfSCLg_-ZKIums5J0cM4';
-// Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(90, -20, 110, 90);
 
-// const ol3d = new OLCesium({
-//   map: ol2d
-// });
+const ol3d = new OLCesium({
+  map: ol2d
+});
 // ol2dMap is the ol.Map instance
-// const scene = ol3d.getCesiumScene();
-// scene.terrainProvider = Cesium.createWorldTerrain();
-// ol3d.setEnabled(true);
 
+// scene.terrainProvider = Cesium.createWorldTerrain();
+ol3d.setEnabled(true);
+const scene = ol3d.getCesiumScene();
+
+// var clock = new Cesium.Viewer.prototype.clock;
+// var camera = new Cesium.Viewer.prototype.camera;
+// 利用改变相机位置，试人感觉上地球在自转,以笛卡尔坐标系定位的模型，物体等都会随地球自转而移动
+// var i = Date.now();
+
+// function rotate() {
+//   var a = 0.01;
+//   var t = Date.now();
+//   var n = (t - i) / 1e3;
+//   i = t;
+//   viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, -a * n);
+// }
+
+// viewer.clock.onTick.addEventListener(rotate);
+// setTimeout(function () {
+//   viewer.clock.onTick.removeEventListener(rotate);
+// }, 5000);
+
+// 官方提供的自转方法
+
+// function icrf() {
+//   if (scene.mode !== Cesium.SceneMode.SCENE3D) {
+//     return;
+//   }
+//   var icrfToFixed = Cesium.Transforms.computeIcrfToFixedMatrix(
+//     viewer.clock.currentTime
+//     // clock.currentTime
+//   );
+//   if (Cesium.defined(icrfToFixed)) {
+//     var camera = viewer.camera;
+//     var offset = Cesium.Cartesian3.clone(camera.position);
+//     var transform = Cesium.Matrix4.fromRotationTranslation(icrfToFixed);
+//     camera.lookAtTransform(transform, offset);
+//   }
+
+// }
+// scene.postUpdate.addEventListener(icrf);
 
 // loadLayersControl(map, "layerTree");
-
-// //新建一个Cesium服务，将画布嵌入到id是cesiumContainer的DOM元素中
+//新建一个Cesium服务，将画布嵌入到id是cesiumContainer的DOM元素中
 // var viewer = new Cesium.Viewer('map', {
 //   // 查找位置工具，查找到之后会将镜头对准找到的地址，默认使用bing地图
 //   geocoder: true,
@@ -813,6 +897,24 @@ ol2d.on("moveend", function (evt) {
 //     show: false
 //   })
 // })
+
+// viewer.clock.multiplier = 200;//速度
+// viewer.clock.shouldAnimate = true;
+// var previousTime = viewer.clock.currentTime.secondsOfDay;
+// function onTickCallback() {
+//   var spinRate = 1;
+//   var currentTime = viewer.clock.currentTime.secondsOfDay;
+//   var delta = (currentTime - previousTime) / 1000;
+//   previousTime = currentTime;
+//   viewer.scene.camera.rotate(Cesium.Cartesian3.UNIT_Z, -spinRate * delta);
+// }
+// viewer.clock.onTick.addEventListener(onTickCallback);
+
+// var handler = new Cesium.ScreenSpaceEventHandler(viewer.scene.canvas);
+// handler.setInputAction(function (click) {
+//   viewer.clock.onTick.removeEventListener(onTickCallback);
+// }, Cesium.ScreenSpaceEventType.LEFT_DOWN);
+
 // // 图层选择器出事图层
 // // viewer.baseLayerPicker.viewModel.selectedImagery = viewer.baseLayerPicker.viewModel.imageryProviderViewModels[9];
 

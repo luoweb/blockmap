@@ -69,10 +69,10 @@ Users can truly rely on the ownership of digital identity without relying on a t
 
 # Tech Stack
 
-- Kubernetes
+- Kubernetes/Docker
 - DB(MySQL/PostreSQL)
-- Hyperledger Fabric(BlockChain)
+- BlockChain(Hyperledger Fabric)
 - GIS(Geoserver)
 - Frontend(Nodejs/Vuejs)
 - Backend(Java/Golang)
-- CD(DevOps)
+- CD(DevOps/Shell)
