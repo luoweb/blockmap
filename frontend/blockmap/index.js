@@ -38,7 +38,8 @@ import Rotate from "ol/control/Rotate";
 import SearchFeature from "ol-ext/control/SearchFeature";
 import GeolocationBar from "ol-ext/control/GeolocationBar";
 import extButton from "ol-ext/control/Button";
-
+import Placemark from "ol-ext/overlay/Placemark";
+// import {Dijkstra,sphere} from "./js/ol-ext";
 import Heatmap from 'ol/layer/Heatmap';
 import LayerSwitcher from 'ol-layerswitcher';
 import 'ol-layerswitcher/src/ol-layerswitcher.css';
@@ -94,6 +95,8 @@ import {
 import OLCesium from 'olcs/OLCesium.js';
 // import Cesium from 'cesium/Build/Cesium/Cesium'
 // import 'cesium/Build/Cesium/Widgets/widgets.css'
+
+import mapApi from './js/mapapi';
 
 //天地图Token
 var tdToken = '320109f58cbb412b31e478ddc5c651bd';
@@ -192,7 +195,7 @@ function addChangeEvent(element, layer) {
     } else {
       layer.setVisible(false);
     }
-  }
+  };
 }
 
 function setInnerText(element, text) {
@@ -221,7 +224,7 @@ var tdRoadMapLayer = new TileLayer({
 
 var tdImageSource = new XYZ({
   url: "https://t0.tianditu.gov.cn/DataServer?T=img_w&x={x}&y={y}&l={z}&tk=" + tdToken,
-})
+});
 var tdImageLayer = new TileLayer({
   source: tdImageSource,
   type: 'base',
@@ -288,7 +291,24 @@ var cityLayer = new ImageLayer({
   visible: false,
 });
 
-var ncovVoronoiLahyer = new ImageLayer({
+
+var roadLayer = new ImageLayer({
+  source: new ImageWMS({
+    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+    params: {
+      LAYERS: "road",
+    },
+    serverType: "geoserver",
+    crossOrigin: "anonymous",
+  }),
+  name: '城市路网图',
+  title: '城市路网图',
+  // Setting combine to true causes sub-layers to be hidden
+  // in the layerswitcher, only the parent is shown
+  visible: false,
+});
+
+var ncovVoronoiLayer = new ImageLayer({
   source: new ImageWMS({
     url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
     params: {
@@ -454,18 +474,15 @@ var ol2d = new Map({
   layers: [
     tdImageLayer,
     tdRoadMapLayer,
-    // borderLayer,
     provinceLayer,
-    // provinceWfsLayer,
     cityLayer,
-    // ncovWmsLayer,
-    // ncovLayer,
-    ncovVoronoiLahyer,
     borderLayer,
-    heatMapLayer,
-    ncovVectorLayer,
-    ncovPointVectorLayer,
-    // wfsVectorLayer
+    // roadLayer,
+    // ncovVoronoiLayer,
+    // heatMapLayer,
+    // ncovVectorLayer,
+
+    // ncovPointVectorLayer,
   ],
   target: "map",
   //   controldefaults，地图默认包含的控件，包含缩放控件和旋转控件；
@@ -515,8 +532,6 @@ var searchControl = new SearchFeature({ //target: $(".options").get(0),
   property: "full_addre"
 });
 
-
-
 ol2d.addControl(searchControl);
 // Select feature when click on the reference index
 searchControl.on('select', function (e) {
@@ -530,19 +545,17 @@ searchControl.on('select', function (e) {
   });
 });
 
-
-
 var save = new extButton(
   {
     html: '<i class="fa fa-download"></i>',
     className: "save",
     title: "Save",
     handleClick: function () {
-      ol3d.setEnabled(false)
+      ol3d.setEnabled(false);
       console.log("Center: " + ol2d.getView().getCenter() + " - zoom: " + ol2d.getView().getZoom());
     }
   });
-ol2d.addControl(save)
+ol2d.addControl(save);
 
 var layerSwitcher = new LayerSwitcher({
   tipLabel: 'MapSelector', // Optional label for button
@@ -550,19 +563,56 @@ var layerSwitcher = new LayerSwitcher({
 });
 ol2d.addControl(layerSwitcher);
 
+var isLayerExist = function (title) {
+  var layers = ol2d.getLayers().getArray();
+  var layers_len = layers.length;
+  for (var i = 0; i < layers_len; i++) {
+      if (layers[i].get('title') == title) {
+          return true;
+      }
+  }
+  return false;
+}
+
+var layerCount = 2;
 ol2d.getView().on('change:resolution', function () {
-
-  if (ol2d.getView().getZoom() < 3) {
-    ol3d.setEnabled(true)
-    // console.log(ol2d.getView().getZoom())
-    // console.log(ol3d.getEnabled)
+  var zoomLevel = ol2d.getView().getZoom();
+  if (zoomLevel <= 4) {
+    ol3d.setEnabled(true);
+    ol2d.getLayers
+    ol2d.removeLayer(ncovVoronoiLayer);
+    ol2d.removeLayer(heatMapLayer);
   }
-  if (ol2d.getView().getZoom() > 3) {
-    ol3d.setEnabled(false)
-    // console.log(ol2d.getView().getZoom())
-    // console.log(ol3d.getEnabled)
+  if (zoomLevel > 4) {
+    ol3d.setEnabled(false);
+    
+    console.log(cityLayer.get('title'))
+    if (!isLayerExist(cityLayer.get('title'))) {
+      ol2d.addLayer(cityLayer);
+    }
+    if (!isLayerExist(roadLayer.get('title'))) {
+      ol2d.addLayer(roadLayer);
+    }
+    
+
   }
 
+  if (zoomLevel > 9) {
+    ol3d.setEnabled(false);
+    ol2d.removeLayer(provinceLayer);
+    ol2d.removeLayer(cityLayer);
+    if (!isLayerExist(ncovVoronoiLayer.get('title'))) {
+      ol2d.addLayer(ncovVoronoiLayer);
+    }
+    if (!isLayerExist(heatMapLayer.get('title'))) {
+      ol2d.addLayer(heatMapLayer);
+    }
+    if (!isLayerExist(ncovVectorLayer.get('title'))) {
+      ol2d.addLayer(ncovVectorLayer);
+    }
+
+  }
+  console.log(zoomLevel)
 })
 // ol2d.on("pointermove", function (evt) {
 //   if (evt.dragging) {
@@ -1069,3 +1119,147 @@ function getCurrentExtent() {
 }
 
 /* #################### Cesium End#################### */
+
+
+/* #################### dijkstra Routine Begin #################### */
+
+  // // The vector graph
+  // var graph = new VectorSource({
+  //   url: 'https://viglino.github.io/ol-ext/examples/data/ROUTE120.geojson',
+  //   format: new GeoJSON()
+  // });
+  // listenerKey = graph.on('change', function() {
+  //   if (graph.getState() == 'ready') {
+  //     $('.loading').hide();
+  //     ol.Observable.unByKey(listenerKey);
+  //   }
+  // });
+	// var vector = new VectorLayer({
+  //   title: 'Graph',
+	// 	source: graph
+	// });
+  // map.addLayer(vector);
+
+  // // A layer to draw the result
+  // var result = new VectorSource();
+  // map.addLayer ( new VectorLayer({
+  //   source: result,
+  //   style: new Style({ 
+  //     stroke: new Stroke({ 
+  //       width: 2,
+  //       color: "#f00"
+  //     }) 
+  //   })
+  // }));
+  
+  // // Dijkstra
+  // var dijkstra = new Dijskra({
+	// 	source: graph
+  // });
+  // // Start processing
+  // dijkstra.on('start', function(e) {
+  //   $('#warning').hide();
+  //   $("#notfound").hide();
+  //   $("#notfound0").hide();
+  //   $("#result").hide();
+  //   result.clear();
+  // });
+  // // Finish > show the route
+  // dijkstra.on('finish', function(e) {
+  //   $('#warning').hide();
+  //   result.clear();
+  //   console.log(e);
+  //   if (!e.route.length) {
+  //     if (e.wDistance===-1) $("#notfound0").show();
+  //     else $("#notfound").show();
+  //     $("#result").hide();
+  //   } else {
+  //     $("#result").show();
+  //     var t = (e.distance/1000).toFixed(2) + 'km';
+  //     // Weighted distance
+  //     if ($("#speed").prop('checked')) {
+  //       var h = e.wDistance/1000;
+  //       var mn = Math.round((e.wDistance%1000)/1000*60);
+  //       if (mn < 10) mn = '0'+mn;
+  //       t += '<br/>' + h.toFixed(0) + 'h ' + mn + 'mn';
+  //     }
+  //     $("#result span").html(t);
+  //   }
+  //   result.addFeatures(e.route);
+  //   start = end;
+  //   popStart.show(start);
+  //   popEnd.hide();
+  // });
+  // // Paused > resume
+  // dijkstra.on('pause', function(e) {
+  //   if (e.overflow) {
+  //     $('#warning').show();
+  //     dijkstra.resume();
+  //   } else {
+  //     // User pause
+  //   }
+  // });
+  // // Calculating > show the current "best way"
+  // dijkstra.on('calculating', function(e) {
+  //   if ($('#path').prop('checked')) {
+  //     var route = dijkstra.getBestWay();
+  //     result.clear();
+  //     result.addFeatures(route);
+  //   }
+  // });
+
+  // // Get the weight of an edge
+  // dijkstra.weight = function(feature) {
+  //   var type = feature ? feature.get('type') : 'A';
+  //   if (!speed[type]) console.error(type)
+  //   return speed[type] || speed.L;
+  // };
+  // // Get direction of the edge
+  // dijkstra.direction = function(feature) {
+  //   return feature.get('dir');
+  // }
+  // // Get the real length of the geom
+  // dijkstra.getLength = function(geom) {
+  //   if (geom.getGeometry) {
+  //     //? return geom.get('km')*1000;
+  //     geom = geom.getGeometry();
+  //   }
+  //   return sphere.getLength(geom)
+  // }
+
+  // // Display nodes in a layer
+	// var nodes = new VectorLayer({
+  //   title: 'Nodes',
+  //   source: dijkstra.getNodeSource(),
+  //   style: new Style({
+  //     image: new Circle({
+  //       radius: 5,
+  //       fill: new Fill({ color: [255,0,0,.1] })
+  //     })
+  //   })
+	// });
+  // ol2d.addLayer(nodes);
+
+  // // Start / end Placemark
+  // var popStart = new Placemark({ popupClass: 'flagv', color: '#080' });
+  // ol2d.addOverlay(popStart);
+  // var popEnd = new Placemark({ popupClass: 'flag finish', color: '#000' });
+  // ol2d.addOverlay(popEnd);
+
+  // // Manage start / end on click
+  // var start, end;
+  // ol2d.on('click', function(e) {
+  //   if (!start) {
+  //     start = e.coordinate;
+  //     popStart.show(start);
+  //   } else {
+  //     var se = dijkstra.path(start, e.coordinate);
+  //     if (se) {
+  //       start = se[0];
+  //       end = se[1];
+  //       popEnd.show(end);
+  //     }
+  //   }
+  // });
+
+  /* #################### dijkstra Routine End #################### */
