@@ -552,7 +552,19 @@ var save = new extButton(
     title: "Save",
     handleClick: function () {
       ol3d.setEnabled(false);
+      console.log(ol3d.getEnabled())
+      ol2d.getView().setRotation(0);
+      ol2d.getView().fit(
+        [
+          // 指定要定位到的范围-广州
+          12602498.306877896,
+          2636537.0728182457,
+          12622498.306877896,
+          2656537.0728182457,
+        ]
+      );
       console.log("Center: " + ol2d.getView().getCenter() + " - zoom: " + ol2d.getView().getZoom());
+
     }
   });
 ol2d.addControl(save);
@@ -880,7 +892,7 @@ const ol3d = new OLCesium({
 // ol2dMap is the ol.Map instance
 
 // scene.terrainProvider = Cesium.createWorldTerrain();
-ol3d.setEnabled(true);
+ol3d.setEnabled(false);
 const scene = ol3d.getCesiumScene();
 
 // var clock = new Cesium.Viewer.prototype.clock;
