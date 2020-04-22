@@ -217,7 +217,7 @@ var tdRoadMapLayer = new TileLayer({
   title: '天地图路网',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
-  visible: true,
+  visible: false,
   isGroup: true,
   name: "天地图路网",
 });
@@ -233,7 +233,7 @@ var tdImageLayer = new TileLayer({
   title: '天地卫星图',
   // Setting combine to true causes sub-layers to be hidden
   // in the layerswitcher, only the parent is shown
-  visible: false,
+  visible: true,
   isGroup: true,
   name: "天地卫星图",
   crossOrigin: "anonymous",
@@ -592,6 +592,7 @@ ol2d.getView().on('change:resolution', function () {
   if (zoomLevel <= 4) {
     ol3d.setEnabled(true);
     ol2d.getLayers
+    ol2d.removeLayer(ncovVectorLayer);
     ol2d.removeLayer(ncovVoronoiLayer);
     ol2d.removeLayer(heatMapLayer);
   }
@@ -605,8 +606,6 @@ ol2d.getView().on('change:resolution', function () {
     if (!isLayerExist(roadLayer.get('title'))) {
       ol2d.addLayer(roadLayer);
     }
-    
-
   }
 
   if (zoomLevel > 9) {
@@ -622,7 +621,6 @@ ol2d.getView().on('change:resolution', function () {
     if (!isLayerExist(ncovVectorLayer.get('title'))) {
       ol2d.addLayer(ncovVectorLayer);
     }
-
   }
   console.log(zoomLevel)
 })
