@@ -5,6 +5,10 @@
 - 最佳上班路径：推荐最短路径+风险规避路径
 - 风险扩散趋势图：人员迁徙图，根据热力图生成迁徙地图
 
+### R & D Roadmap (研发路线图)
+
+![roadmap_en](http://github.roweb.cn/mapblock/public/assets/roadmap_en.png)
+
 ### Application Architecture (应用架构图)
 
 ![app_arch](http://github.roweb.cn/mapblock/public/assets/app_arch_v1.png)
