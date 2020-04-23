@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>百度一下，你就知道</title>
+<style>
+    
+.Search input{
+	/*position: absolute;right: 5px;z-index:5;*/
+	background-image: url(http://github.roweb.cn/mapblock/assets/ncov.png); /*引入图片图片*/
+	background-repeat: no-repeat; /*设置图片不重复*/
+	background-position: center; /*图片显示的位置*/
+	width: 20px; /*设置图片显示的宽*/
+	height: 20px; /*图片显示的高*/
+	line-height: 30px;
+	border-color: lightgray;
+	padding-right: 50px;
+	background-position-x: 250px;
+}
+
+</style>
+</head>
+<body>
+
+
+    <div class="Search" style="width: 200px;">
+        <input type="text" 
+        value="Search" 
+        onfocus="if(value=='Search')value=''" 
+        onblur="if(!value)value='Search'" 
+        name="keyword"  
+         class="search" />
+    </div>
+</body>
+</html>
+

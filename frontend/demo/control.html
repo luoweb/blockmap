@@ -1,0 +1,51 @@
+<body οnlοad="init()">
+
+    <div id="searchDiv"
+        style="position:absolute;top:50px;left:80px;width:300px;height:100px;z-index:99999;border: 1px solid #ccc; padding: 1em;">
+        <ul id="controls">
+            <li>
+                <label for="pointToggle">关键字:</label>
+                <input name="searchkey" id="searchkey" type="text">
+                <input name="type" value="搜索" id="polygonToggle" οnclick="search()" type="button">
+            </li>
+            <li>
+                <input name="type" value="point" id="free" checked="checked" type="radio" οnclick="setfree();">
+                <label for="pointToggle">不限</label>
+            </li>
+            <li>
+                <input name="type" value="point" id="nearbySearch" οnclick="drawCircle();" type="radio">
+                <label for="nearbySearch">周边搜索</label>
+                <select id="radius" οnchange="setSize(parseFloat(this.value))" style="width:100px">
+                    <option value="0.01000">1000</option>
+                    <option value="0.02000">2000</option>
+                    <option value="0.03000">3000</option>
+                </select>
+                <label for="pointToggle">以内</label>
+            </li>
+            <li>
+                <input name="type" value="polygon" id="polygonSearch" οnclick="drawPolyon();" type="radio">
+                <label for="polygonSearch">多边形搜索</label>
+            </li>
+        </ul>
+    </div>
+    <div id="directionDiv"
+        style="position:absolute;top:200px;left:80px;width:300px;z-index:99999;border: 1px solid #ccc; padding: 1em;">
+        <table>
+            <tr>
+                <td> 起点:</td>
+                <td><input id="start" type="text"></input><input id="starthidden" type="text"
+                        style="display:none"></input></td>
+                <td rowspan="2"> <input id="direction" style="width:80px;height:40px" type="button" value="搜索路径"
+                        οnclick="direction()"></input>
+            </tr>
+            <tr>
+                <td> 终点:</td>
+                <td><input id="end" type="text"></input><input id="endhidden" type="text" style="display:none"></input>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+    <div id="map" class="smallmap">
+    </div>
+</body>
