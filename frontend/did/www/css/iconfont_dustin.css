@@ -1,0 +1,18 @@
+@font-face {font-family: "iconfont";
+ 	/*收件箱详情*/
+	src:url('../fonts/iconfont_dustin.ttf') format('truetype'); /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+
+}
+
+.iconfont_dustin {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-web_lajixiang:before {
+  content: "\e61b";
+}
+

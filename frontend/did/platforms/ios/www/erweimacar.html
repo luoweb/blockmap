@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>新增保函</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/css/app.css" />
+		<style>
+			.erweimacar-title-text {
+			    font-size: 16px;
+			    color: #ffffff;
+			    line-height: 23px;
+			    font-weight: bold;
+			}
+			.erweimacar-title {
+				width: 300px;
+			    height: 53px;
+			    background-color: rgb(41, 115, 227);
+			    font-size: 14px;
+			    border-width: 0px;
+			    border-style: solid;
+			    margin-left: auto;
+    			margin-right: auto;
+    			padding: 15px;
+			}
+			
+			.erweimacar-content {
+				width: 300px;
+			    height: 420px;
+			    border-width: 1px;
+			    border-style: solid;
+			    text-align: center;
+			    background: white;
+			    border-color: #bbb;
+			    margin-left: auto;
+    			margin-right: auto;
+			}
+			
+			.mui-erweimacar {
+				margin-top: 45px;
+			}
+			
+			.erweimacar-content-text1 {
+			    font-weight: 400;
+			    font-size: 28px;
+			    color: rgb(41, 115, 227);
+			    font-style: normal;
+			    letter-spacing: 0px;
+			    line-height: 41px;
+			    text-decoration: none;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-inner-wrap">
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav">
+					<a href="#back" class="mui-action-back mui-icon mui-icon-back mui-pull-left"></a>
+					<a href="#more" id="more" class="mui-icon mui-icon-more mui-pull-right" style="font-size: 50px;padding-top: 0px; padding-right: 0px; margin-top: -5px;"></a>
+
+					<h1 class="mui-title mui-pull-left" style="font-weight: 700;color: #007aff;">二维码名片</h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content">
+							<div id="erweimacar" class="mui-control-content mui-active mui-erweimacar">
+								
+								<div class="erweimacar-title">
+									<p><span class="erweimacar-title-text">我的二维码名片</span></p>
+									
+								</div>
+								<div class="erweimacar-content">
+									<img style="width: 100px;margin-top: 15px;" src="img/myinfo/nanfei.png" id="erweimacar-img">
+									<p><span class="erweimacar-content-text1" id="erweimacar-username">南非标准银行</span></p>
+									<img style="" src="img/myinfo/erweima_pic.png">
+									<p>扫一扫加我</p>
+								</div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack:true //启用右滑关闭功能
+		});
+		
+		if(localStorage.userName == "南非标准银行" || localStorage.userName == "南非"){
+			document.getElementById("erweimacar-img").src = "img/myinfo/nanfei.png"
+			document.getElementById("erweimacar-username").innerHTML = localStorage.userName;
+		} else if(localStorage.userName == "商汤科技有限公司" || localStorage.userName == "商汤"){
+			document.getElementById("erweimacar-img").src = "img/addrbook/shangtan.png"
+			document.getElementById("erweimacar-username").innerHTML = localStorage.userName;
+		} else {
+			document.getElementById("erweimacar-img").src = "img/inbox/icbc.jpg"
+			document.getElementById("erweimacar-username").innerHTML = localStorage.userName;
+		}
+	</script>
+
+</html>

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>新增保函</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/css/app.css" />
+		<style>
+			
+			.newguarantee-cont {
+				margin: 13px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				font-family: PingFangSC;
+    			font-weight: 400;
+    			font-style: normal;
+    			line-height: 28px;
+    			text-decoration: none;
+			}
+			
+			.borderline{
+			    border-top-width: 5px;
+			    left: -3px;
+			    top: 380px;
+			    z-index: 21;
+			    border-color: rgb(227, 227, 227);
+			    border-style: solid;
+			    font-weight: normal;
+			    font-style: normal;
+			    opacity: 1;
+			}
+			
+			.mui-scroll-wrapper{
+				background-color: white; 	
+			}
+			
+			.mui-control-content.mui-active{
+				background-color: white;
+			}
+			
+			.newguarantee-cont .input{
+				border-color: #878787;
+			    border-style: solid;
+			    border-top-width: 0px;
+			    border-right-width: 0px;
+			    border-bottom-width: 1px;
+			    border-left-width: 0px;
+			    width: 90px;
+			    height: 20px;
+			}
+			
+			.newguarantee-cont .input-sendmsg{
+				border-color: #878787;
+			    border-style: solid;
+			    border-top-width: 0px;
+			    border-right-width: 0px;
+			    border-bottom-width: 1px;
+			    border-left-width: 0px;
+			    width: 250px;
+			    height: 20px;
+			    font-size: 13px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-inner-wrap">
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav">
+					<!--<a id="back" class="mui-action-back mui-icon mui-icon-back mui-pull-left"></a>-->
+					<a id="back" class="mui-icon mui-icon-back mui-pull-left" ></a>
+					<a href="#sendNewGuarantee" id="sendNewGuarantee" class="mui-icon mui-icon-checkmarkempty mui-pull-right" style="font-size: 50px;padding-top: 0px; padding-right: 0px; margin-top: -5px;"></a>
+
+					<h1 class="mui-title mui-pull-left" style="font-weight: 700;color: #007aff;">新建函件（保函）</h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content">
+							<div id="tabbar" class="mui-control-content mui-active">
+								<div class="newguarantee-cont" style="text-align: right;">
+									保函号：
+									<input type="text" name="guarantee-num" id="guarantee-num" value="" class="input"/>
+								</div>
+								<div class="newguarantee-cont" style="text-indent:2em;">
+									致受益人
+									<input type="text" name="beneficiary" id="beneficiary" value="" class="input"/>                      
+								</div>
+								
+								<div class="newguarantee-cont" style="text-indent:2em;">
+									<input type="text" name="client" id="client" value="" class="input"/>
+									系我公司客户，我行已接受该单位委托，愿承担该单位上述下
+									<input type="text" name="money" id="money" value="" class="input"/>
+									元的担保，如该单位不能按期偿还本息，我公司原意担保责任，按合同规定代为偿还借款利息。
+								</div>
+								<div class="newguarantee-cont" style="text-align: right;">
+									法定代表人签字：张三<br/>
+									<span id="currentTime"></span> 
+								</div>
+								
+								<div class="borderline"></div>
+								
+								<div class="newguarantee-cont">
+									收件人：<input type="text" name="receiver" id="receiver" value="" class="input-sendmsg"/><br/>
+									抄&nbsp;&nbsp;&nbsp;&nbsp;送：<input type="text" name="receiver-copy" id="receiver-copy" value="" class="input-sendmsg"/><br/>
+									主&nbsp;&nbsp;&nbsp;&nbsp;题：<input type="text" name="theme" id="theme" value="" class="input-sendmsg"/>
+								
+								</div>
+								<!-- 蓝色开关关闭状态 -->
+								<div style="color: #6d6d72;margin-left: 15px;margin-bottom: 50px;">
+									<span style="font-size: 15px;vertical-align: super;">是否开启信函加密：</span> 
+								<span class="mui-switch mui-switch-blue" style="width: 90px;height: 31px;display: inline-block;">
+								  <span class="mui-switch-handle" style="width: 40px;"></span>
+								</span>
+								</div>
+								<input type="hidden" name="draftsId" id="draftsId" class="input"/>
+								
+								
+								<div id="info"></div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script src="js/app.js"></script>
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+		
+		mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+		
+		//发送
+		document.getElementById("sendNewGuarantee").addEventListener('tap', function()
+		{
+		    var guarantee_num = document.getElementById("guarantee-num").value.replace(/\s+/g,"");
+		    var beneficiary = document.getElementById("beneficiary").value.replace(/\s+/g,"");
+		    var client = document.getElementById("client").value.replace(/\s+/g,"");
+		    var money = document.getElementById("money").value.replace(/\s+/g,"");
+		    var receiver = document.getElementById("receiver").value.replace(/\s+/g,"").split(",");
+		    var receiver_copy = document.getElementById("receiver-copy").value.replace(/\s+/g,"").split(",");
+		    var theme = document.getElementById("theme").value.replace(/\s+/g,"");
+		    var send_time = formatDate("yyyy-MM-dd hh:mm:ss", new Date());
+		    var sender = localStorage.userName;
+		    //var templateFieldsArr = [guarantee_num, beneficiary, client, money];
+		    console.log(guarantee_num);
+            console.log(beneficiary);
+            console.log(client);
+            console.log(money);
+            console.log(receiver);
+            console.log(receiver_copy);
+            console.log(theme);
+            console.log(send_time);
+            console.log(templateFieldsArr);
+            //document.getElementById("info").innerHTML = theme;
+            /*if(!guarantee_num){
+			    	mui.alert("请输入保函号！");
+			    }else if(!beneficiary){
+			    	mui.alert("请输入受益人！");
+			    }else if(!client){
+			    	mui.alert("请输入客户名称！");
+			    }else if(!money){
+			    	mui.alert("请输入金额！");
+			    }else if(!receiver){
+			    	mui.alert("请输入收件人！");
+			    }else{*/
+			   		var templateFieldsArr = [guarantee_num, beneficiary, client, money];
+			   		console.log("templateFieldsArr:"+templateFieldsArr);
+		            var btnArray = ['确认发送', '取消'];
+				    mui.confirm('确认发送保函？', '', btnArray, function(e) 
+				    {
+				        if (e.index == 1) {
+				        } else {//确认发送
+				            mui.ajax('http://122.18.61.62:9080/valexchsys/mailmgt.flowc',{
+				            	dataType:"json",
+				            	data:{
+				            		flowActionName:'sendmail',
+				            		sender: sender,
+				            		subject: theme,
+				            		templateID: 'TEMPLATE001',
+				            		receiver: receiver.toString(),
+				            		copyTo: receiver_copy.toString(),
+				            		templateFields: templateFieldsArr.toString(),
+				            		sendDate: send_time
+				            	},
+				            	type:"post",
+				            	timeout:5000,
+				            	crossDomain:true,
+				            	headers:{
+				            		"Access-Control-Allow-Headers":"Content-Type",
+				            		"Access-Control-Allow-Methods":"PUT,POST,GET,DELETE,OPTIONS",
+				            		"X-Powered-By":"3.2.1",
+				            		"Content-Type":"application/x-www-form-urlencoded;charset=utf-8"
+				            	},
+				            	success:function(data) {
+				            		if(data.errorCode === "0"){
+				            			//mui.alert("信息发送成功!");
+				            			mui.alert("信息发送成功!", function() { 
+				            				document.getElementById("guarantee-num").value = "";
+											document.getElementById("beneficiary").value = "";
+											document.getElementById("client").value = "";
+											document.getElementById("money").value = "";
+											document.getElementById("receiver").value = "";
+											document.getElementById("receiver-copy").value = "";
+											document.getElementById("theme").value = "";
+											mui.openWindow({
+											    url: 'index.html'
+											});
+										});
+				            		} else {
+				            			mui.alert(data.errorMsg);
+				            		}
+				            		
+				            	},
+				            	error:function(xhr, type, errorThrown) {
+				            		mui.alert("数据请求失败："+type);
+				            	}
+				            });
+				        }
+				    })
+				/*}*/
+		});
+
+		//格式化时间 yyyy-MM-dd hh:mm:ss
+		function formatDate(fmt, date) {
+		    date = new Date(date);
+		    var o = {
+		        "M+": date.getMonth() + 1, //月份
+		        "d+": date.getDate(), //日
+		        "h+": date.getHours(), //小时
+		        "m+": date.getMinutes(), //分
+		        "s+": date.getSeconds(), //秒
+		        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+		        "S": date.getMilliseconds() //毫秒
+		    };
+		    if (/(y+)/.test(fmt))
+		        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    for (var k in o)
+		        if (new RegExp("(" + k + ")").test(fmt))
+		            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		    return fmt;
+		}
+		
+		//返回
+		document.getElementById("back").addEventListener('tap', function()
+		{
+			var draftsId = document.getElementById("draftsId").value;
+			var guarantee_num = document.getElementById("guarantee-num").value.replace(/\s+/g,"");
+		    var beneficiaryVal = document.getElementById("beneficiary").value.replace(/\s+/g,"");
+		    var clientVal = document.getElementById("client").value.replace(/\s+/g,"");
+		    var moneyVal = document.getElementById("money").value.replace(/\s+/g,"");
+		    var receiver = document.getElementById("receiver").value.replace(/\s+/g,"").split(",");
+		    var receiver_copy = document.getElementById("receiver-copy").value.replace(/\s+/g,"").split(",");
+		    var theme = document.getElementById("theme").value.replace(/\s+/g,"");
+		    var send_time = formatDate("yyyy-MM-dd hh:mm:ss", new Date());
+		    var sender = localStorage.userName;
+		    
+		    if(guarantee_num != "" || beneficiaryVal != "" || clientVal != "" || moneyVal != "" || receiver != "" || receiver_copy != "" || theme != "" ){
+		    	//var templateFieldsArr = [guarantee_num, beneficiary, client, money];
+		    	var templateFieldsArr = {guaranteeNum:guarantee_num,beneficiary:beneficiaryVal,client:clientVal,money:moneyVal};
+		    	var templateFieldsJson = JSON.stringify(templateFieldsArr);
+		    	console.log(guarantee_num);
+	            console.log(beneficiary);
+	            console.log(client);
+	            console.log(money);
+	            console.log(receiver);
+	            console.log(receiver_copy);
+	            console.log(theme);
+	            console.log(send_time);
+	            console.log(templateFieldsJson);
+		    	var btnArray = ['保存', '取消'];
+			    mui.confirm('是否保存草稿箱？', '', btnArray, function(e) 
+			    {
+			        if (e.index == 1) {
+			        	mui.back();
+			        } else {//确认保存草稿箱
+			            mui.ajax("http://122.18.61.62:9080/valexchsys/mailmgt.flowc",{
+			            	dataType:"json",
+			            	data:{
+			            		flowActionName:'savedrafts',
+			            		draftsId: draftsId,
+			            		userId: localStorage.userId,
+			            		sender: localStorage.userName,
+			            		subject: theme,
+			            		templateId: 'TEMPLATE001',
+			            		receiver: receiver.toString(),
+			            		copyTo: receiver_copy.toString(),
+			            		templateFields: templateFieldsJson.toString(),
+			            		sendDate: send_time
+			            	},
+			            	type:"post",
+			            	timeout:5000,
+			            	crossDomain:true,
+			            	headers:{
+			            		"Access-Control-Allow-Headers":"Content-Type",
+			            		"Access-Control-Allow-Methods":"PUT,POST,GET,DELETE,OPTIONS",
+			            		"X-Powered-By":"3.2.1",
+			            		"Content-Type":"application/x-www-form-urlencoded;charset=utf-8"
+			            	},
+			            	success:function(data) {
+			            		if(data.errorCode === "0"){
+			            			/*mui.alert("保存草稿箱成功!");
+			            			mui.back();
+			            			getDrafts();*/
+			            			mui.alert("保存草稿箱成功!", function() { 
+										mui.openWindow({
+										    url: 'index.html'
+										});
+										mui.back();
+			            				
+									});
+			            		} else {
+			            			mui.alert(data.errorMsg);
+			            		}
+			            		
+			            	},
+			            	error:function(xhr, type, errorThrown) {
+			            		mui.alert("数据请求失败："+type);
+			            	}
+			            });
+			           
+			        }
+			    })
+		    } else {
+		    	mui.back();
+		    }
+		    
+		});
+	</script>
+	<script>
+		mui.plusReady(function() {
+			//新建函件当前时间获取最新时间
+			var date = new Date();
+			var formatTime = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
+			document.getElementById("currentTime").innerHTML = formatTime;
+			
+			var self = plus.webview.currentWebview();
+			var draftsDetail = JSON.parse(self.draftsDetail);
+			var draftsId = draftsDetail.draftsId;  
+			var sender = draftsDetail.draftsender;               
+			var receiver = draftsDetail.receiver; 
+			var copyTo = draftsDetail.copyTo; 
+			var subject = draftsDetail.subject;             
+			var templateID = draftsDetail.templateID;
+			var templateFields = draftsDetail.templateFields;
+			var saveTime = draftsDetail.saveTime;
+			//草稿保存时间获取最新
+			var date = new Date(saveTime);
+			var formatTime = date.getFullYear() + '年' + (date.getMonth()+1) + '月' + date.getDate() + '日';
+			
+			document.getElementById("guarantee-num").value = templateFields.guaranteeNum;
+		    document.getElementById("beneficiary").value = templateFields.beneficiary;
+		    document.getElementById("client").value = templateFields.client;
+		    document.getElementById("money").value = templateFields.money;
+		    document.getElementById("receiver").value = receiver;
+		    document.getElementById("receiver-copy").value = copyTo;
+		    document.getElementById("theme").value = subject;
+		    document.getElementById("draftsId").value = draftsId;
+		    document.getElementById("currentTime").innerHTML = formatTime;
+			
+			console.log("self.draftsDetail:"+self.draftsDetail);
+			console.log("self.saveTime:"+saveTime);
+			console.log("self.subject:"+subject);
+			console.log("self.templateFields:"+templateFields);
+			console.log("self.templateFields.guaranteeNum:"+templateFields.guaranteeNum);
+		}); 
+	</script>
+
+</html>

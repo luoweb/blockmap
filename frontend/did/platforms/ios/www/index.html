@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+	</head>
+
+	<body style="background-image:url(img/mailpic/background2.jpg); background-size: 100%;background-repeat:no-repeat; background-attachment:fixed;">
+		<div style="text-align: center;padding-top: 30px;">
+			<img src="img/mailpic/maillogo_white.png" style="width: 40%;"/>
+		</div>
+		<div style="text-align: center;padding-top: 10px;">
+			<p class="cursht" style="font-size: 35px;color: #fefeff;">云&nbsp;&nbsp;函</p>
+		</div>
+		<div class="mui-content-padded">
+			<button id='login' class="mui-btn mui-btn-block mui-btn-primary" style="border-radius: 30px;" onclick="selectMail()">点&nbsp;&nbsp;击&nbsp;&nbsp;使&nbsp;&nbsp;用</button>
+		</div>
+		<hr/>
+		<hr/>
+		<div style="text-align: center;padding-top: 30px;">
+			<img src="img/mailpic/number.png" style="width: 40%;"/>
+		</div>
+		<div style="text-align: center;padding-top: 10px;">
+			<p class="cursht" style="font-size: 35px;color: #fefeff;">云&nbsp;&nbsp;鉴</p>
+		</div>
+		<div class="mui-content-padded">
+			<button id='login' class="mui-btn mui-btn-block mui-btn-primary" style="border-radius: 30px;" onclick="selectNumber()">点&nbsp;&nbsp;击&nbsp;&nbsp;使&nbsp;&nbsp;用</button>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/jquery-3.4.1.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+			
+			function selectMail(){
+				mui.openWindow({
+				    url: 'login.html'
+				});
+			}
+			function selectNumber(){
+				mui.openWindow({
+				    url: 'numberLogin.html'
+				});
+			}
+		</script>
+	</body>
+
+</html>

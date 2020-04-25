@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>新增个人凭证</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/css/app.css" />
+		<style>
+			
+			.newguarantee-cont {
+				margin: 13px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				font-family: PingFangSC;
+    			font-weight: 400;
+    			font-style: normal;
+    			line-height: 28px;
+    			text-decoration: none;
+			}
+			
+			.borderline{
+			    border-top-width: 5px;
+			    left: -3px;
+			    top: 380px;
+			    z-index: 21;
+			    border-color: rgb(227, 227, 227);
+			    border-style: solid;
+			    font-weight: normal;
+			    font-style: normal;
+			    opacity: 1;
+			}
+			
+			.mui-scroll-wrapper{
+				background-color: white; 	
+			}
+			
+			.mui-control-content.mui-active{
+				background-color: white;
+			}
+			
+			.newguarantee-cont .input{
+				border-color: #878787;
+			    border-style: solid;
+			    border-top-width: 0px;
+			    border-right-width: 0px;
+			    border-bottom-width: 1px;
+			    border-left-width: 0px;
+			    width: 90px;
+			    height: 20px;
+			}
+			
+			.newguarantee-cont .input-sendmsg{
+				border-color: #878787;
+			    border-style: solid;
+			    border-top-width: 0px;
+			    border-right-width: 0px;
+			    border-bottom-width: 1px;
+			    border-left-width: 0px;
+			    width: 250px;
+			    height: 20px;
+			    font-size: 13px;
+			}
+			
+		</style>	
+	</head>
+
+	<body>
+		<div class="mui-inner-wrap">
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav">
+					<!--<a id="back" class="mui-action-back mui-icon mui-icon-back mui-pull-left"></a>-->
+					<a id="back" class="mui-icon mui-icon-back mui-pull-left" ></a>
+					<a href="#sendFormPapers" id="sendFormPapers" class="mui-icon mui-icon-checkmarkempty mui-pull-right" style="font-size: 50px;padding-top: 0px; padding-right: 0px; margin-top: -5px;"></a>
+
+					<h1 class="mui-title mui-pull-left" style="font-weight: 700;color: #007aff;">新建凭证申请</h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content">
+							<div id="tabbar" class="mui-control-content mui-active">
+								<form class="mui-input-group">
+									<div class="mui-input-row">
+								        <label>凭证类型</label>
+								    	<input type="text" class="mui-input" disabled="true" id="papersName" value="" placeholder="请输入凭证类型">
+								    </div>
+								    <div class="mui-input-row">
+								        <label>用户名</label>
+								    	<input type="text" class="mui-input" disabled="true" id="name" value="" placeholder="请输入用户名">
+								    </div>
+								    <div class="mui-input-row">
+								        <label>身份证</label>
+								        <input type="text" class="mui-input" disabled="true" id="identityCard" value="" placeholder="请输入身份证">
+								    </div>
+								    <div class="mui-input-row">
+								        <label>客户id</label>
+								        <input type="text" class="mui-input" disabled="true" id="weId" placeholder="请输入客户id">
+								    </div>
+								   	<div class="mui-content-padded">
+								   		<label >颁发机构:请选择</label>
+										<select class="mui-btn mui-btn-block" style="color: #0E76E1;" id="bank">
+											<option value="工商银行">工商银行</option>
+											<option value="农业银行">农业银行</option>
+											<option value="建设银行">建设银行</option>
+											<option value="交通银行">交通银行</option>
+											<option value="平安银行">平安银行</option>
+										</select>
+										
+									</div>
+									
+									<div class="mui-content-padded">
+								   		<label>期限:请选择</label>
+										<select class="mui-btn mui-btn-block" style="color: #0E76E1;">
+											<option value="最近一个月">最近一个月</option>
+											<option value="最近一个月">最近三个月</option>
+											<option value="最近一个月">最近半年</option>
+											<option value="最近一个月">最近一年</option>
+											
+										</select>
+									</div>
+								</form>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script src="js/app3.js"></script>
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+		
+		mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+		document.getElementById("sendFormPapers").addEventListener('tap', function()
+		{
+			var papersName = document.getElementById("papersName").value.replace(/\s+/g,"");
+			var name = document.getElementById("name").value.replace(/\s+/g,"");
+		    var identityCard = document.getElementById("identityCard").value.replace(/\s+/g,"");
+		    var issuer = document.getElementById("weId").value.replace(/\s+/g,"");
+		    var options = $("#bank option:selected");
+		    var bank = options.val();
+		    var d=new Date();
+		    d.setDate(d.getDate()+10);
+		    var expirationDate = formatDate("yyyy-MM-ddThh:mm:ssZ", d);
+		    mui.ajax('http://129.204.253.9:6001/weid/api/invoke', {
+		    	dataType:"json",
+				data:{
+		          "functionArg": {
+		              	"cptId": 2000001,
+		              	"issuer": issuer,
+		              	"expirationDate": expirationDate,
+		              	"claim": {
+		                  	"name": name,
+		                  	"bank": bank,
+		                  	"papersName":papersName,
+		                  	"identityCard": identityCard
+		              	}
+		          	},
+		          	"transactionArg": {
+		              	"invokerWeId":issuer
+		          	},
+		          	"functionName": "createCredential",
+		          	"v": "1.0.0"
+		        },
+				type:'post',//HTTP请求类型
+				timeout:5000,//超时时间设置为10秒； 
+				crossDomain:true,
+				headers:{
+					'Access-Control-Allow-Origin':'*',
+					'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+					'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+					'X-Powered-By':'3.2.1',
+					'Content-Type':'application/json;charset=utf-8'
+				},
+				success:function(data){
+					var respBody = data.respBody;
+					console.log("详情data:"+JSON.stringify(data));
+					console.log("respBody:"+JSON.stringify(respBody));
+					if(data.errorCode == '0'){
+						mui.alert("凭证申请成功");
+						mui.openWindow({
+						    url: 'numberIndex.html'
+						});
+					} else {
+						mui.alert(data.errorMsg);
+					}
+					
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+					mui.alert("数据请求失败:"+type);
+					
+				}
+			});
+		});
+		//格式化时间 yyyy-MM-dd hh:mm:ss
+		function formatDate(fmt, date) {
+		    date = new Date(date);
+		    var o = {
+		        "M+": date.getMonth() + 1, //月份
+		        "d+": date.getDate(), //日
+		        "h+": date.getHours(), //小时
+		        "m+": date.getMinutes(), //分
+		        "s+": date.getSeconds(), //秒
+		        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+		        "S": date.getMilliseconds() //毫秒
+		    };
+		    if (/(y+)/.test(fmt))
+		        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    for (var k in o)
+		        if (new RegExp("(" + k + ")").test(fmt))
+		            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		    return fmt;
+		}
+		
+		//返回
+		document.getElementById("back").addEventListener('tap', function()
+		{
+		    mui.back(); 
+		});
+	</script>
+	<script>
+		mui.plusReady(function() {
+		    var	name = localStorage.name;
+			var	identityCard = localStorage.identityCard;
+			var	weId = JSON.parse(localStorage.weId);
+			//alert(issuer);
+			document.getElementById('name').value = name;
+	        document.getElementById('identityCard').value = identityCard;
+			document.getElementById('weId').value = weId;
+			var self = plus.webview.currentWebview();
+			var papersName = self.papersName;
+			document.getElementById('papersName').value = papersName;
+		});
+	</script>
+
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/css/app.css" />
+		<!--我的css-->
+		<link rel="stylesheet" type="text/css" href="css/iconfont_myinfo.css" />
+		<style>
+			.mytitleinfo {
+				margin: 20px 22px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				width: 355px;
+			    height: 164px;
+			    left: 10px;
+			    top: 77px;
+			    z-index: 14;
+			    border-color: rgb(227, 227, 227);
+			    box-shadow: rgb(191, 191, 191) 0px 0px 4px 0px;
+			    border-radius: 6px;
+			    padding: 0px;
+			    border-width: 0px;
+			    border-style: solid;
+			    background: white;
+			}
+			.mytitleinfo .logo img{
+				width: 70px;
+				margin-top: 10px;
+    			margin-right: 25px;
+			}
+			
+			.title_text .p1{
+				font-family: PingFangSC;
+			    font-weight: 400;
+			    font-size: 18px;
+			    color: rgb(16, 16, 16);
+			    font-style: normal;
+			    letter-spacing: 0px;
+			    line-height: 26px;
+			    text-decoration: none;
+			    text-indent: 1em;
+			    padding-top: 10px;
+			}
+			.title_text .p2{
+			    margin-left: 18px;
+			    margin-bottom: 15px;
+			}
+			.title_img img{
+				width: 90px;
+    			margin-left: 18px;
+			}
+			.iconstyle{
+				color: #007aff;
+				font-size: 28px;
+			}
+			.li_text_style {
+				padding-left: 5px;
+    			font-size: 18px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+			
+			<div class="mui-inner-wrap">
+				<!--我的页面头部-->
+				<!--<header class="mui-bar mui-bar-nav">
+					<a href="#popover" id="openPopover" class="mui-icon iconfont_myinfo iconweb_erweima mui-pull-right"></a>
+
+					<h1 class="mui-title mui-pull-left">我的</h1>
+				</header>-->
+				<!--我的页面内容-->
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content">
+							<!--<div id="tabbar-with-map" class="mui-control-content">-->
+							<div class="mytitleinfo">
+								<span class="logo">
+								<img src="./img/myinfo/taiping.jpg" align="right"/>
+								</span>
+								<div class="title_text">
+									
+									<p class="p1">中国太平</p>
+									<p class="p2">
+									状态：正常
+									</p>
+									<p class="p1">中国太平保险有限公司</p>
+									
+								</div>
+								<div class="title_img">
+									<img src="./img/myinfo/gaojirenzhen.png"/>
+								</div>
+							
+							</div>
+							<!--<ul class="mui-table-view">
+							    <li class="mui-table-view-cell mui-media">
+							        <a href="javascript:;">
+							            <img class="mui-media-object mui-pull-left" src="../images/shuijiao.jpg">
+							            <div class="mui-media-body">
+							                幸福
+							                <p class='mui-ellipsis'>能和心爱的人一起睡觉，是件幸福的事情；可是，打呼噜怎么办？</p>
+							            </div>
+							        </a>
+							    </li>
+							</ul>-->
+							<ul class="mui-table-view">
+									
+								<li class="mui-table-view-cell">
+									
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_mobanguanli iconstyle">
+										</span>
+										<span class="li_text_style">凭证模板</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_kehu iconstyle">
+										</span>
+										<span class="li_text_style">
+										重要客户
+										</span>
+									</a>
+								</li>
+							</ul>
+							<ul class="mui-table-view" style="margin-top: 25px;">
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_file iconstyle">
+										</span>
+										<span class="li_text_style">
+										黑白名单管理
+										</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_iphone iconstyle">
+										</span>
+										<span class="li_text_style">
+										支付账户管理
+										</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_qiabao iconstyle">
+										</span>
+										<span class="li_text_style">
+										卡包
+										</span>
+									</a>
+								</li>
+							</ul>
+							<ul class="mui-table-view" style="margin-top: 25px;">
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_shequ iconstyle">
+										</span>
+										<span class="li_text_style">
+										社区中心管理
+										</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_kefu iconstyle">
+										</span>
+										<span class="li_text_style">
+										我的客服
+										</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_xinjian iconstyle">
+										</span>
+										<span class="li_text_style">
+										发件人信息
+										</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_fuli iconstyle">
+										</span>
+										<span class="li_text_style">
+										福利社
+										</span>
+									</a>
+								</li>
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_yaoqing iconstyle">
+										</span>
+										<span class="li_text_style">
+										邀请
+										</span>
+									</a>
+								</li>
+							</ul>
+							<ul class="mui-table-view" style="margin-top: 25px;">
+								<li class="mui-table-view-cell">
+									<a class="mui-navigate-right">
+										<span class="mui-icon iconfont_myinfo iconweb_shezhi iconstyle">
+										</span>
+										<span class="li_text_style">
+										设置
+										</span>
+									</a>
+								</li>
+							</ul>
+							<ul class="mui-table-view" style="margin-top: 25px;">
+								<li class="mui-table-view-cell">
+									<a style="text-align: center;color: #FF3B30;">
+										退出登录
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!--</div>-->
+				
+				<!-- off-canvas backdrop -->
+				<div class="mui-off-canvas-backdrop"></div>
+			</div>
+			<!--<nav class="mui-bar mui-bar-tab">
+			<a class="mui-tab-item mui-active" href="#tabbar">
+				<span class="mui-icon mui-icon-email"></span>
+				<span class="mui-tab-label">函件</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-chat" id="info">
+				<span class="mui-icon mui-icon-list"></span>
+				<span class="mui-tab-label">工具</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-contact">
+				<span class="mui-icon mui-icon-contact"></span>
+				<span class="mui-tab-label">联系人</span>
+			</a>
+			<a class="mui-tab-item" href="#tabbar-with-map">
+				<span class="mui-icon mui-icon-person"></span>
+				<span class="mui-tab-label">我的</span>
+			</a>
+		</nav>-->
+
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+		});
+		mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+	</script>
+
+</html>

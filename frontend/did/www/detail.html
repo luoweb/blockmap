@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/css/app.css" />
+	</head>
+
+	<body>
+
+		<style>
+			.mui-control-content {
+				background-color: white;
+				min-height: 580px;
+			}
+			.mui-control-content .mui-loading {
+				margin-top: 50px;
+			}
+		</style>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">数字身份</h1>
+		</header>
+		<div class="mui-content">
+			<div id="slider" class="mui-slider">
+				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+					<a class="mui-control-item" href="#item1mobile">
+				详细信息
+			</a>
+					<a class="mui-control-item" href="#item2mobile">
+				授权信息
+			</a>
+					<a class="mui-control-item" href="#item3mobile" id="createqrcode">
+				凭证二维码
+			</a>
+				</div>
+				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
+				<div class="mui-slider-group">
+					<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+						<div id="scroll1" class="mui-scroll-wrapper">
+							<div class="mui-scroll" >
+								<form class="mui-input-group">
+									<div class="mui-input-row">
+								        <label>凭证类型</label>
+								    	<input type="text" class="mui-input" id="papersName" disabled="true" value="" placeholder="">
+								    	<<!--span id="papersName"></span><br/>-->
+								    </div>
+								    <div class="mui-input-row">
+								        <label>用户名</label>
+								    	<input type="text" class="mui-input" disabled="true" id="name" value="" placeholder="">
+								    </div>
+								    <div class="mui-input-row">
+								        <label>身份证</label>
+								        <input type="text" class="mui-input" disabled="true" id="identityCard" value="" placeholder="">
+								    </div>
+								   	<div class="mui-input-row">
+								   		<label>颁发机构</label>
+										<input type="text" class="mui-input" disabled="true" id="bank" placeholder="">
+									</div>
+									<div class="mui-input-row">
+								   		<label>收入状况</label>
+										<input type="text" class="mui-input" disabled="true" id="money" placeholder=">10万">
+									</div>
+									<div class="mui-input-row">
+								   		<label>签发时间</label>
+										<input type="text" class="mui-input" disabled="true" id="issuanceDate" placeholder="">
+									</div>
+									<div class="mui-input-row">
+								   		<label>失效时间</label>
+										<input type="text" class="mui-input" disabled="true" id="expirationDate" placeholder="">
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div id="item2mobile" class="mui-slider-item mui-control-content">
+						<div id="scroll2" class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<form class="mui-input-group">
+								   	<div class="mui-input-row">
+								   		<label>授权机构</label>
+										<input type="text" class="mui-input" disabled="true" id="bank1" placeholder="">
+									</div>
+									<div class="mui-input-row">
+								   		<label>凭证id</label>
+										<input type="text" class="mui-input" disabled="true" id="id" placeholder="">
+									</div>
+									<div class="mui-input-row">
+								   		<label>授权日期</label>
+										<input type="text" class="mui-input" disabled="true" id="issuanceDate1" placeholder="">
+									</div>
+									<div class="mui-button-row">
+								        <button type="button" onclick="impower()" class="mui-btn mui-btn-primary" >授权</button>
+								        <button type="button" onclick="exRright()" class="mui-btn mui-btn-danger" >除权</button>
+								   </div>
+								</form>
+							</div>
+						</div>
+
+					</div>
+					<div id="item3mobile" class="mui-slider-item mui-control-content">
+						<div id="scroll3" class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<!--<div id="qrcode" style="width:380px; height:380px;margin: 20px;"></div>-->
+								<!--<button type="button" id="createqrcode" class="mui-btn mui-btn-primary">生成凭证二维码</button>-->
+								<!--<button type="button" id="activeqrcode" class="mui-btn mui-btn-primary">激活凭证二维码</button>-->
+								<img id="image">						
+                            </div> 
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/app3.js"></script>
+		<script src="js/qrcode.js"></script>
+		<script src="js/jquery-3.4.1.min.js"></script>
+		<script>
+			var papers = JSON.parse(localStorage.papers);
+			document.getElementById('id').value = papers.id;
+			document.getElementById('papersName').value = papers.claim.papersName;
+			document.getElementById('name').value = papers.claim.name;
+	        document.getElementById('identityCard').value = papers.claim.identityCard;
+			document.getElementById('bank').value = papers.claim.bank;
+			document.getElementById('issuanceDate').value = formatDate("yyyy-MM-dd hh:mm:ss", papers.issuanceDate);
+			document.getElementById('expirationDate').value = formatDate("yyyy-MM-dd hh:mm:ss", papers.expirationDate);
+			document.getElementById('bank1').value = papers.claim.bank;
+			document.getElementById('issuanceDate1').value = formatDate("yyyy-MM-dd hh:mm:ss", papers.issuanceDate);
+			
+			mui.init({
+				swipeBack: false
+			});
+			(function($) {
+				$('.mui-scroll-wrapper').scroll({
+					indicators: true //是否显示滚动条
+				});
+				var item2 = document.getElementById('item2mobile');
+				var item3 = document.getElementById('item3mobile');
+				document.getElementById('slider').addEventListener('slide', function(e) {
+					if (e.detail.slideNumber === 1) {
+						if (item2.querySelector('.mui-loading')) {
+							setTimeout(function() {
+								item2.querySelector('.mui-scroll').innerHTML = html2;
+							}, 500);
+						}
+					} else if (e.detail.slideNumber === 2) {
+						if (item3.querySelector('.mui-loading')) {
+							setTimeout(function() {
+								item3.querySelector('.mui-scroll').innerHTML = html3;
+							}, 500);
+						}
+					}
+				});
+				var sliderSegmentedControl = document.getElementById('sliderSegmentedControl');
+				$('.mui-input-group').on('change', 'input', function() {
+					if (this.checked) {
+						sliderSegmentedControl.className = 'mui-slider-indicator mui-segmented-control mui-segmented-control-inverted mui-segmented-control-' + this.value;
+						//force repaint
+						sliderProgressBar.setAttribute('style', sliderProgressBar.getAttribute('style'));
+					}
+				});
+			})(mui);
+			
+			function impower(){
+				mui.alert("暂未提供此功能");
+			}
+			
+			function exRright(){
+				mui.alert("暂未提供此功能");
+			}
+			//格式化时间 yyyy-MM-dd hh:mm:ss
+			function formatDate(fmt, date) {
+			    date = new Date(date);
+			    var o = {
+			        "M+": date.getMonth() + 1, //月份
+			        "d+": date.getDate(), //日
+			        "h+": date.getHours(), //小时
+			        "m+": date.getMinutes(), //分
+			        "s+": date.getSeconds(), //秒
+			        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+			        "S": date.getMilliseconds() //毫秒
+			    };
+			    if (/(y+)/.test(fmt))
+			        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+			    for (var k in o)
+			        if (new RegExp("(" + k + ")").test(fmt))
+			            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			    return fmt;
+			}
+			
+			//生成随机码
+			function uuidGenerator() {
+			    var originStr = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+			        originChar = '0123456789abcdef',
+			        len = originChar.length;
+			    return originStr.replace(/x/g, function(match) {
+			        return originChar.charAt(Math.floor(Math.random() * len))
+			    })
+			}
+			
+			//监听点击事件
+			var btn = document.getElementById("createqrcode");
+			btn.addEventListener("tap",function () {
+				var uuid = uuidGenerator();
+				localStorage.uuid = uuid;
+				console.log(uuid);
+				//alert(uuid);
+			  	mui.ajax('http://129.204.253.9:6001/weid/api/invoke', {
+					dataType:'json',
+					data :{
+					    "functionArg": {
+					        "id": uuid,
+        					"credentialIds": [papers.id]
+					    },
+					    "transactionArg": {},
+					    "functionName": "createQrCode",
+					    "v": "1.0.0"
+					},
+					type:'post',//HTTP请求类型
+					timeout:5000,//超时时间设置为10秒； 
+					crossDomain:true,
+					headers:{
+						'Access-Control-Allow-Origin':'*',
+						'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+						'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+						'X-Powered-By':'3.2.1',
+						'Content-Type':'application/json;charset=utf-8'
+					},
+					success:function(data){
+						if(data.errorCode == '0'){
+							console.log(data.respBody.img.buf);
+							$("#image").attr("src","data:image/png;base64,"+data.respBody.img.buf);
+							//alert("激活二维码");
+							//alert(uuid);
+							mui.ajax('http://129.204.253.9:6001/weid/api/invoke', {
+								dataType:'json',
+								data :{
+								    "functionArg": {
+								        "id": uuid,
+				    					"credentialIds": [papers.id]
+								    },
+								    "transactionArg": {},
+								    "functionName": "activeQrCode",
+								    "v": "1.0.0"
+								},
+								type:'post',//HTTP请求类型
+								timeout:20000,//超时时间设置为10秒； 
+								crossDomain:true,
+								headers:{
+									'Access-Control-Allow-Origin':'*',
+									'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+									'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+									'X-Powered-By':'3.2.1',
+									'Content-Type':'application/json;charset=utf-8'
+								},
+								success:function(data){
+									if(data.errorCode == '0'){
+										console.log("激活二维码成功");
+										mui.alert("激活二维码成功");
+										mui.openWindow({
+										    url: 'numberIndex.html'
+										});
+									} else {
+										mui.alert(data.errorMsg);
+									}
+									
+								},
+								error:function(xhr,type,errorThrown){
+									//异常处理；
+									//console.log("数据请求失败:xhr:"+xhr+"type:"+type+"errorThrown:"+errorThrown);
+									//mui.alert("数据请求失败:xhr:"+xhr+"type:"+type+"errorThrown:"+errorThrown);
+									mui.openWindow({
+										    url: 'numberIndex.html'
+										});
+								}
+							});
+						} else {
+							mui.alert(data.errorMsg);
+						}
+						
+					},
+					error:function(xhr,type,errorThrown){
+						//异常处理；
+						mui.alert("数据请求失败:"+type);
+						
+					}
+				});
+
+			});
+//			var btn2 = document.getElementById("activeqrcode");
+//			btn2.addEventListener("tap",function () {
+//				uuid = localStorage.uuid;
+//				console.log(uuid);
+//				//alert("createqrcode："+ uuid)
+//				mui.ajax('http://129.204.253.9:6001/weid/api/invoke', {
+//				dataType:'json',
+//					data :{
+//					    "functionArg": {
+//					        "id": uuid,
+//	    					"credentialIds": [papers.id]
+//					    },
+//					    "transactionArg": {},
+//					    "functionName": "activeQrCode",
+//					    "v": "1.0.0"
+//					},
+//					type:'post',//HTTP请求类型
+//					timeout:20000,//超时时间设置为10秒； 
+//					crossDomain:true,
+//					headers:{
+//						'Access-Control-Allow-Origin':'*',
+//						'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+//						'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+//						'X-Powered-By':'3.2.1',
+//						'Content-Type':'application/json;charset=utf-8'
+//					},
+//					success:function(data){
+//						if(data.errorCode == '0'){
+//							console.log("激活二维码成功");
+//							mui.alert("激活二维码成功");
+//							
+//							mui.openWindow({
+//							    url: 'numberIndex.html'
+//							});
+//						} else {
+//							mui.alert(data.errorMsg);
+//						}
+//						
+//					},
+//					error:function(xhr,type,errorThrown){
+//						//异常处理；
+//						mui.alert("数据请求失败:"+type);
+//						
+//					}
+//				});
+//			});
+
+			
+		</script>
+		<script>
+			mui.plusReady(function() {
+				
+			});
+		</script>
+	</body>
+
+</html>
