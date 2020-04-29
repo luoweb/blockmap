@@ -1,0 +1,57 @@
+[
+    {
+        "transactionName": "myPrivateAssetExists",
+        "transactionLabel": "A test myPrivateAssetExists transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "createMyPrivateAsset",
+        "transactionLabel": "A test createMyPrivateAsset transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {
+            "privateValue": "some value"
+        }
+    },
+    {
+        "transactionName": "readMyPrivateAsset",
+        "transactionLabel": "A test readMyPrivateAsset transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "updateMyPrivateAsset",
+        "transactionLabel": "A test updateMyPrivateAsset transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {
+            "privateValue": "some other value"
+        }
+    },
+    {
+        "transactionName": "deleteMyPrivateAsset",
+        "transactionLabel": "A test deleteMyPrivateAsset transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "verifyMyPrivateAsset",
+        "transactionLabel": "A test verifyMyPrivateAsset transaction",
+        "arguments":[
+            "001",
+            {
+                "privateValue": "some other value"
+            }
+        ],
+        "transientData": {}
+    }
+]
