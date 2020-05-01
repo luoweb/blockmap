@@ -30,7 +30,7 @@
   <body>
 	<header class="mui-bar mui-bar-nav" style="background-color: #ffffff;">
 	  <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-	  <h1 class="mui-title" style="color: #0E76E1;">二维码扫描</h1>
+	  <h1 class="mui-title" style="color: #0E76E1;">Scan QR code</h1>
 	  <span class="mui-icon mui-icon-spinner-cycle mui-spin mui-pull-right" id="turnTheLight"></span>
 	</header>
 		
@@ -39,8 +39,8 @@
 	</div>
 		
 	<div class="mui-bar mui-bar-footer" style="padding: 0px;">
-		<div class="fbt" onclick="scanPicture()">从相册选择二维码</div>
-		<div class="fbt mui-action-back">取　 消</div>
+		<div class="fbt" onclick="scanPicture()">From local album</div>
+		<div class="fbt mui-action-back">Cancel</div>
 	</div>
 	<script type="text/javascript">
 	    scan = null;//扫描对象
@@ -131,7 +131,7 @@
 							var bank = data.respBody[i].claim.bank;
 							var name = data.respBody[i].claim.name;
 							var papersName = data.respBody[i].claim.papersName;
-							mui.alert("凭证类型："+papersName+"\n颁发机构："+bank+"\n姓名："+name+"\n身份证："+identityCard+"","验证成功");
+							mui.alert("Type："+papersName+"\nIssuer："+bank+"\nUsername："+name+"\nIdentity Id："+identityCard+"","Successful verification");
 							//mui.alert(JSON.stringify(data.respBody));
 							mui.ajax('http://129.204.253.9:6001/weid/api/invoke',{
 								data:{

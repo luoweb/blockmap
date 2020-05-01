@@ -78,7 +78,7 @@
 					<a id="back" class="mui-icon mui-icon-back mui-pull-left" ></a>
 					<a href="#sendFormPapers" id="sendFormPapers" class="mui-icon mui-icon-checkmarkempty mui-pull-right" style="font-size: 50px;padding-top: 0px; padding-right: 0px; margin-top: -5px;"></a>
 
-					<h1 class="mui-title mui-pull-left" style="font-weight: 700;color: #007aff;">新建凭证申请</h1>
+					<h1 class="mui-title mui-pull-left" style="font-weight: 700;color: #007aff;">Apply Credential</h1>
 				</header>
 				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
 					<div class="mui-scroll">
@@ -86,40 +86,40 @@
 							<div id="tabbar" class="mui-control-content mui-active">
 								<form class="mui-input-group">
 									<div class="mui-input-row">
-								        <label>凭证类型</label>
+								        <label>Type</label>
 								    	<input type="text" class="mui-input" disabled="true" id="papersName" value="" placeholder="请输入凭证类型">
 								    </div>
 								    <div class="mui-input-row">
-								        <label>用户名</label>
+								        <label>Username</label>
 								    	<input type="text" class="mui-input" disabled="true" id="name" value="" placeholder="请输入用户名">
 								    </div>
 								    <div class="mui-input-row">
-								        <label>身份证</label>
+								        <label>Password</label>
 								        <input type="text" class="mui-input" disabled="true" id="identityCard" value="" placeholder="请输入身份证">
 								    </div>
 								    <div class="mui-input-row">
-								        <label>客户id</label>
+								        <label>DID</label>
 								        <input type="text" class="mui-input" disabled="true" id="weId" placeholder="请输入客户id">
 								    </div>
 								   	<div class="mui-content-padded">
-								   		<label >颁发机构:请选择</label>
+								   		<label >Issuer:</label>
 										<select class="mui-btn mui-btn-block" style="color: #0E76E1;" id="bank">
-											<option value="工商银行">工商银行</option>
-											<option value="农业银行">农业银行</option>
-											<option value="建设银行">建设银行</option>
-											<option value="交通银行">交通银行</option>
-											<option value="平安银行">平安银行</option>
+											<option value="Beijing Hospital">Beijing Hospital</option>
+											<option value="Shanghai Hospital">Shanghai Hospital</option>
+											<option value="Guangzhou Hospital">Guangzhou Hospital</option>
+											<option value="Shenzhen Hospital">Shenzhen Hospital</option>
+											<option value="New York Hospital">New York Hospital</option>
 										</select>
 										
 									</div>
 									
 									<div class="mui-content-padded">
-								   		<label>期限:请选择</label>
+								   		<label>Item:</label>
 										<select class="mui-btn mui-btn-block" style="color: #0E76E1;">
-											<option value="最近一个月">最近一个月</option>
-											<option value="最近一个月">最近三个月</option>
-											<option value="最近一个月">最近半年</option>
-											<option value="最近一个月">最近一年</option>
+											<option value="Coronavirus">Coronavirus</option>
+											<option value="Ebola">Ebola</option>
+											<option value="Body temperature">Body temperature</option>
+											<option value="chest">chest</option>
 											
 										</select>
 									</div>
@@ -189,7 +189,7 @@
 					console.log("详情data:"+JSON.stringify(data));
 					console.log("respBody:"+JSON.stringify(respBody));
 					if(data.errorCode == '0'){
-						mui.alert("凭证申请成功");
+						mui.alert("Successfully applied for a credential");
 						mui.openWindow({
 						    url: 'numberIndex.html'
 						});

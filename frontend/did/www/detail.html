@@ -26,19 +26,19 @@
 		</style>
 		<header class="mui-bar mui-bar-nav">
 			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-			<h1 class="mui-title">数字身份</h1>
+			<h1 class="mui-title">Credential</h1>
 		</header>
 		<div class="mui-content">
 			<div id="slider" class="mui-slider">
 				<div id="sliderSegmentedControl" class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
 					<a class="mui-control-item" href="#item1mobile">
-				详细信息
+				Detail
 			</a>
 					<a class="mui-control-item" href="#item2mobile">
-				授权信息
+				Authorize
 			</a>
 					<a class="mui-control-item" href="#item3mobile" id="createqrcode">
-				凭证二维码
+				QR code
 			</a>
 				</div>
 				<div id="sliderProgressBar" class="mui-slider-progress-bar mui-col-xs-4"></div>
@@ -48,32 +48,32 @@
 							<div class="mui-scroll" >
 								<form class="mui-input-group">
 									<div class="mui-input-row">
-								        <label>凭证类型</label>
+								        <label>Type</label>
 								    	<input type="text" class="mui-input" id="papersName" disabled="true" value="" placeholder="">
 								    	<<!--span id="papersName"></span><br/>-->
 								    </div>
 								    <div class="mui-input-row">
-								        <label>用户名</label>
+								        <label>Username</label>
 								    	<input type="text" class="mui-input" disabled="true" id="name" value="" placeholder="">
 								    </div>
 								    <div class="mui-input-row">
-								        <label>身份证</label>
+								        <label>Identity Id</label>
 								        <input type="text" class="mui-input" disabled="true" id="identityCard" value="" placeholder="">
 								    </div>
 								   	<div class="mui-input-row">
-								   		<label>颁发机构</label>
+								   		<label>Issuer</label>
 										<input type="text" class="mui-input" disabled="true" id="bank" placeholder="">
 									</div>
 									<div class="mui-input-row">
-								   		<label>收入状况</label>
-										<input type="text" class="mui-input" disabled="true" id="money" placeholder=">10万">
+								   		<label>New coronavirus</label>
+										<input type="text" class="mui-input" disabled="true" id="money" placeholder="Negative">
 									</div>
 									<div class="mui-input-row">
-								   		<label>签发时间</label>
+								   		<label>Issue date</label>
 										<input type="text" class="mui-input" disabled="true" id="issuanceDate" placeholder="">
 									</div>
 									<div class="mui-input-row">
-								   		<label>失效时间</label>
+								   		<label>Expire date</label>
 										<input type="text" class="mui-input" disabled="true" id="expirationDate" placeholder="">
 									</div>
 								</form>
@@ -85,20 +85,20 @@
 							<div class="mui-scroll">
 								<form class="mui-input-group">
 								   	<div class="mui-input-row">
-								   		<label>授权机构</label>
+								   		<label>Issuer</label>
 										<input type="text" class="mui-input" disabled="true" id="bank1" placeholder="">
 									</div>
 									<div class="mui-input-row">
-								   		<label>凭证id</label>
+								   		<label>Credential id</label>
 										<input type="text" class="mui-input" disabled="true" id="id" placeholder="">
 									</div>
 									<div class="mui-input-row">
-								   		<label>授权日期</label>
+								   		<label>Issue date</label>
 										<input type="text" class="mui-input" disabled="true" id="issuanceDate1" placeholder="">
 									</div>
 									<div class="mui-button-row">
-								        <button type="button" onclick="impower()" class="mui-btn mui-btn-primary" >授权</button>
-								        <button type="button" onclick="exRright()" class="mui-btn mui-btn-danger" >除权</button>
+								        <button type="button" onclick="impower()" class="mui-btn mui-btn-primary" >Authorize</button>
+								        <button type="button" onclick="exRright()" class="mui-btn mui-btn-danger" >Revoke</button>
 								   </div>
 								</form>
 							</div>
