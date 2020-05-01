@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>收件箱详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="/css/app.css" />
+		<!--图标css-->
+		<link rel="stylesheet" type="text/css" href="css/iconfont_dustin.css" />
+		<style>
+			.inbox-info-title {
+			    /*height: 78px;
+			    left: 1px;
+			    top: 70px;
+			    z-index: 32;
+			    background-color: rgb(231, 234, 249);
+			    border-color: transparent;
+			    font-size: 18px;
+			    font-weight: normal;
+			    font-style: normal;
+			    opacity: 1;*/
+			}
+			
+			.inbox-info {
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+				font-family: PingFangSC;
+    			font-weight: 400;
+    			font-style: normal;
+    			line-height: 30px;
+    			text-decoration: none;
+			}
+			
+			/*两个按钮样式*/
+			.inbox-info-btn {
+    			text-align: center;
+			}
+			
+			.borderline{
+			    border-top-width: 5px;
+			    left: -3px;
+			    top: 380px;
+			    z-index: 21;
+			    border-color: rgb(227, 227, 227);
+			    border-style: solid;
+			    font-weight: normal;
+			    font-style: normal;
+			    opacity: 1;
+			}
+			
+			.mui-scroll-wrapper{
+				background-color: white; 	
+			}
+			
+			.mui-control-content.mui-active{
+				background-color: white;
+			}
+			
+			.mui-btn-style {
+				border-radius: 30px;
+			    color: #fff;
+			    border: 1px solid #55a6ff;
+			    background-color: #55a6ff;
+			    
+			}
+			
+			.confirm-style {
+				/*margin-left: 85px;*/
+			}
+			
+			/*拒绝按钮样式*/
+			.refuse-style {
+				margin-left: 20px;
+			    padding-left: 25px;
+			    padding-right: 25px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-inner-wrap">
+			<div class="mui-inner-wrap">
+				<header class="mui-bar mui-bar-nav">
+					<a href="#back" class="mui-action-back mui-icon mui-icon-back mui-pull-left"></a>
+					<a href="#delletter" id="delletter" class="mui-icon iconfont_dustin icon-web_lajixiang mui-pull-right" style="font-size: 30px;"></a>
+
+					<h1 id="head-inboxdetail" class="mui-title mui-pull-left" style="font-weight: 700;color: #007aff;">收件箱</h1>
+				</header>
+				<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+					<div class="mui-scroll">
+						<div class="mui-content">
+							<div id="tabbar" class="mui-control-content mui-active">
+								<div style="height: 60px;background-color: rgb(231, 234, 249);font-size: 18px;padding: 10px 10px 10px;">
+									<span id="subject">【待签收】保函单号号EA463456  关于云从公司的商业保函，请查收确认</span> 
+								</div>
+								<div style="margin-top: 5px;" id="snedMsg">
+									<img style="width: 45px;margin-left: 20px;vertical-align: top;" id="icon">
+									<span style="display: inline-block;"><span id="sender">平安保险</span> <p id="sendDate" style="float: right;">7-11 06:09</p><br/><p>发至我</p></span> 
+									<span></span>
+								</div>
+								<div class="inbox-info" style="text-align: right;">
+									保函号：
+									<span id="guarantee_id" style="text-decoration:underline">EZ113898</span>
+								</div>
+								<div class="inbox-info" style="text-indent:2em;">
+									致受益人&nbsp;&nbsp;<span id="beneficiary" style="text-decoration:underline">___________</span>                       
+								</div>
+								
+								<div class="inbox-info" style="text-indent:2em;">
+									<span id="client" style="text-decoration:underline">___________</span>&nbsp;&nbsp;系我公司客户，我行已接受该单位委托，愿承担该单位上述下&nbsp;<span id="money" style="text-decoration:underline">____</span>&nbsp;元的担保，如该单位不能按期偿还本息，我公司原意担保责任，按合同规定代为偿还借款利息。
+								</div>
+								<div class="inbox-info" style="text-align: right;">
+									法定代表人签字：张三<br/>
+									<span id="sendDate"></span>
+								</div>
+								
+								<div class="inbox-info-btn">
+									
+									<button type="button" id="confirmreceipt" data-loading-icon="mui-spinner mui-spinner-custom" class="mui-btn mui-btn-style confirm-style" data-loading-icon-position="left">确认签收</button>
+									<button type="button" id="refuse" data-loading-icon="mui-spinner mui-spinner-custom" class="mui-btn mui-btn-style refuse-style" data-loading-icon-position="right">拒绝</button>
+								
+								</div>
+								<div id="closeinfo"></div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script>
+		mui.init({
+			swipeBack: true //启用右滑关闭功能
+			
+		});
+		
+		var data = JSON.parse(localStorage.mailDetailOne);
+		var qrytype = localStorage.qrytype;
+		
+		console.log("dataInbox1:"+data);
+		console.log("data.qrytype2:"+qrytype);
+		
+		var head = document.getElementById("head-inboxdetail");
+		head.style.display="none";//隐藏
+		if(qrytype == "inbox"){
+			head.innerHTML = '收件箱';
+			head.style.display="";//显示
+			
+			document.getElementById("subject").innerHTML = data.subject;
+			document.getElementById("sender").innerHTML = data.sender;
+			document.getElementById("sendDate").innerHTML = data.sendDate;
+			document.getElementById("subject").innerHTML = data.subject;
+			document.getElementById("guarantee_id").innerHTML = data.templateFields[0];
+			document.getElementById("beneficiary").innerHTML = data.templateFields[1];
+			document.getElementById("client").innerHTML = data.templateFields[2];
+			document.getElementById("money").innerHTML = data.templateFields[3];
+			
+			if(data.sender == "南非" || data.sender == "南非标准银行"){
+				document.getElementById("icon").src = "./img/myinfo/nanfei.png";
+			} else if(data.sender == "商汤" || data.sender == "商汤科技有限公司") {
+				document.getElementById("icon").src = "./img/addrbook/shangtan.png";
+			} else{
+				document.getElementById("icon").src = "./img/inbox/icbc.jpg";
+			}
+		
+		} else if(qrytype == "draftbox"){
+			head.innerHTML = "草稿箱";
+			head.style.display="";//显示
+		} else if(qrytype == "outbox") {
+			head.innerHTML = "已发送";
+			head.style.display="";//显示
+			
+			document.getElementById("snedMsg").innerHTML = '<div style="margin-top: 5px;" id="snedMsg">' +
+									'<img style="width: 45px;margin-left: 20px;vertical-align: top;" id="icon">' +
+									'<span style="display: inline-block;">  <p id="sendDate" style="float: right;">7-11 06:09</p> <p id="sender" style="width: 160px;">我</p> <p>发至&nbsp;<span style="font-size: 18px;color: #000;" id="receiver"> </span></p></span> ' + 
+									'<span></span>'+
+									'</div>';
+			
+			document.getElementById("subject").innerHTML = data.subject;
+			document.getElementById("receiver").innerHTML = data.receiver;
+			document.getElementById("sendDate").innerHTML = data.sendDate;
+			document.getElementById("subject").innerHTML = data.subject;
+			document.getElementById("guarantee_id").innerHTML = data.templateFields[0];
+			document.getElementById("beneficiary").innerHTML = data.templateFields[1];
+			document.getElementById("client").innerHTML = data.templateFields[2];
+			document.getElementById("money").innerHTML = data.templateFields[3];
+			console.log("data.receiver:"+data.receiver);
+			if(data.receiver == "南非" || data.receiver == "南非标准银行"){
+				document.getElementById("icon").src = "./img/myinfo/nanfei.png";
+			} else if(data.receiver == "商汤" || data.receiver == "商汤科技有限公司") {
+				document.getElementById("icon").src = "./img/addrbook/shangtan.png";
+			} else{
+				document.getElementById("icon").src = "./img/inbox/icbc.jpg";
+			}
+			
+		} else if(qrytype == "rabbox") {
+			head.children[2].innerHTML = "垃圾箱";
+		}
+		
+		
+		mui('.mui-scroll-wrapper').scroll({
+			deceleration: 0.0005 //flick 减速系数，系数越大，滚动速度越慢，滚动距离越小，默认值0.0006
+		});
+		
+		//确认签收
+		var info = document.getElementById("closeinfo");
+		document.getElementById("confirmreceipt").addEventListener('tap', function()
+		{
+		    mui.alert('您已确认签收', '温馨提示', function() {
+	        	info.innerText = '';
+	    	});
+		});
+		
+		//拒绝
+		var info = document.getElementById("closeinfo");
+		document.getElementById("refuse").addEventListener('tap', function()
+		{
+		    mui.alert('您已拒绝签收', '温馨提示', function() {
+	        	info.innerText = '';
+	    	});
+		});
+
+	</script>
+	<script>
+		/*mui.plusReady(function() {
+			
+			var self = plus.webview.currentWebview();
+			var mailDetailOne = JSON.parse(self.mailDetailOne);
+			console.log("mailDetailOne:"+mailDetailOne);
+			document.getElementById("subject").innerHTML = mailDetailOne.subject;
+			document.getElementById("sender").innerHTML = mailDetailOne.sender;
+			document.getElementById("sendDate").innerHTML = mailDetailOne.sendDate;
+			document.getElementById("guarantee_id").innerHTML = mailDetailOne.templateFields[0];
+			document.getElementById("beneficiary").innerHTML = mailDetailOne.templateFields[1];
+			document.getElementById("client").innerHTML = mailDetailOne.templateFields[2];
+			document.getElementById("money").innerHTML = mailDetailOne.templateFields[3];
+			
+			if(localStorage.userName === "南非标准银行"){
+				document.getElementById("icon").src = "./img/myinfo/nanfei.png";
+			} else if(localStorage.userName === "商汤科技有限公司") {
+				document.getElementById("icon").src = "./img/addrbook/shangtan.png";
+			} else{
+				document.getElementById("icon").src = "./img/inbox/icbc.jpg";
+			}
+			
+			var qrytype = self.qrytype;
+			var head = document.getElementById("head-inboxdetail");
+			head.style.display="none";//隐藏
+			if(qrytype == "inbox"){
+				console.log(1);
+				head.innerHTML = '收件箱';
+				head.style.display="";//显示
+			} else if(qrytype == "draftbox"){
+				head.innerHTML = "草稿箱";
+				head.style.display="";//显示
+			} else if(qrytype == "outbox") {
+				head.innerHTML = "已发送";
+				head.style.display="";//显示
+			} else if(qrytype == "rabbox") {
+				head.children[2].innerHTML = "垃圾箱";
+			}
+		});*/
+		
+	</script>
+
+</html>

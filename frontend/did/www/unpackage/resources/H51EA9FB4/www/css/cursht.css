@@ -1,0 +1,10 @@
+@font-face {
+  font-family: "CURSHT";
+  src:url('../fonts/CURSHT.TTF') format('truetype'); /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+
+}
+
+.cursht {
+  font-family: "CURSHT";
+  font-family: cursive;
+}

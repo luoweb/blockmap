@@ -1,0 +1,52 @@
+@font-face {
+	font-family: "iconfont_login";
+  src:url('../fonts/iconfont_login.ttf') format('truetype'); /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+
+}
+
+.iconfont_login {
+  font-family: "iconfont_login" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 23px;
+  color: dodgerblue;
+}
+
+.icon-mingcheng:before {
+  content: "\e674";
+}
+
+.icon-password:before {
+  content: "\e638";
+}
+
+.icon-yonghu:before {
+  content: "\e61e";
+}
+
+.icon-weibiaoti3:before {
+  content: "\e675";
+}
+
+.icon-yonghu2:before {
+  content: "\e63d";
+}
+
+.icon-mima:before {
+  content: "\e64f";
+}
+
+.icon-mingcheng1:before {
+  content: "\e6a5";
+}
+
+.icon-querenmima:before {
+  content: "\e620";
+}
+
+.icon-yonghu3:before {
+  content: "\e610";
+}
+

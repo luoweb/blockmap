@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/iconfont_login.css" rel="stylesheet" />
+		<link href="css/iconfont_myinfo.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			.mui-input-group {
+				width: 90%;
+			    margin: 0 auto;
+			    margin-bottom: 5px;
+			}
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			.mui-input-group label {
+				width: 22%;
+				padding: 7px 20px;
+			}
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			.mui-content-padded {
+				//margin-top: 25px;
+			}
+			.mui-btn {
+				padding: 10px;
+			}
+			
+		</style>
+	</head>
+
+	<body style="background-image:url(img/mailpic/background.jpg); background-size: 100%;background-repeat:no-repeat; background-attachment:fixed;">
+		<!--<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">注册</h1>
+		</header>-->
+		
+		<div style="margin-top: 60px;">
+			<div id="">
+				<p class="iconfont_login icon-yonghu2" style="text-align: center;color: white;font-size: 45px;margin-bottom: 24px;"></p>
+			</div>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="iconfont_login icon-yonghu3"></label>
+					<input id='userId' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="iconfont_login icon-mingcheng1"></label>
+					<input id='userName' type="text" class="mui-input-clear mui-input" placeholder="请输入用户名称">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="iconfont_login icon-password"></label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="iconfont_login icon-querenmima" style="margin-left: -8px;"></label>
+					<input id='password_confirm' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="iconfont_myinfo iconweb_iphone" style="font-size: 23px;color: dodgerblue;"></label>
+					<input id='mobile' type="email" class="mui-input-clear mui-input" placeholder="请输入手机号码">
+				</div>
+			</form>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label class="iconfont_myinfo iconweb_xinjian" style="font-size: 23px;color: dodgerblue;"></label>
+					<input id='email' type="email" class="mui-input-clear mui-input" placeholder="请输入邮箱">
+				</div>
+			</form>
+			<div style="margin-left: 25px;margin-top: 30px;">
+				<input name="Fruit" type="radio" value="" />
+				<span style="font-size: 15px;">我已同意并阅读《用户协议》</span>
+			</div>
+			<div class="mui-content-padded">
+				<button id='reg' class="mui-btn mui-btn-block mui-btn-primary" style="border-radius: 30px;" onclick="register()">注册</button>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<!--<script src="js/app.js"></script>-->
+		<script>
+			function register(){
+				var userId = document.getElementById("userId").value.replace(/\s+/g,"");
+			    var userName = document.getElementById("userName").value.replace(/\s+/g,"");
+			    var password = document.getElementById("password").value.replace(/\s+/g,"");
+			    var password_confirm = document.getElementById("password_confirm").value.replace(/\s+/g,"");
+			    var mobile = document.getElementById("mobile").value.replace(/\s+/g,"");
+			    var email = document.getElementById("email").value.replace(/\s+/g,"");
+			    
+			    if(!userId){
+			    	mui.alert("请输入用户账号！");
+			    }else if(!userName){
+			    	mui.alert("请输入用户名称！");
+			    }else if(!password){
+			    	mui.alert("请输入用户密码！");
+			    }else if(!password_confirm){
+			    	mui.alert("请输入确认密码！");
+			    }else if(!mobile){
+			    	mui.alert("请输入手机号码！");
+			    }else if(!email){
+			    	mui.alert("请输入邮箱！");
+			    }else if(password && password_confirm && password !== password_confirm){
+			    	mui.alert("用户密码与确认密码不一致！");
+			    }else{
+					mui.ajax('http://122.18.61.62:9080/valexchsys/usermgt.flowc', {
+						dataType:"json",
+						data :{
+							flowActionName: 'userregister',
+							userId: userId,
+							userName: userName,
+							password: password,
+							password_confirm: password_confirm,
+							email: email,
+							mobile: mobile
+						},
+						type:'post',//HTTP请求类型
+						timeout:5000,//超时时间设置为10秒；
+						crossDomain:true,
+						headers:{
+							'Access-Control-Allow-Origin':'*',
+							'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+							'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+							'X-Powered-By':'3.2.1',
+							'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
+						},
+						success:function(data){
+							console.log(JSON.stringify(data));
+							if(data.errorCode === "0"){
+								mui.alert("用户注册成功!", function() { 
+									mui.back();
+									document.getElementById( "userId").value = "";
+									document.getElementById( "userName").value = "";
+									document.getElementById( "password").value = "";
+									document.getElementById( "password_confirm").value = "";
+									document.getElementById( "mobile").value = "";
+									document.getElementById( "email").value = "";
+								});
+							}else{
+								mui.alert(data.errorMsg);
+							}
+						},
+						error:function(xhr,type,errorThrown){
+							//异常处理；
+							mui.alert("数据请求失败:"+type);
+							
+						}
+					});
+			    }
+				
+				
+			}
+		</script>
+	</body>
+
+</html>

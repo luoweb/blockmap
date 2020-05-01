@@ -1,0 +1,102 @@
+{
+	"newguarantee.html": {
+		"href": "newguarantee.html",
+		"resources": [
+			"js/mui.min.js",
+			"css/mui.min.css",
+			"css/app.css",
+			"/css/app.css"
+		],
+		"refer": [
+			"index.html"
+		],
+		"priority": 0
+	},
+	"index.html": {
+		"href": "index.html",
+		"resources": [
+			"js/mui.min.js",
+			"js/app.js",
+			"img/pingan.png",
+			"js/app2.js",
+			"css/mui.min.css",
+			"css/app.css",
+			"img/yuantiao.jpg",
+			"img/shuijiao.jpg",
+			"img/muwu.jpg",
+			"img/cbd.jpg"
+		],
+		"refer": [
+			"newguarantee.html",
+			"inboxdetail.html",
+			"erweimacar.html",
+			"login.html"
+		],
+		"priority": 0
+	},
+	"inboxdetail.html": {
+		"resources": [
+			"/css/app.css"
+		],
+		"refer": []
+	},
+	"erweimacar.html": {
+		"resources": [
+			"/css/app.css"
+		],
+		"refer": []
+	},
+	"login.html": {
+		"refer": [
+			"register.html",
+			"forget_password.html",
+			"index.html"
+		],
+		"resources": []
+	},
+	"forget_password.html": {
+		"refer": [
+			"login.html"
+		],
+		"resources": []
+	},
+	"applyForm.html": {
+		"resources": [
+			"/css/app.css"
+		],
+		"refer": []
+	},
+	"numberIndex.html": {
+		"refer": [
+			"applyForm.html",
+			"detail.html",
+			"barcode.html",
+			"checkboxList.html"
+		],
+		"resources": []
+	},
+	"numberLogin.html": {
+		"refer": [
+			"numberIndex.html"
+		],
+		"resources": []
+	},
+	"detail.html": {
+		"resources": [
+			"/css/app.css"
+		],
+		"refer": [
+			"detail.html"
+		]
+	},
+	"lead.html": {
+		"refer": [
+			"numberLogin.html"
+		]
+	},
+	"checkboxList.html": {
+		"resources": [
+			"/css/app.css"
+		]
+	}
+}
