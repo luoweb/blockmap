@@ -12,11 +12,6 @@ import (
 	"log"
 )
 
-/*cpt注册：
-输入：
-输出：
-*/
-
 func RegisterCpt(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 	log.Println("Function RegisterCpt: get request.")
