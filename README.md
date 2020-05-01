@@ -71,7 +71,7 @@ Users can truly rely on the ownership of digital identity without relying on a t
 
 |                                                                User presents epidemic prevention QrCode                                                                |                                                             Institutional verification of epidemic prevention QrCode                                                             |
 | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/show.jpg)](http://q8mix8qp7.bkt.clouddn.com/show.mp4) | [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/verify.jpg)](http://q8mix8qp7.bkt.clouddn.com/verification.mp4) |
+| [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/show.jpg)](http://pic.6and.ltd/show.mp4) | [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/verify.jpg)](http://pic.6and.ltd/verification.mp4) |
 
 # Tech Stack
 
