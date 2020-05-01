@@ -51,13 +51,13 @@
 
 Trusted digital identity service, relying on mature blockchain technology, provides stable and complete distributed digital identity and verifiable statement full-cycle management to support business scenarios in finance, e-government, medical and other industries.
 
-![ar](http://github.roweb.cn/mapblock/public/assets/ar.png)
+![ar](https://github.com/luoweb/blockmap/blob/master/public/assets/ar.png)
 
 ## Anti-epidemic QR code of trusted digital identity
 
 Users can truly rely on the ownership of digital identity without relying on a three-party central organization. At the same time, users can verify their identity while personal privacy information is highly protected.
 
-![ibm-qr](http://github.roweb.cn/mapblock/public/assets/ibm-qr.png)
+![ibm-qr](https://github.com/luoweb/blockmap/blob/master/public/assets/ibm-qr.png)
 
 ## Getting started with the QR code for epidemic prevention
 
