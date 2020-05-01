@@ -1,0 +1,2 @@
+// Preserve the original java sdk name
+rootProject.name = "did-core"
