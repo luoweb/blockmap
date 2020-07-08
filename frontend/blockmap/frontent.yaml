@@ -6,12 +6,12 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: blockmap-frontend
-    app.kubernetes.io/instance: 0.0.1
+    app.kubernetes.io/instance: 0.0.2
 data:
   default.conf: |-
 
     upstream geoserver {
-        server 173.193.109.188:30657;
+        server 10.2.1.204:32800;
     }
     server {
         listen       80;
@@ -56,16 +56,16 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: blockmap-frontend
-      app.kubernetes.io/instance: 0.0.1
+      app.kubernetes.io/instance: 0.0.2
   template:
     metadata:
       labels:
         app.kubernetes.io/name: blockmap-frontend
-        app.kubernetes.io/instance: 0.0.1
+        app.kubernetes.io/instance: 0.0.2
     spec:
       containers:
         - name: blockmap
-          image: luoweb/blockmap:0.0.1
+          image: luoweb/blockmap:0.0.2
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -79,9 +79,13 @@ spec:
         - name: nginx-conf
           configMap:
             name: blockmap-frontend
+        # - name: blockmap-frontend
+        #   hostPath:
+        #     path: /opt/nginx/data_dir
         - name: blockmap-frontend
-          hostPath:
-            path: /opt/nginx/data_dir
+          nfs:
+            server: 10.2.1.204
+            path: /data/blockmap/app
 ---
 apiVersion: v1
 kind: Service
@@ -90,7 +94,7 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: blockmap-frontend
-    app.kubernetes.io/instance: 0.0.1
+    app.kubernetes.io/instance: 0.0.2
 spec:
   type: NodePort
   ports:
@@ -99,4 +103,4 @@ spec:
       nodePort: 32700
   selector:
     app.kubernetes.io/name: blockmap-frontend
-    app.kubernetes.io/instance: 0.0.1
+    app.kubernetes.io/instance: 0.0.2

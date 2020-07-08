@@ -240,7 +240,7 @@ var tdImageLayer = new TileLayer({
 });
 
 var borderSource = new ImageWMS({
-  url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+  url: "http://113.106.111.75:5014/geoserver/blockmap/wms",
   params: {
     LAYERS: "border",
   },
@@ -259,7 +259,7 @@ var borderLayer = new ImageLayer({
 
 var provinceLayer = new ImageLayer({
   source: new ImageWMS({
-    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+    url: "http://113.106.111.75:5014/geoserver/blockmap/wms",
     params: {
       LAYERS: "province0",
     },
@@ -277,7 +277,7 @@ var provinceLayer = new ImageLayer({
 
 var cityLayer = new ImageLayer({
   source: new ImageWMS({
-    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+    url: "http://113.106.111.75:5014/geoserver/blockmap/wms",
     params: {
       LAYERS: "city",
     },
@@ -294,7 +294,7 @@ var cityLayer = new ImageLayer({
 
 var roadLayer = new ImageLayer({
   source: new ImageWMS({
-    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+    url: "http://113.106.111.75:5014/geoserver/blockmap/wms",
     params: {
       LAYERS: "road",
     },
@@ -310,7 +310,7 @@ var roadLayer = new ImageLayer({
 
 var ncovVoronoiLayer = new ImageLayer({
   source: new ImageWMS({
-    url: "http://173.193.109.188:30657/geoserver/blockmap/wms",
+    url: "http://113.106.111.75:5014/geoserver/blockmap/wms",
     params: {
       LAYERS: "ncov_china_voronoi_multicolor",
     },
@@ -353,7 +353,7 @@ var style = new Style({
 
 var ncovWmsLayer = new VectorLayer({
   source: new VectorSource({
-    url: "http://173.193.109.188:30657/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326",
+    url: "http://113.106.111.75:5014/geoserver/wfs?service=wfs&version=1.1.0&request=GetFeature&typeNames=blockmap%3Ancov_china_data&outputFormat=application/json&srsname=EPSG:4326",
     format: new GeoJSON({
       geometryName: "the_geom",
     }),
@@ -376,7 +376,7 @@ var ncovWmsLayer = new VectorLayer({
 // var ncovVectorSource = new VectorSource({
 //   format: new GeoJSON(),
 //   loader: function (extent, resolution, projection) { //加载函数
-//     var url = 'http://173.193.109.188:30657/geoserver/blockmap/wms';
+//     var url = 'http://113.106.111.75:5014/geoserver/blockmap/wms';
 //     $.ajax({
 //       url: url,
 //       data: $.param(wfsParams), //传参
@@ -398,7 +398,7 @@ var ncovVectorSource = new VectorSource({
   url: function (extent) {
     console.log("extent");
     console.log(extent);
-    return 'http://173.193.109.188:30657/geoserver/wfs?service=WFS&' +
+    return 'http://113.106.111.75:5014/geoserver/wfs?service=WFS&' +
       'version=1.1.0&request=GetFeature&typename=blockmap:ncov_china_data&' +
       'outputFormat=application/json&srsname=EPSG:4326&' +
       'bbox=' + extent.join(',') + ',EPSG:3857';
@@ -579,9 +579,9 @@ var isLayerExist = function (title) {
   var layers = ol2d.getLayers().getArray();
   var layers_len = layers.length;
   for (var i = 0; i < layers_len; i++) {
-      if (layers[i].get('title') == title) {
-          return true;
-      }
+    if (layers[i].get('title') == title) {
+      return true;
+    }
   }
   return false;
 }
@@ -598,7 +598,7 @@ ol2d.getView().on('change:resolution', function () {
   }
   if (zoomLevel > 4) {
     ol3d.setEnabled(false);
-    
+
     console.log(cityLayer.get('title'))
     if (!isLayerExist(cityLayer.get('title'))) {
       ol2d.addLayer(cityLayer);
@@ -831,7 +831,7 @@ ol2d.on("moveend", function (evt) {
   // generate a GetFeature request
   var featureRequest = new WFS().writeGetFeature({
     srsName: 'EPSG:4326',
-    // featureNS: 'http://173.193.109.188:30657', //命名空间
+    // featureNS: 'http://113.106.111.75:5014/', //命名空间
     featurePrefix: 'blockmap', //工作区域
     featureTypes: ['ncov_china_data'], //图层名
     outputFormat: 'application/json',
@@ -845,7 +845,7 @@ ol2d.on("moveend", function (evt) {
   });
 
   // // then post the request and add the received features to a layer
-  // fetch('http://173.193.109.188:30657/geoserver/wfs', {
+  // fetch('http://113.106.111.75:5014/geoserver/wfs', {
   //   method: 'POST',
   //   body: new XMLSerializer().serializeToString(featureRequest)
   // }).then(function (response) {
@@ -981,7 +981,7 @@ const scene = ol3d.getCesiumScene();
 // viewer.camera.flyHome(2);
 
 // var provider = new Cesium.WebMapServiceImageryProvider({
-//   url: 'http://173.193.109.188:30657/geoserver/blockmap/wms',
+//   url: 'http://113.106.111.75:5014/geoserver/blockmap/wms',
 //   layers: 'blockmap:province0',
 //   parameters: {
 //     service: 'WMS',
@@ -1161,7 +1161,7 @@ function getCurrentExtent() {
   //     }) 
   //   })
   // }));
-  
+
   // // Dijkstra
   // var dijkstra = new Dijskra({
 	// 	source: graph
@@ -1272,4 +1272,4 @@ function getCurrentExtent() {
   //   }
   // });
 
-  /* #################### dijkstra Routine End #################### */
+/* #################### dijkstra Routine End #################### */

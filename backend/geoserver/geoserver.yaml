@@ -42,8 +42,8 @@ spec:
               path: /geoserver/index.html
               port: http
           volumeMounts:
-            - mountPath: "/opt/geoserver/data_dir"
-              name: geoserver-volume
+            - name: geoserver-volume
+              mountPath: "/opt/geoserver/data_dir"
       resources:
         limits:
           cpu: 2000m
@@ -52,9 +52,13 @@ spec:
           cpu: 1000m
           memory: 1024Mi
       volumes:
+        # - name: geoserver-volume
+        #   hostPath:
+        #     path: /opt/geoserver/data_dir
         - name: geoserver-volume
-          hostPath:
-            path: /opt/geoserver/data_dir
+          nfs:
+            server: 10.2.1.204
+            path: /data/geoserver/data_dir
 
 ---
 apiVersion: v1
