@@ -1,0 +1,26 @@
+export default {
+  home: 'Home',
+  login: 'Login',
+  multilevel: 'Information Reporting',
+  directive_page: 'Organization Management',
+  level_2_1: 'Diagnosis Information',
+  level_2_3: 'Path reporting',
+  tools_methods_page: 'Work Resumption',
+  summary: 'Risk Level',
+  olmapglass: 'Path Quary',
+  pieComp: 'Work Resumption Industry',
+  barComp: 'Work Resumption Condition',
+  rank: 'TOP10 Organization for Work Resumption',
+  areaList: 'Area Epidemic',
+  chinaC: 'New Confirmed Cases in China',
+  chinaS: 'New Confirmed Cases in China',
+  worldC: 'New Confirmed Cases in China',
+  worldS: 'New Confirmed Cases in China',
+  mapGlass: 'map with glass',
+  mapEpi: 'map with epidemic location',
+  mapOnly: 'map only',
+  startPoint: 'from:',
+  endPoint: 'to:',
+  pathQuery:'path query'
+}
+

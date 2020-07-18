@@ -1,0 +1,26 @@
+export default {
+  home: '首页',
+  login: '登录',
+  multilevel: '个人防疫管理',
+  directive_page: '机构管理',
+  level_2_1: '上报确诊信息',
+  level_2_3: '上报个人路径',
+  summary: '风险等级',
+  olmapglass: '路径查询',
+  tools_methods_page: '复工管理',
+  pieComp: '复工行业比较',
+  barComp: '复工情况时间图',
+  rank: '推荐复工网点TOP10',
+  areaList: '地区疫情展示',
+  chinaC: '全国新增确诊',
+  chinaS: '全国新增疑似',
+  worldC: '全球新增确诊',
+  worldS: '全球新增疑似',
+  mapGlass: '玻璃图',
+  mapEpi: '疫情点',
+  mapOnly: '纯地图',
+  startPoint: '起始点:',
+  endPoint: '终点:',
+  pathQuery:'查询路径'
+
+}
