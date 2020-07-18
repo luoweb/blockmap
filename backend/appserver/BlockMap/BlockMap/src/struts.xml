@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.objectFactory" value="org.apache.struts2.spring.StrutsSpringObjectFactory"/>
+    <!--一旦你用了这个，那么你的Action也必须在Spring中配置，class用Spring中的直，否则Action拿不到依赖的类-->
+    <constant name="struts.devMode" value="false"/>
+    
+    <package name="exception" extends="struts-default">
+        <global-results>
+            <result name="Exception">PAGE/404.jsp</result>
+        </global-results>
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception" result="Exception"/>
+        </global-exception-mappings>
+    </package>
+    
+    <package name="user" extends="exception">
+      <action name="register" class="RegisterNewUserAction" >
+          <result  name="success">index.jsp</result>
+          <result name="fail">404.jsp</result>
+      </action>
+      <action name="query" class="QueryUserAction">
+      	  <result name="success">index.jsp</result>
+      	  <result name="fail">404.jsp</result>
+      </action>
+      <action name="delete" class="DeleteUserAction">
+      	  <result name="success">index.jsp</result>
+      </action>
+      <action name="update" class="UpdateUserAction">
+      	  <result name="success">index.jsp</result>
+      	  <result name="fail">404.jsp</result>
+      </action>
+  </package>
+
+
+
+
+
+
+
+</struts>
