@@ -36,6 +36,11 @@ export default {
         })
       })
     }
+      // handleSubmit() {
+      //   this.$router.push({
+      //       name:this.$config.homeName
+      //   })
+      // }
   }
 }
 </script>

@@ -90,72 +90,62 @@ export default [
       }
     ]
   },
-  {
-    path: '/sum',
-    name: 'sum',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'summary',
-        name: 'summary',
-        meta: {
-          icon: 'logo-buffer',
-          title: '风险等级'
-        },
-        component: () => import('@/view/sum/summary.vue')
-      }
-    ]
-  },
-  {
-    path: '/olmap',
-    name: 'olmap',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'olmapglass',
-        name: 'olmapglass',
-        meta: {
-          icon: 'md-locate',
-          title: '路径查询'
-        },
-        component: () => import('@/view/olmap/olmapglass.vue')
-      }
-    ]
-  },
+  // {
+  //   path: '/sum',
+  //   name: 'sum',
+  //   meta: {
+  //     hideInBread: true
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'summary',
+  //       name: 'summary',
+  //       meta: {
+  //         icon: 'logo-buffer',
+  //         title: '风险等级'
+  //       },
+  //       component: () => import('@/view/sum/summary.vue')
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/olmap',
+  //   name: 'olmap',
+  //   meta: {
+  //     hideInBread: true
+  //   },
+  //   component: Main,
+  //   children: [
+  //     {
+  //       path: 'olmapglass',
+  //       name: 'olmapglass',
+  //       meta: {
+  //         icon: 'md-locate',
+  //         title: '路径查询'
+  //       },
+  //       component: () => import('@/view/olmap/olmapglass.vue')
+  //     }
+  //   ]
+  // },
   {
     path: '/multilevel',
     name: 'multilevel',
     meta: {
-      icon: 'md-medkit',
-      title: '个人防疫管理'
+      hideInBread: true
     },
     component: Main,
     children: [
       {
-        path: 'level_2_1',
-        name: 'level_2_1',
+        path: 'inforReporting',
+        name: 'inforReporting',
         meta: {
-          icon: 'md-clipboard',
-          title: '上报确诊信息'
+          icon: 'md-medkit',
+          title: '确诊信息管理'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
-      },
-      {
-        path: 'level_2_3',
-        name: 'level_2_3',
-        meta: {
-          icon: 'md-analytics',
-          title: '上报个人路径'
-        },
-        component: () => import('@/view/multilevel/level-2-3.vue')
+        component: () => import('@/view/multilevel/inforReporting.vue')
       }
-    ]
+  ]
   },
 
   {

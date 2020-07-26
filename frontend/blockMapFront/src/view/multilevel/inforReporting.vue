@@ -1,12 +1,11 @@
 <template>
   <div>
     <Table :columns="columns12" :data="data6">
-      <template slot-scope="{ row }" slot="name">
-        <strong>{{ row.name }}</strong>
-      </template>
+<!--      <template slot-scope="{ row }" slot="name">-->
+<!--        <strong>{{ row.name }}</strong>-->
+<!--      </template>-->
       <template slot-scope="{ row, index }" slot="action">
-        <Button type="primary" size="small" style="margin-right: 5px" @click="show(index)">View</Button>
-        <Button type="error" size="small" @click="remove(index)">Delete</Button>
+        <Button v-if="pending" type="success" size="small" style="margin-right: 5px" @click="show(row,index)">Audit</Button>
       </template>
     </Table>
     <div>
@@ -16,12 +15,18 @@
 </template>
 <script>
     export default {
-        name:'directive_page',
+        name:'inforReporting',
         data () {
             return {
+                pending: true,
                 pageCurrent: 1,
                 pageSize: 10,
                 columns12: [
+                    {
+                        title: 'Name',
+                        key: 'name',
+                        align: 'center'
+                    },
                     {
                         title: 'Branch',
                         key: 'branch',
@@ -38,9 +43,19 @@
                         align:'center'
                     },
                     {
-                        title:'Number of Employees',
-                        key: 'number',
+                        title:'Description',
+                        key: 'description',
                         align:'center'
+                    },
+                    {
+                      title:'Date',
+                      key:'date',
+                      align:'center'
+                    },
+                    {
+                      title:'Status',
+                      key:'status',
+                      align:'center'
                     },
                     {
                         title: 'Action',
@@ -51,52 +66,27 @@
                 ],
                 data6: [
                     {
+                        name: 'Li Aiqin',
                         branch: 'branch1',
                         tel: '001-896854',
                         address: 'New York No. 1 Lake Park',
-                        number:3
-                    },
-                    {
-                        branch: 'branch2',
-                        tel: '010-949948',
-                        address: 'London No. 1 Lake Park',
-                        number:1
-                    },
-                    {
-                        branch: 'branch3',
-                        tel: '084-2339767',
-                        address: 'Sydney No. 1 Lake Park',
-                        number: 1
-                    },
-                    {
-                        branch: 'branch4',
-                        tel: '048-37279340',
-                        address: 'Ottawa No. 2 Lake Park',
-                        number: 2
-                    },
-                    {
-                        branch: 'branch5',
-                        tel: '002-8439340',
-                        address: 'Pris No. 3 Lake Park',
-                        number: 2
+                        date: '2020-7-13',
+                        status:'pending',
+                        description:'fever,need to see a doctor'
                     }
                 ]
             }
         },
         methods: {
-            show (index) {
-                this.$Modal.info({
-                    title: 'Branch Info',
-                    content: `Branch：${this.data6[index].branch}<br>Tel：${this.data6[index].tel}<br>Address：${this.data6[index].address}<br>Epidemic Risk : ${this.data6[index].risk}`
-                })
+            show (row,index) {
+                row.status = 'finished';
+                this.pending = false;
+                console.log('row.status',row.status);
+
             },
-            remove (index) {
-                this.data6.splice(index, 1);
-            },
+
             changePage (page) {
-                // 这里直接更改了模拟的数据，真实使用场景应该从服务端获取数据
                 this.pageCurrent = page;
-                // if(this.pageCurrent===1) this.tableData = this.data5[]
             }
         }
     }
@@ -131,3 +121,4 @@
 
 
 </style>
+
