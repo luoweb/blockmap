@@ -1,18 +1,17 @@
 <template>
   <div id="home"> <!-- 手机适配版地图 -->
-    <button v-on:click="iconDo" class="choose"><yd-icon name="star" color="#FF0000" size="0.5rem"></yd-icon></button> <!-- 图层类型控制按钮 -->
+    <button v-on:click="iconDo" class="choose"> <!-- 图层类型控制按钮 -->
+      <img src="../assets/button.png" alt="no resource" width="32" height="32"/>
+    </button>
     <yd-popup position="left" width="60%" v-model="decisionLeft"> <!-- 左边导航弹窗 -->
       <div class="popup_left">
         <yd-flexbox> <!-- 用户名显示 -->
-          <yd-icon name="ucenter" color="#A9A9A9" size="1rem"></yd-icon>
+          <img src="../assets/portrait_xiaoxin.jpg" alt="no resource" width="64" height="64"/>
+          <!-- <yd-icon name="ucenter" color="#A9A9A9" size="1rem"></yd-icon> -->
           <yd-flexbox-item style="font-size: 0.3rem">{{userName}}</yd-flexbox-item>
         </yd-flexbox>
         <yd-cell-group> <!-- 选项卡 -->
-          <yd-cell-item arrow class="select" @click.native="goToLogin">
-            <yd-icon name="home-outline" slot="icon" size=".42rem"></yd-icon>
-            <label slot="left">Sign In / User Switch</label>
-          </yd-cell-item>
-          <yd-cell-item arrow class="select">
+          <yd-cell-item arrow class="select" @click.native="goToInformation">
             <yd-icon name="more" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">Personal Information</label>
           </yd-cell-item>
@@ -20,13 +19,21 @@
             <yd-icon name="compose" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">Risk Summary</label>
           </yd-cell-item>
-          <yd-cell-item arrow class="select">
+          <yd-cell-item arrow class="select" @click.native="goToReport">
+            <yd-icon name="feedback" slot="icon" size=".42rem"></yd-icon>
+            <label slot="left">Epidemic Report</label>
+          </yd-cell-item>
+          <yd-cell-item arrow class="select" @click.native="goToDID">
             <yd-icon name="verifycode" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">DID Identity</label>
           </yd-cell-item>
-          <yd-cell-item arrow class="select">
+          <yd-cell-item arrow class="select" @click.native="goToAbout">
             <yd-icon name="question" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">About Us</label>
+          </yd-cell-item>
+          <yd-cell-item arrow class="select" @click.native="goToLogin">
+            <yd-icon name="home-outline" slot="icon" size=".42rem"></yd-icon>
+            <label slot="left">Sign in/Sign out</label>
           </yd-cell-item>
         </yd-cell-group>
       </div>
@@ -43,6 +50,12 @@
             <yd-input slot="right" v-model="destination"></yd-input>
           </yd-cell-item>
         </yd-cell-group>
+        <yd-cell-group title="Path Option">
+        </yd-cell-group>
+        <yd-radio-group v-model="pathOption" slot="right" size="15">
+          <yd-radio val="avoid risk"></yd-radio>
+          <yd-radio val="shortest"></yd-radio>
+        </yd-radio-group>
         <yd-button bgcolor="#2db7f5" @click.native="checkRoad" size="large" color="#FFF">path query</yd-button> <!--  查询路径 -->
       </div>
     </yd-popup>
@@ -52,7 +65,7 @@
     <yd-button shape="circle" size="small" bgcolor="#C0C0C0" @click.native="decisionDown = true" class="showDown">
       <yd-icon name="type" color="#000" size="0.5rem"></yd-icon>
     </yd-button> <!-- 下方弹窗按钮 -->
-    <div id="map"></div> <!-- 地图  v-on:contextmenu="checkLocation($event)"-->
+    <div id="map"></div> <!-- 地图 v-on:contextmenu="checkLocation($event)" -->
   </div>
 </template>
 
@@ -77,6 +90,7 @@ import markImage from '../assets/point.png' // 导入标注图
 import Line from 'ol/geom/LineString' // 导入直线
 import XYZ from 'ol/source/XYZ' // XYZ瓦片源
 import {defaults} from 'ol/control' // 默认控件设置
+import * as Easing from 'ol/easing'
 export default {
   name: 'home',
   data () { // 属性（数据）
@@ -93,7 +107,11 @@ export default {
       tiandiUrl: 'http://api.tianditu.gov.cn/geocoder?type=geocode&tk=320109f58cbb412b31e478ddc5c651bd&postStr=', // 天地图url
       amapUrl: 'https://restapi.amap.com/v3/geocode/regeo?key=b8dd4a3e40e58d76a9805fe8847d7434&location=', // 高德地图url（逆地理编码），key需要写自己的
       vectorSource: null, // 添加标注的图层的源，因为只有矢量源才可以添加Feature
-      userName: 'Please Sign In' // 用户名
+      userName: 'xiaoxin', // 'Please Sign In' // 用户名
+      pathOption: 'avoid risk', // 路径查询选项
+      timer: null, // 定时器（用于地图缩放动画）
+      zoomEndIndex: null, // 用于地图缩放动画（结束）
+      zoomStartIndex: null // 用于地图缩放动画（起始+过程）
     }
   },
   mounted () { // 什么都加载好的时候
@@ -129,7 +147,7 @@ export default {
       this.roadLayer = new ImageLayer({ // 路线图
         source: new ImageWMS({ // 设置获取源r
           url: geoserverUrl, // geoserver的url
-          params: {'LAYERS': 'BlockMap:shorestRoad'}, // 图层名称
+          params: {'LAYERS': 'BlockMap:ShortestRoad'}, // 图层名称
           serverType: 'geoserver' // 服务器类型是geoserver
           // crossOrigin: 'anonymous'
         }),
@@ -232,11 +250,37 @@ export default {
       // this.map.getView().setCenter(coordinates[0]) // 设置地图中心点
       // this.map.getView().setZoom(14) // 设置放大倍数
       this.map.removeLayer(this.roadLayer)
-      this.addPointsFeature([[113.81902940576099, 22.674348363572356], [113.7711503568677, 22.747553567225975]])
-      this.map.addLayer(this.roadLayer)
-      this.map.getView().setCenter([113.79090707913556, 22.706443449772195])
-      this.map.getView().setZoom(13) // 模拟
-      this.count = 1 // 同步唤出玻璃图
+      this.map.getView().setZoom(18)
+      this.map.getView().setCenter([114.0274186903989, 22.671875493519373])
+      this.addPointsFeature([[114.0274186903989, 22.671875493519373]]) // 先添加起点
+      this.map.getView().animate({ // 旋转地图
+        duration: 2000,
+        rotation: Math.PI,
+        anchor: this.map.getView().getCenter(),
+        easing: Easing.linear
+      })
+      this.map.addLayer(this.roadLayer) // 添加路线
+      this.enlargeShrink(18, 15) // 缩放动画
+    },
+    enlargeShrink (start, end) { // 地图缩放动画（从大到小，缩放系数从start到end）
+      this.zoomEndIndex = end
+      this.zoomStartIndex = start
+      this.timer = setInterval(this.shrink, 700) // 50ms执行一次
+    },
+    shrink () {
+      if (this.zoomStartIndex > this.zoomEndIndex) {
+        this.map.getView().setZoom(this.zoomStartIndex)
+        this.zoomStartIndex -= 1
+      } else {
+        clearInterval(this.timer)
+        this.map.getView().setCenter([(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2])
+        this.addPointsFeature([[114.03136004058267, 22.67289465778219]]) // 最后添加终点
+        this.map.getView().animate({ // 旋转回去
+          duration: 2000,
+          rotation: 2 * Math.PI
+        })
+        this.count = 1 // 同步唤出玻璃图
+      }
     },
     addPointsFeature (coordinates) { // 加载一堆点Feature
       let featureList = []
@@ -292,7 +336,7 @@ export default {
       this.vectorSource.addFeature(this.createLineFeature(coordinates))
     },
     setRootFontSize () { // 设置根元素字体大小，确定rem
-      var root = document.documentElement || document.body // 找root，html或者是body
+      let root = document.documentElement || document.body // 找root，html或者是body
       root.style.fontSize = 13.33 + 'vw' // 这里需要解释一下，一般手机页面设计图宽为750px，也就是手机屏幕宽度，1px相当于0.13333vw，100px就是13.33vw，相当于1rem等于100px
     },
     iconDo () { // 用于实现图层类型切换
@@ -312,6 +356,18 @@ export default {
     },
     goToLogin () { // 跳转登录页面
       this.$router.push('/login')
+    },
+    goToReport () { // 跳转上报页面
+      this.$router.push('/report')
+    },
+    goToInformation () { // 跳转个人信息页面
+      this.$router.push('/information')
+    },
+    goToDID () { // 跳转数字身份验证页面
+      this.$router.push('/did')
+    },
+    goToAbout () { // 跳转数字身份验证页面
+      this.$router.push('/about')
     }
   },
   watch: { // 监听并执行
@@ -366,7 +422,7 @@ export default {
   border: none; /*设置边框*/
 }
 .choose:active{ /*图层类型控制按钮按动效果*/
-  opacity: 0.5;
+  opacity: 0.3;
 }
 span{ /*位置输入栏文字*/
   font-weight: bold; /*字体加粗*/
