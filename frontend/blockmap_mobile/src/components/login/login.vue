@@ -34,28 +34,28 @@ export default {
   methods: { // 方法
     toLogin () { // 登录函数
       this.$router.push('/')
+    },
+    enterKey (event) { // 监听enter键
+      const componentName = this.$options.name
+      if (componentName === 'login') {
+        const code = event.keyCode
+        if (code === 13) {
+          this.toLogin()
+        }
+      }
+    },
+    enterKeyupDestroyed () { // 销毁监听器
+      document.removeEventListener('keyup', this.enterKey)
+    },
+    enterKeyup () { // 安装监听器
+      document.addEventListener('keyup', this.enterKey)
     }
-  //   enterKey (event) { // 监听enter键
-  //     const componentName = this.$options.name
-  //     if (componentName === 'login') {
-  //       const code = event.keyCode
-  //       if (code === 13) {
-  //         this.toLogin()
-  //       }
-  //     }
-  //   },
-  //   enterKeyupDestroyed () { // 销毁监听器
-  //     document.removeEventListener('keyup', this.enterKey)
-  //   },
-  //   enterKeyup () { // 安装监听器
-  //     document.addEventListener('keyup', this.enterKey)
-  //   }
-  // },
-  // mounted () {
-  //   this.enterKeyup()
-  // },
-  // destroyed () {
-  //   this.enterKeyupDestroyed()
+  },
+  mounted () {
+    this.enterKeyup() // 安装监听器
+  },
+  destroyed () { // 窗口销毁时
+    this.enterKeyupDestroyed() // 销毁监听器
   }
 }
 </script>
