@@ -1,9 +1,6 @@
 <template>
   <div id="mysummary"> <!-- 风险等级总结页面 -->
     <yd-navbar title="Today's summary"> <!-- 顶部导航栏 -->
-      <router-link to="/" slot="left">
-        <yd-navbar-back-icon></yd-navbar-back-icon>
-      </router-link>
     </yd-navbar>
     <div class="summary_content">
       <yd-flexbox direction="vertical"> <!-- 上半部分页面内容 -->
@@ -88,13 +85,16 @@
         </yd-cell-item>
       </yd-cell-group>
     </div>
+    <yd-button shape="angle" size="small" bgcolor="#C0C0C0" @click.native="backToHome" class="back">
+      <img src="../../assets/back.png" alt="no resource" width="24" height="24"/>
+    </yd-button> <!-- 返回按钮 #2db7f5 -->
   </div>
 </template>
 
 <script>
 export default {
   name: 'mysummary',
-  data () {
+  data () { // 数据
     return {
       suggestion: 'Epidemic prevention and control: it is recommended to borrow masks and wash hands ' +
         'frequently \n①: Population density;\n②: distance to the case hospital', // 建议栏内容
@@ -122,18 +122,23 @@ export default {
       if (this.percent < this.num) { // 百分比增加函数
         this.percent += 0.01
       } else {
-        clearInterval(this.timer)
+        clearInterval(this.timer) // 清除定时器
       }
+    },
+    backToHome () { // 返回地图主页
+      this.$router.push('/')
     }
   }
 }
 </script>
 
 <style scoped>
-#mysummary{ /*全局*/
-  width: 100%; /*占满*/
+/*
+#mysummary{
+  width: 100%;
   height: 100%;
 }
+*/
 .summary_content{ /*除导航栏部分*/
   padding-top: 0.2rem; /*上内边距*/
   padding-right: 0.5rem; /*右内边距*/
@@ -176,5 +181,11 @@ h5{
 .tip_three{ /*第二部分图的标签*/
   margin-right: 0.2rem; /*左外边距*/
   margin-left: 0.2rem; /*右外边距*/
+}
+.back{ /*返回按钮*/
+  position: absolute;
+  z-index: 99; /*在最高层*/
+  opacity: 0.7; /*设置透明度*/
+  top: 1.5rem; /*离手机顶部的距离*/
 }
 </style>

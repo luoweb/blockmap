@@ -1,18 +1,17 @@
 <template>
   <div id="home"> <!-- 手机适配版地图 -->
-    <button v-on:click="iconDo" class="choose"><yd-icon name="star" color="#FF0000" size="0.5rem"></yd-icon></button> <!-- 图层类型控制按钮 -->
+    <button v-on:click="iconDo" class="choose"> <!-- 图层类型控制按钮 -->
+      <img src="../assets/button.png" alt="no resource" width="32" height="32"/>
+    </button>
     <yd-popup position="left" width="60%" v-model="decisionLeft"> <!-- 左边导航弹窗 -->
       <div class="popup_left">
         <yd-flexbox> <!-- 用户名显示 -->
-          <yd-icon name="ucenter" color="#A9A9A9" size="1rem"></yd-icon>
+          <img src="../assets/portrait_xiaoxin.jpg" alt="no resource" width="64" height="64"/>
+          <!-- <yd-icon name="ucenter" color="#A9A9A9" size="1rem"></yd-icon> -->
           <yd-flexbox-item style="font-size: 0.3rem">{{userName}}</yd-flexbox-item>
         </yd-flexbox>
         <yd-cell-group> <!-- 选项卡 -->
-          <yd-cell-item arrow class="select" @click.native="goToLogin">
-            <yd-icon name="home-outline" slot="icon" size=".42rem"></yd-icon>
-            <label slot="left">Sign In / User Switch</label>
-          </yd-cell-item>
-          <yd-cell-item arrow class="select">
+          <yd-cell-item arrow class="select" @click.native="goToInformation">
             <yd-icon name="more" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">Personal Information</label>
           </yd-cell-item>
@@ -20,20 +19,28 @@
             <yd-icon name="compose" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">Risk Summary</label>
           </yd-cell-item>
-          <yd-cell-item arrow class="select">
+          <yd-cell-item arrow class="select" @click.native="goToReport">
+            <yd-icon name="feedback" slot="icon" size=".42rem"></yd-icon>
+            <label slot="left">Epidemic Report</label>
+          </yd-cell-item>
+          <yd-cell-item arrow class="select" @click.native="goToDID">
             <yd-icon name="verifycode" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">DID Identity</label>
           </yd-cell-item>
-          <yd-cell-item arrow class="select">
+          <yd-cell-item arrow class="select" @click.native="goToAbout">
             <yd-icon name="question" slot="icon" size=".42rem"></yd-icon>
             <label slot="left">About Us</label>
+          </yd-cell-item>
+          <yd-cell-item arrow class="select" @click.native="goToLogin">
+            <yd-icon name="home-outline" slot="icon" size=".42rem"></yd-icon>
+            <label slot="left">Sign in/Sign out</label>
           </yd-cell-item>
         </yd-cell-group>
       </div>
     </yd-popup>
     <yd-popup position="bottom" height="35%" v-model="decisionDown"> <!-- 下方的弹窗（路径搜索） -->
       <div class="popup_down">
-        <yd-cell-group title="Location Input">
+        <yd-cell-group> <!--  title="Location Input" -->
           <yd-cell-item> <!--  起始点:  placeholder="please input your start place"-->
             <span slot="left">From:</span>
             <yd-input slot="right" v-model="startPlace"></yd-input>
@@ -43,6 +50,12 @@
             <yd-input slot="right" v-model="destination"></yd-input>
           </yd-cell-item>
         </yd-cell-group>
+        <yd-cell-group> <!--  title="Path Option" -->
+        </yd-cell-group>
+        <yd-radio-group v-model="pathOption" slot="right" size="15">
+          <yd-radio val="avoid risk"></yd-radio>
+          <yd-radio val="shortest"></yd-radio>
+        </yd-radio-group>
         <yd-button bgcolor="#2db7f5" @click.native="checkRoad" size="large" color="#FFF">path query</yd-button> <!--  查询路径 -->
       </div>
     </yd-popup>
@@ -52,7 +65,7 @@
     <yd-button shape="circle" size="small" bgcolor="#C0C0C0" @click.native="decisionDown = true" class="showDown">
       <yd-icon name="type" color="#000" size="0.5rem"></yd-icon>
     </yd-button> <!-- 下方弹窗按钮 -->
-    <div id="map"></div> <!-- 地图  v-on:contextmenu="checkLocation($event)"-->
+    <div id="map"></div> <!-- 地图 v-on:contextmenu="checkLocation($event)" -->
   </div>
 </template>
 
@@ -93,7 +106,8 @@ export default {
       tiandiUrl: 'http://api.tianditu.gov.cn/geocoder?type=geocode&tk=320109f58cbb412b31e478ddc5c651bd&postStr=', // 天地图url
       amapUrl: 'https://restapi.amap.com/v3/geocode/regeo?key=b8dd4a3e40e58d76a9805fe8847d7434&location=', // 高德地图url（逆地理编码），key需要写自己的
       vectorSource: null, // 添加标注的图层的源，因为只有矢量源才可以添加Feature
-      userName: 'Please Sign In' // 用户名
+      userName: 'xiaoxin', // 'Please Sign In' // 用户名
+      pathOption: 'avoid risk' // 路径查询选项
     }
   },
   mounted () { // 什么都加载好的时候
@@ -129,7 +143,7 @@ export default {
       this.roadLayer = new ImageLayer({ // 路线图
         source: new ImageWMS({ // 设置获取源r
           url: geoserverUrl, // geoserver的url
-          params: {'LAYERS': 'BlockMap:shorestRoad'}, // 图层名称
+          params: {'LAYERS': 'BlockMap:ShortestRoad'}, // 图层名称
           serverType: 'geoserver' // 服务器类型是geoserver
           // crossOrigin: 'anonymous'
         }),
@@ -176,8 +190,9 @@ export default {
           maxZoom: 18, // 最大缩放等级
           minZoom: 2 // 最小缩放等级
         }),
-        controls: defaults({ // 禁用默认缩放按钮
-          zoom: false
+        controls: defaults({ // 禁用默认缩放按钮以及旋转按钮（功能）
+          zoom: false,
+          rotate: false
         })
       })
       // this.addPointsFeature([[116.41667, 39.91667], [113.23333, 23.16667], [120.20000, 30.26667]]) // 测试
@@ -185,58 +200,53 @@ export default {
     },
     checkRoad () { // 查询路径函数
       this.vectorSource.clear() // 清除所有Feature，即点和线
-      // var coordinates = [[113.94699754903482, 22.58990586228084],
-      //   [113.9468688030021, 22.59038329548549],
-      //   [113.94679906556772, 22.590597872206683],
-      //   [113.9467239637153, 22.590748075911517],
-      //   [113.94697668798054, 22.590800200314444],
-      //   [113.94759896047199, 22.59092358192913],
-      //   [113.94770624883259, 22.59093431076519],
-      //   [113.94773307092274, 22.59093431076519],
-      //   [113.94775452859486, 22.59093431076519],
-      //   [113.9477974439391, 22.59090748867504],
-      //   [113.94784572370136, 22.590848480076712],
-      //   [113.94787254579151, 22.590751920552176],
-      //   [113.94789936788166, 22.59061781010143],
-      //   [113.94793155438984, 22.590548072667044],
-      //   [113.94796374089802, 22.590515886158865],
-      //   [113.9479959274062, 22.590494428486746],
-      //   [113.94802811391438, 22.590478335232657],
-      //   [113.94805493600452, 22.590478335232657],
-      //   [113.94809785134876, 22.590472970814627],
-      //   [113.94909026868427, 22.590674672965292],
-      //   [113.94972327001179, 22.590792690161948],
-      //   [113.94957306630695, 22.59111348229464],
-      //   [113.94934216373997, 22.59147314680278],
-      //   [113.94921341770726, 22.591639443761704],
-      //   [113.94902029865818, 22.591854020482895],
-      //   [113.94892910355168, 22.5919452155894],
-      //   [113.94882717960911, 22.592047139531967],
-      //   [113.94856968754368, 22.59225635183513],
-      //   [113.94830146664219, 22.59243874204814],
-      //   [113.94825747834886, 22.59247307429079],
-      //   [113.94547119965694, 22.593888207865273],
-      //   [113.94360009071363, 22.5951627937856],
-      //   [113.94170449688285, 22.596497535511098],
-      //   [113.94151129285386, 22.596647805311417],
-      //   [113.93975848032741, 22.59801089515254],
-      //   [113.93975848032741, 22.59801089515254],
-      //   [113.93825435109568, 22.59925026330732],
-      //   [113.93777491887563, 22.599686761298717],
-      //   [113.93668725174952, 22.600667092853165],
-      //   [113.9351716733466, 22.602108251751662],
-      //   [113.93465646260266, 22.602609151086053],
-      //   [113.93337559144726, 22.60406032814589]] // 模拟
-      // this.addPointsFeature([coordinates[0], coordinates[coordinates.length - 1]])
-      // this.addLinesFeature(coordinates)
-      // this.map.getView().setCenter(coordinates[0]) // 设置地图中心点
-      // this.map.getView().setZoom(14) // 设置放大倍数
-      this.map.removeLayer(this.roadLayer)
-      this.addPointsFeature([[113.81902940576099, 22.674348363572356], [113.7711503568677, 22.747553567225975]])
-      this.map.addLayer(this.roadLayer)
-      this.map.getView().setCenter([113.79090707913556, 22.706443449772195])
-      this.map.getView().setZoom(13) // 模拟
-      this.count = 1 // 同步唤出玻璃图
+      this.map.removeLayer(this.roadLayer) // 清除路线
+      this.decisionDown = false // 收起弹窗
+      this.map.getView().setZoom(18) // 设置放大倍数
+      // this.map.getView().setCenter([114.0274186903989, 22.671875493519373])
+      // this.addPointsFeature([[114.0274186903989, 22.671875493519373]]) // 先添加起点
+      this.map.getView().setCenter([114.0274186903989, 22.671875493519373])
+      this.addPointsFeature([[114.0274186903989, 22.671875493519373]]) // 添加起点
+      setTimeout(this.mapAnimation_move, 1000) // 平移动画
+      setTimeout(this.addPointForAnimation, 3000) // 添加终点
+      setTimeout(this.addRoadForAnimation, 4000) // 添加路线
+      setTimeout(this.mapAnimation_enlargeShrink, 5000) // 缩放动画
+      setTimeout(this.endAnimation, 11000) // 添加玻璃图
+    },
+    mapAnimation_enlargeShrink () { // 地图缩放动画（从大到小）
+      // this.map.getView().animate({ // 旋转地图
+      //   duration: 500,
+      //   rotation: Math.PI / 4
+      // }, {
+      //   duration: 6000,
+      //   center: [(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2],
+      //   zoom: 16
+      // }, {
+      //   duration: 500,
+      //   center: [(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2],
+      //   rotation: -(Math.PI / 16)
+      // })
+      this.map.getView().animate({ // 地图缩放
+        duration: 6000,
+        zoom: 16
+      })
+    },
+    mapAnimation_move () { // 地图平移动画
+      this.map.getView().animate({ // 地图平移
+        duration: 2000,
+        center: [114.03136004058267, 22.67289465778219]
+      })
+    },
+    endAnimation () { // 动画的结尾设置
+      this.map.getView().setCenter([(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2]) // 设置中点为地图中心点
+      this.count = 1 // 唤出玻璃图
+    },
+    addPointForAnimation () { // 为了动画效果
+      this.map.getView().setCenter([114.03136004058267, 22.67289465778219]) // 设置终点为地图中心点
+      this.addPointsFeature([[114.03136004058267, 22.67289465778219]]) // 添加终点
+    },
+    addRoadForAnimation () { // 为了动画效果
+      this.map.addLayer(this.roadLayer) // 添加路线
     },
     addPointsFeature (coordinates) { // 加载一堆点Feature
       let featureList = []
@@ -292,7 +302,7 @@ export default {
       this.vectorSource.addFeature(this.createLineFeature(coordinates))
     },
     setRootFontSize () { // 设置根元素字体大小，确定rem
-      var root = document.documentElement || document.body // 找root，html或者是body
+      let root = document.documentElement || document.body // 找root，html或者是body
       root.style.fontSize = 13.33 + 'vw' // 这里需要解释一下，一般手机页面设计图宽为750px，也就是手机屏幕宽度，1px相当于0.13333vw，100px就是13.33vw，相当于1rem等于100px
     },
     iconDo () { // 用于实现图层类型切换
@@ -312,6 +322,18 @@ export default {
     },
     goToLogin () { // 跳转登录页面
       this.$router.push('/login')
+    },
+    goToReport () { // 跳转上报页面
+      this.$router.push('/report')
+    },
+    goToInformation () { // 跳转个人信息页面
+      this.$router.push('/information')
+    },
+    goToDID () { // 跳转数字身份验证页面
+      this.$router.push('/did')
+    },
+    goToAbout () { // 跳转数字身份验证页面
+      this.$router.push('/about')
     }
   },
   watch: { // 监听并执行
@@ -366,7 +388,7 @@ export default {
   border: none; /*设置边框*/
 }
 .choose:active{ /*图层类型控制按钮按动效果*/
-  opacity: 0.5;
+  opacity: 0.3;
 }
 span{ /*位置输入栏文字*/
   font-weight: bold; /*字体加粗*/
