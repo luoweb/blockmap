@@ -30,7 +30,9 @@
         <span slot="right">{{company}}</span>
       </yd-cell-item>
     </yd-cell-group>
-    <yd-button size="large" type="danger">modify personal information</yd-button>
+    <div style="padding-right: 0.3rem; padding-left: 0.3rem">
+      <yd-button size="large" type="danger" shape="angle">modify personal information</yd-button>
+    </div>
     <yd-button shape="angle" size="small" bgcolor="#C0C0C0" @click.native="backToHome" class="back">
       <img src="../../assets/back.png" alt="no resource" width="24" height="24"/>
     </yd-button> <!-- 返回按钮 #2db7f5 -->

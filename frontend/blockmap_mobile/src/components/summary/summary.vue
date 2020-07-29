@@ -122,7 +122,7 @@ export default {
       if (this.percent < this.num) { // 百分比增加函数
         this.percent += 0.01
       } else {
-        clearInterval(this.timer)
+        clearInterval(this.timer) // 清除定时器
       }
     },
     backToHome () { // 返回地图主页

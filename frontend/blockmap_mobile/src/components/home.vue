@@ -90,7 +90,6 @@ import markImage from '../assets/point.png' // 导入标注图
 import Line from 'ol/geom/LineString' // 导入直线
 import XYZ from 'ol/source/XYZ' // XYZ瓦片源
 import {defaults} from 'ol/control' // 默认控件设置
-import * as Easing from 'ol/easing'
 export default {
   name: 'home',
   data () { // 属性（数据）
@@ -108,10 +107,7 @@ export default {
       amapUrl: 'https://restapi.amap.com/v3/geocode/regeo?key=b8dd4a3e40e58d76a9805fe8847d7434&location=', // 高德地图url（逆地理编码），key需要写自己的
       vectorSource: null, // 添加标注的图层的源，因为只有矢量源才可以添加Feature
       userName: 'xiaoxin', // 'Please Sign In' // 用户名
-      pathOption: 'avoid risk', // 路径查询选项
-      timer: null, // 定时器（用于地图缩放动画）
-      zoomEndIndex: null, // 用于地图缩放动画（结束）
-      zoomStartIndex: null // 用于地图缩放动画（起始+过程）
+      pathOption: 'avoid risk' // 路径查询选项
     }
   },
   mounted () { // 什么都加载好的时候
@@ -194,8 +190,9 @@ export default {
           maxZoom: 18, // 最大缩放等级
           minZoom: 2 // 最小缩放等级
         }),
-        controls: defaults({ // 禁用默认缩放按钮
-          zoom: false
+        controls: defaults({ // 禁用默认缩放按钮以及旋转按钮（功能）
+          zoom: false,
+          rotate: false
         })
       })
       // this.addPointsFeature([[116.41667, 39.91667], [113.23333, 23.16667], [120.20000, 30.26667]]) // 测试
@@ -249,38 +246,32 @@ export default {
       // this.addLinesFeature(coordinates)
       // this.map.getView().setCenter(coordinates[0]) // 设置地图中心点
       // this.map.getView().setZoom(14) // 设置放大倍数
-      this.map.removeLayer(this.roadLayer)
-      this.map.getView().setZoom(18)
+      this.map.removeLayer(this.roadLayer) // 清除路线
+      this.decisionDown = false // 收起弹窗
+      this.map.getView().setZoom(18) // 设置放大倍数
       this.map.getView().setCenter([114.0274186903989, 22.671875493519373])
       this.addPointsFeature([[114.0274186903989, 22.671875493519373]]) // 先添加起点
-      this.map.getView().animate({ // 旋转地图
-        duration: 2000,
-        rotation: Math.PI,
-        anchor: this.map.getView().getCenter(),
-        easing: Easing.linear
-      })
       this.map.addLayer(this.roadLayer) // 添加路线
-      this.enlargeShrink(18, 15) // 缩放动画
+      setTimeout(this.mapAnimation, 2000)
+      setTimeout(this.endAnimation, 6500)
     },
-    enlargeShrink (start, end) { // 地图缩放动画（从大到小，缩放系数从start到end）
-      this.zoomEndIndex = end
-      this.zoomStartIndex = start
-      this.timer = setInterval(this.shrink, 700) // 50ms执行一次
+    mapAnimation () { // 地图缩放动画（从大到小，缩放系数从start到end）
+      this.map.getView().animate({ // 旋转地图
+        duration: 1500,
+        rotation: Math.PI / 4
+      }, {
+        duration: 1500,
+        center: [(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2],
+        zoom: 15
+      }, {
+        duration: 1500,
+        center: [(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2],
+        rotation: -(Math.PI / 16)
+      })
     },
-    shrink () {
-      if (this.zoomStartIndex > this.zoomEndIndex) {
-        this.map.getView().setZoom(this.zoomStartIndex)
-        this.zoomStartIndex -= 1
-      } else {
-        clearInterval(this.timer)
-        this.map.getView().setCenter([(114.0274186903989 + 114.03136004058267) / 2, (22.671875493519373 + 22.67289465778219) / 2])
-        this.addPointsFeature([[114.03136004058267, 22.67289465778219]]) // 最后添加终点
-        this.map.getView().animate({ // 旋转回去
-          duration: 2000,
-          rotation: 2 * Math.PI
-        })
-        this.count = 1 // 同步唤出玻璃图
-      }
+    endAnimation () { // 动画的结尾设置
+      this.addPointsFeature([[114.03136004058267, 22.67289465778219]]) // 最后添加终点
+      this.count = 1 // 唤出玻璃图
     },
     addPointsFeature (coordinates) { // 加载一堆点Feature
       let featureList = []
