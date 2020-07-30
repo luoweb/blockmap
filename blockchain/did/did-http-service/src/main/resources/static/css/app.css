@@ -1,0 +1,14 @@
+.text_style{
+    text-align: center;
+}
+.img_style{
+    width: 10%;
+    margin-top: 50%;
+}
+.tip_text_style{
+    font-size: 50px;
+}
+.result_text_style{
+    font-size: 50px;
+    line-height: 0;
+}

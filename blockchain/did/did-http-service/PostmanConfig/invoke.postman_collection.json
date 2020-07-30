@@ -1,0 +1,315 @@
+{
+	"info": {
+		"_postman_id": "f8c538d0-70cb-4777-a24f-b6d947639596",
+		"name": "invoke",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createDid",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {},\n    \"transactionArg\": {},\n    \"v\": \"1.0.0\",\n    \"functionName\": \"createDid\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getDidDocument",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"weId\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\"\n    },\n    \"transactionArg\": {},\n    \"v\": \"1.0.0\",\n    \"functionName\": \"getDidDocument\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registerCpt",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"weId\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\",\n        \"cptJsonSchema\": {\n        \t\"did\" : \"Delegator WeID\",\n        \t\"receiver\": \"Receiver WeID\",\n        \t\"content\": \"Authorized content\"\n        }\n    },\n    \"transactionArg\": {\n    \t\"invokerDid\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\"\n    },\n    \"v\": \"1.0.0\",\n    \"functionName\": \"registerCpt\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryCpt",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"cptId\": 1278\n    },\n    \"transactionArg\": {},\n    \"v\": \"1.0.0\",\n    \"functionName\": \"queryCpt\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "registerAuthorityIssuer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"weId\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\",\n        \"name\": \"Administration Office\"\n    },\n    \"transactionArg\": {\n    \t\"invokerDid\": \"ecdsa_key\"\n    },\n    \"v\": \"1.0.0\",\n    \"functionName\": \"registerAuthorityIssuer\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "queryAuthorityIssuerInfo",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"weId\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\"\n    },\n    \"transactionArg\": {\n    },\n    \"v\": \"1.0.0\",\n    \"functionName\": \"queryAuthorityIssuer\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createCredential",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"issuer\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\",\n        \"cptId\": \"1278\",\n        \"expirationDate\": \"2500-04-18T21:12:33Z\",\n        \"claim\": {\n            \"did\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\",\n            \"receiver\": \"did:icbcid:0x7ed16eca3b0737227bc986dd0f2851f644cf4754\",\n            \"content\": \"b1016358-cf72-42be-9f4b-a18fca610fca\"\n        }\n    },\n    \"transactionArg\": {\n    \t\"invokerDid\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\"\n    },\n    \"v\": \"1.0.0\",\n    \"functionName\": \"createCredential\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "verifyCredential",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"functionArg\": {\n        \"@context\": \"https://sdc.gitlab.com/luowb/dapp/did/blob/master/context/v1\",\n        \"claim\": {\n            \"content\": \"b1016358-cf72-42be-9f4b-a18fca610fca\",\n            \"receiver\": \"did:icbcid:0x7ed16eca3b0737227bc986dd0f2851f644cf4754\",\n            \"did\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\"\n        },\n        \"cptId\": 1278,\n        \"expirationDate\": \"2500-04-18T21:12:33Z\",\n        \"id\": \"340cb28b-46e2-480a-abdf-b76959df00f1\",\n        \"issuanceDate\": \"2019-09-27T18:12:31Z\",\n        \"issuer\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\",\n        \"proof\": {\n            \"created\": \"1569579151000\",\n            \"creator\": \"did:icbcid:0x5774e89d8e7fc8ffc1b7fff4b1019a22ac7140fb\",\n            \"signature\": \"HNTDfc0S1V5GyGKa7+HGSq56sWsVjr8QTa5c80DsoZcdSi3SGv3gc4JtAnC3fRmDmi6OTqINwykzSwBWzrVcsFU=\",\n            \"type\": \"EcdsaSignature\"\n        }\n    },\n    \"transactionArg\": {\n    },\n    \"v\": \"1.0.0\",\n    \"functionName\": \"verifyCredential\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/invoke",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"invoke"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all endpoint",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/endpoint",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"endpoint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Call endpoint",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"body\": \"abcabc\"\n}"
+				},
+				"url": {
+					"raw": "http://{{host}}:{{httpport}}/did/api/endpoint/duplicate-input",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{httpport}}",
+					"path": [
+						"did",
+						"api",
+						"endpoint",
+						"duplicate-input"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
