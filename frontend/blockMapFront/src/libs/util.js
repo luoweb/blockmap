@@ -397,3 +397,21 @@ export const setTitle = (routeItem, vm) => {
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
 }
+
+/**
+ * 校验转promise
+ * @param ref
+ */
+export function validate (ref) {
+  return new Promise((resolve, reject) => {
+    ref.validate(ok => {
+      if (!ok) {
+        console.log('eee');
+        reject(new Error('not valid'))
+      }
+      resolve(ok)
+    }).catch(err => {
+      reject(new Error('not valid'))
+    })
+  })
+}

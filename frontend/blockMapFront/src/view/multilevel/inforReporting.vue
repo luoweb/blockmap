@@ -5,7 +5,7 @@
 <!--        <strong>{{ row.name }}</strong>-->
 <!--      </template>-->
       <template slot-scope="{ row, index }" slot="action">
-        <Button v-if="pending" type="success" size="small" style="margin-right: 5px" @click="show(row,index)">Audit</Button>
+        <Button v-if="row.status!=='finished'" type="success" size="small" style="margin-right: 5px" @click="show(row,index)">Audit</Button>
       </template>
     </Table>
     <div>
@@ -18,7 +18,6 @@
         name:'inforReporting',
         data () {
             return {
-                pending: true,
                 pageCurrent: 1,
                 pageSize: 10,
                 columns12: [
@@ -66,13 +65,22 @@
                 ],
                 data6: [
                     {
-                        name: 'Li Aiqin',
-                        branch: 'branch1',
+                        name: 'An Di',
+                        branch: '11th Avenue',
                         tel: '001-896854',
-                        address: 'New York No. 1 Lake Park',
-                        date: '2020-7-13',
+                        address: 'New York 11th Avenue',
+                        date: '2020-07-03',
                         status:'pending',
                         description:'fever,need to see a doctor'
+                    },
+                    {
+                        name: 'Li Aiqin',
+                        branch: 'Park Avenue',
+                        tel: '002-4696645',
+                        address: 'New York No. 1 Park Avenue',
+                        date: '2020-07-12',
+                        status:'pending',
+                        description:'uncomfortable'
                     }
                 ]
             }
@@ -80,9 +88,6 @@
         methods: {
             show (row,index) {
                 row.status = 'finished';
-                this.pending = false;
-                console.log('row.status',row.status);
-
             },
 
             changePage (page) {

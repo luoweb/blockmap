@@ -63,7 +63,7 @@ export default [
         path: 'tools_methods_page',
         name: 'tools_methods_page',
         meta: {
-          icon: 'ios-hammer',
+          icon: 'md-person',
           title: '复工管理'
         },
         component: () => import('@/view/tools-methods/tools-methods.vue')
@@ -90,44 +90,7 @@ export default [
       }
     ]
   },
-  // {
-  //   path: '/sum',
-  //   name: 'sum',
-  //   meta: {
-  //     hideInBread: true
-  //   },
-  //   component: Main,
-  //   children: [
-  //     {
-  //       path: 'summary',
-  //       name: 'summary',
-  //       meta: {
-  //         icon: 'logo-buffer',
-  //         title: '风险等级'
-  //       },
-  //       component: () => import('@/view/sum/summary.vue')
-  //     }
-  //   ]
-  // },
-  // {
-  //   path: '/olmap',
-  //   name: 'olmap',
-  //   meta: {
-  //     hideInBread: true
-  //   },
-  //   component: Main,
-  //   children: [
-  //     {
-  //       path: 'olmapglass',
-  //       name: 'olmapglass',
-  //       meta: {
-  //         icon: 'md-locate',
-  //         title: '路径查询'
-  //       },
-  //       component: () => import('@/view/olmap/olmapglass.vue')
-  //     }
-  //   ]
-  // },
+
   {
     path: '/multilevel',
     name: 'multilevel',
@@ -146,6 +109,44 @@ export default [
         component: () => import('@/view/multilevel/inforReporting.vue')
       }
   ]
+  },
+  {
+    path: '/epidemicReport',
+    name: 'epidemicReport',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'epidemicReport',
+        name: 'epidemicReport',
+        meta: {
+          icon: 'md-clipboard',
+          title: 'epidemicReport'
+        },
+        component: () => import('@/view/epidemicReport/epidemicReport.vue')
+      }
+    ]
+  },
+  {
+    path: '/DIDInfo',
+    name: 'DIDInfo',
+    meta: {
+      hideInBread: true
+    },
+    component: Main,
+    children: [
+      {
+        path: 'DIDInfo',
+        name: 'DIDInfo',
+        meta: {
+          icon: 'md-grid',
+          title: 'DIDInfo'
+        },
+        component: () => import('@/view/DIDInfo/DIDInfo.vue')
+      }
+    ]
   },
 
   {

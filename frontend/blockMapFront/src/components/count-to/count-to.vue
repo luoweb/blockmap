@@ -70,7 +70,7 @@ export default {
      */
     usegroup: {
       type: Boolean,
-      default: false
+      default: true
     },
     /**
      * @description 用于分组(usegroup)的符号
@@ -155,7 +155,7 @@ export default {
       let endVal = this.getValue(this.end)
       this.counter = new CountUp(this.counterId, this.startVal, endVal, this.decimals, this.duration, {
         useEasing: !this.uneasing,
-        useGrouping: this.useGroup,
+        useGrouping: this.usegroup,
         separator: this.separator,
         decimal: this.decimal
       })

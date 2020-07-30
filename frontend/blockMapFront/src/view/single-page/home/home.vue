@@ -91,10 +91,10 @@ export default {
   data () {
     return {
         inforCardData: [
-            {title: 'chinaC', icon: 'md-person-add', count: 803, color: '#2d8cf0'},
-            {title: 'chinaS', icon: 'md-person-add', count: 232, color: '#19be6b'},
-            {title: 'worldC', icon: 'md-globe', count: 142, color: '#ed3f14'},
-            {title: 'worldS', icon: 'md-globe', count: 657, color: '#ff9900'}
+            {title: 'globalNC', icon: 'md-person-add', count: 210058, color: '#2d8cf0'},
+            {title: 'globalC', icon: 'ios-people', count: 116352695, color: '#ff9900'},
+            {title: 'death', icon: 'md-person', count: 647944, color: '#ed3f14'},
+            {title: 'secure', icon: 'md-medkit', count: 9972512, color: '#19be6b'}
         ],
         //复工行业比较饼图
         pieOption: {
@@ -104,13 +104,13 @@ export default {
                 textStyle: {
                     color: '#516b91'
                 },
-                data: ['Accommodation', 'Financial', 'Estate', 'Resident', 'Leasing']
+                data: ['accommodation', 'finance', 'estate', 'retail', 'tourism','public service','IT','chemical']
             },
             series: [
                 {
                     name: '访问来源',
                     type: 'pie',
-                    radius: ['50%', '70%'],
+                    radius: ['60%', '80%'],
                     avoidLabelOverlap: false,
                     label: {
                         show: false,
@@ -127,11 +127,14 @@ export default {
                         show: false
                     },
                     data: [
-                        {value: 335, name: 'Financial'},
-                        {value: 310, name: 'Estate'},
-                        {value: 234, name: 'Resident'},
-                        {value: 135, name: 'Leasing'},
-                        {value: 1548, name: 'Accommodation'}
+                        {value: 335, name: 'finance'},
+                        {value: 310, name: 'estate'},
+                        {value: 1234, name: 'public service'},
+                        {value: 135, name: 'retail'},
+                        {value: 548, name: 'accommodation'},
+                        {value: 133, name: 'tourism'},
+                        {value: 1148, name: 'IT'},
+                        {value: 987, name: 'chemical'}
                     ]
                 }
             ]
@@ -341,33 +344,8 @@ export default {
                 align:"center"
             }
         ],
-        data6: [
-            {
-                area: 'Area1',
-                infections: 0,
-                suspected: 0
-            },
-            {
-                area: 'Area2',
-                infections: 3,
-                suspected: 6
-            },
-            {
-                area: 'Area3',
-                infections: 0,
-                suspected: 0
-            },
-            {
-                area: 'Area5',
-                infections: 0,
-                suspected: 0
-            },
-            {
-                area: 'Area6',
-                infections: 1,
-                suspected: 2
-            }
-        ],
+        data6:[],
+
         columns11: [
             {
                 title: 'Rank',
@@ -407,34 +385,49 @@ export default {
         ],
         data5: [
             {
-                branch: 'branch1',
+                branch: '11th Avenue',
                 rank: 1,
-                index: 10.0
+                index: 9.79
             },
             {
-                branch: 'branch2',
+                branch: 'Cranberry street',
                 rank: 2,
-                index: 9.9
+                index: 9.54
             },
             {
-                branch: 'branch3',
+                branch: 'Madison Avenue',
                 rank: 3,
-                index: 9.8
+                index: 9.48
             },
             {
-                branch: 'branch4',
+                branch: 'Lexington Avenue',
                 rank: 4,
-                index: 9.5
+                index: 9.27
             },
             {
-                branch: 'branch5',
+                branch: 'Minetta Street',
                 rank: 5,
-                index: 9.2
+                index: 9.21
             }
         ]
     }
   },
     methods: {
+      mockData6 (){
+          let data = [];
+          let areaList = ['Area A','Area B','Area C','Area D','Area E'];
+          function random(min,max){
+              return Math.floor(Math.random() * (max - min)) + min;
+          }
+          for(let i = 0; i<5;i++){
+              data.push({
+                  area:areaList[i],
+                  infections:random(0,200),
+                  suspected: random(0,300)
+              })
+          }
+          return data;
+      },
       init () {
           var barData = echarts.init(document.getElementById('bar'));
           barData.setOption(this.barOption);
@@ -457,14 +450,19 @@ export default {
     },
 
   mounted () {
-      this.init()
+      this.data6 = this.mockData6();
+      setTimeout(()=>{this.init()});
+
   }
 }
 </script>
 
 <style lang="less">
+  /*.content-outer>>> .count-to-count-text .count-style{*/
+  /*  */
+  /*}*/
 .count-style{
-  font-size: 50px;
+  font-size: 32px;
 }
 /*底色*/
 .ivu-table {
