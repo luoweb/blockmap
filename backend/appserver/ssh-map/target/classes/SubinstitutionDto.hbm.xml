@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+	<class name="org.icbc.dataAccess.dto.SubinstitutionDto" table="subinstitution">
+		<id name="id" column="id">
+			<generator class="native"></generator>	
+		</id>
+		<property name="subinstitutionname"></property>
+		<property name="institutionId"></property>
+		<property name="profession"></property>
+		<property name="province"></property>
+		<property name="city"></property>
+		<property name="district"></property>
+		<property name="street"></property>
+		<property name="detailAddress"></property>
+		<property name="lon"></property>
+		<property name="lat"></property>
+		<property name="riskLevel"></property>
+	</class>
+</hibernate-mapping>

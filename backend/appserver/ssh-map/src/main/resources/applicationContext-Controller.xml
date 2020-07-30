@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	   <!-- put service into Action -->
+		<bean id="RegisterNewUserAction" class="org.icbc.actions.userRequestActions.RegisterNewUserAction">
+			<property name="userManageService" ref="UserManageServiceImpl"></property>
+		</bean>
+		<bean id="DeleteUserAction" class="org.icbc.actions.userRequestActions.DeleteUserAction">
+			<property name="userManageService" ref="UserManageServiceImpl"></property>
+		</bean>
+		<bean id="UpdateUserAction" class="org.icbc.actions.userRequestActions.UpdateUserAction">
+			<property name="userManageService" ref="UserManageServiceImpl"></property>
+		</bean>
+		<bean id="QueryUserAction" class="org.icbc.actions.userRequestActions.QueryUserAction">
+			<property name="userManageService" ref="UserManageServiceImpl"></property>
+		</bean>
+		<bean id="AddConfirmAction" class="org.icbc.actions.confirmRequestActions.AddConfirmAction">
+			<property name="confirmService" ref="ConfirmInformationServiceImpl"></property>
+		</bean>
+		<bean id="AddSubinstitutionAction" class="org.icbc.actions.subinstitutionRequestActions.AddSubinstitutionAction">
+			<property name="subinstitutionService" ref="SubinstitutionServiceImpl"></property>
+		</bean>
+		<bean id="DeleteSubinstitutionAction" class="org.icbc.actions.subinstitutionRequestActions.DeleteSubinstitutionAction">
+			<property name="subinstitutionService" ref="SubinstitutionServiceImpl"></property>
+		</bean>
+		<bean id="UpdateRiskLevelAction" class="org.icbc.actions.subinstitutionRequestActions.UpdateRiskLevelAction">
+			<property name="subinstitutionService" ref="SubinstitutionServiceImpl"></property>
+		</bean>
+		<bean id="FindWorkSubinstitutionAction" class="org.icbc.actions.subinstitutionRequestActions.FindWorkSubinstitutionAction">
+			<property name="subinstitutionService" ref="SubinstitutionServiceImpl"></property>
+		</bean>
+</beans>       

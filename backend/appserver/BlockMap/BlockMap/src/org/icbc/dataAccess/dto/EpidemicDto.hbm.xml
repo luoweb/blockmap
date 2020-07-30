@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+"-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="org.icbc.dataAccess.dto.EpidemicDto" table="Epidemic_situation">
+		<id name="id" column="id">
+			<generator class="native"></generator>
+		</id>
+		<property name="province"></property>
+		<property name="city"></property>
+		<property name="county"></property>
+		<property name="street"></property>
+		<property name="community"></property>
+		<property name="show_address"></property>
+		<property name="cnt_inc_uncertain"></property>
+		<property name="cnt_inc_certain"></property>
+		<property name="cnt_inc_die"></property>
+		<property name="cnt_inc_recure"></property>
+		<property name="cnt_sum_uncertain"></property>
+		<property name="cnt_sum_certain"></property>
+		<property name="cnt_sum_die"></property>
+		<property name="cnt_sum_recure"></property>
+		<property name="full_address"></property>
+		<property name="release_date"></property>
+		<property name="article_source"></property>
+		<property name="article_id"></property>
+		<property name="lng"></property>
+		<property name="lat"></property>
+		<property name="doc_id"></property>
+		<property name="source"></property>
+		<property name="communitytype"></property>
+		<property name="distance"></property>
+	</class>
+
+
+
+</hibernate-mapping>

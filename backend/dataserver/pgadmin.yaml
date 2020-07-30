@@ -1,0 +1,131 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pgadmin-data-pvdata
+  labels:
+    app: pgadmin-data-pvdata
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /data/blockmap/pgadmin_data
+    server: 10.2.1.204
+  # hostPath:
+  #   path: "/Users/blockchain/pgadmin_data"
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pgadmin-pv-claim
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  # namespace: pgadmin-data
+  name: pgadmin-pv-claim
+spec:
+  volumeName: pgadmin-data-pvdata
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      app: pgadmin-data-pvdata
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgadmin-config
+  namespace: default
+  labels:
+    app.kubernetes.io/name: pgadmin
+    app.kubernetes.io/instance: 12.3.1
+data:
+  config.json: |-
+    {
+      "server":"0.0.0.0",
+      "server_port":9000,
+      "password":"passcloud",
+      "timeout":300,
+      "method":"aes-256-cfb",
+      "nameserver":"8.8.8.8",
+      "mode":"tcp_and_udp"
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgadmin
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pgadmin
+      app.kubernetes.io/instance: 12.3.1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pgadmin
+        app.kubernetes.io/instance: 12.3.1
+    spec:
+      containers:
+        - name: mysql
+          image: thajeztah/pgadmin4:latest
+          # image: docker.io/postgres:12.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DEFAULT_SERVER
+              value: "postgresql"
+          env:
+            - name: DEFAULT_SERVER
+              value: "5432"
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "pgadmin@123"
+          ports:
+            - containerPort: 5050
+              protocol: TCP
+            # - containerPort: 1080
+            #   protocol: TCP
+          volumeMounts:
+            # - name: pgadmin-conf
+            #   mountPath: /etc/mysql-libev
+            # - name: pgadmin-data
+            #   mountPath: /var/lib/pgadmin
+            # - name: pgadmin-persistent-storage
+            #   mountPath: /var/lib/pgadmin/data
+      volumes:
+        # - name: pgadmin-conf
+        #   configMap:
+        #     name: pgadmin-config
+        # - name: pgadmin-data
+        #   hostPath:
+        #     path: /opt/nginx/data_dir
+        # - name: pgadmin-persistent-storage
+        #   persistentVolumeClaim:
+        #     claimName: pgadmin-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgadmin
+  namespace: default
+  labels:
+    app.kubernetes.io/name: pgadmin
+    app.kubernetes.io/instance: 12.3.1
+spec:
+  type: NodePort
+  ports:
+    - port: 5050
+      targetPort: 5050
+      nodePort: 32400
+  selector:
+    app.kubernetes.io/name: pgadmin
+    app.kubernetes.io/instance: 12.3.1

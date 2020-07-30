@@ -1,0 +1,125 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pgrouting-data-pvdata
+  labels:
+    app: pgrouting-data-pvdata
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /data/blockmap/pgrouting_data
+    server: 10.2.1.204
+  # hostPath:
+  #   path: "/Users/blockchain/pgrouting_data"
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: pgrouting-pv-claim
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  # namespace: pgrouting-data
+  name: pgrouting-pv-claim
+spec:
+  volumeName: pgrouting-data-pvdata
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      app: pgrouting-data-pvdata
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pgrouting-config
+  namespace: default
+  labels:
+    app.kubernetes.io/name: pgrouting
+    app.kubernetes.io/instance: 12.3.1
+data:
+  config.json: |-
+    {
+      "server":"0.0.0.0",
+      "server_port":9000,
+      "password":"passcloud",
+      "timeout":300,
+      "method":"aes-256-cfb",
+      "nameserver":"8.8.8.8",
+      "mode":"tcp_and_udp"
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgrouting
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: pgrouting
+      app.kubernetes.io/instance: 12.3.1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: pgrouting
+        app.kubernetes.io/instance: 12.3.1
+    spec:
+      containers:
+        - name: pgrouting
+          image: 10.2.1.204:5000/luoweb/pgrouting:latest
+          # image: docker.io/postgres:12.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "postgis@123"
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+            # - containerPort: 1080
+            #   protocol: TCP
+          volumeMounts:
+            # - name: pgrouting-conf
+            #   mountPath: /etc/mysql-libev
+            # - name: pgrouting-data
+            #   mountPath: /var/lib/pgrouting
+            # - name: pgrouting-persistent-storage
+            #   mountPath: /var/lib/pgrouting/data
+      volumes:
+        # - name: pgrouting-conf
+        #   configMap:
+        #     name: pgrouting-config
+        # - name: pgrouting-data
+        #   hostPath:
+        #     path: /opt/nginx/data_dir
+        # - name: pgrouting-persistent-storage
+        #   persistentVolumeClaim:
+        #     claimName: pgrouting-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgrouting
+  namespace: default
+  labels:
+    app.kubernetes.io/name: pgrouting
+    app.kubernetes.io/instance: 12.3.1
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 32000
+  selector:
+    app.kubernetes.io/name: pgrouting
+    app.kubernetes.io/instance: 12.3.1
