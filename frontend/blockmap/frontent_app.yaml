@@ -6,37 +6,24 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: blockmap-app
-    app.kubernetes.io/instance: 0.0.1
+    app.kubernetes.io/instance: 0.0.2
 data:
   default.conf: |-
 
     upstream geoserver {
-        server 173.193.109.188:30657;
+        server 10.2.1.204:32800;
     }
-
-    upstream admin {
-        server 10.2.1.204:32900;
-    }
-
     server {
         listen       80;
         server_name  localhost;
 
         location / {
-            root   /usr/share/nginx/blockmap/app;
+            root   /usr/share/nginx/blockmap/admin;
             index  index.html index.htm;
         }
 
         location /geoserver {
             proxy_pass http://geoserver;
-            proxy_set_header   Host $host;
-            add_header 'Access-Control-Allow-Origin' '*';
-            add_header 'Access-Control-Allow-Methods' 'GET,POST,DELETE';
-            add_header 'Access-Control-Allow-Header' 'Content-Type,*';
-        }
-
-        location /admin {
-            proxy_pass http://admin;
             proxy_set_header   Host $host;
             add_header 'Access-Control-Allow-Origin' '*';
             add_header 'Access-Control-Allow-Methods' 'GET,POST,DELETE';
@@ -69,12 +56,12 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: blockmap-app
-      app.kubernetes.io/instance: 0.0.1
+      app.kubernetes.io/instance: 0.0.2
   template:
     metadata:
       labels:
         app.kubernetes.io/name: blockmap-app
-        app.kubernetes.io/instance: 0.0.1
+        app.kubernetes.io/instance: 0.0.2
     spec:
       containers:
         - name: blockmap
@@ -92,9 +79,13 @@ spec:
         - name: nginx-conf
           configMap:
             name: blockmap-app
+        # - name: blockmap-app
+        #   hostPath:
+        #     path: /opt/nginx/data_dir
         - name: blockmap-app
-          hostPath:
-            path: /opt/nginx/data_dir
+          nfs:
+            server: 10.2.1.204
+            path: /data/blockmap/app
 ---
 apiVersion: v1
 kind: Service
@@ -103,7 +94,7 @@ metadata:
   namespace: default
   labels:
     app.kubernetes.io/name: blockmap-app
-    app.kubernetes.io/instance: 0.0.1
+    app.kubernetes.io/instance: 0.0.2
 spec:
   type: NodePort
   ports:
@@ -112,4 +103,4 @@ spec:
       nodePort: 32700
   selector:
     app.kubernetes.io/name: blockmap-app
-    app.kubernetes.io/instance: 0.0.1
+    app.kubernetes.io/instance: 0.0.2
