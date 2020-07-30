@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: blockmap-frontend
+  name: blockmap-app
   namespace: default
   labels:
-    app.kubernetes.io/name: blockmap-frontend
+    app.kubernetes.io/name: blockmap-app
     app.kubernetes.io/instance: 0.0.2
 data:
   default.conf: |-
@@ -18,7 +18,7 @@ data:
         server_name  localhost;
 
         location / {
-            root   /usr/share/nginx/blockmap;
+            root   /usr/share/nginx/blockmap/admin;
             index  index.html index.htm;
         }
 
@@ -49,23 +49,23 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: blockmap-frontend
+  name: blockmap-app
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: blockmap-frontend
+      app.kubernetes.io/name: blockmap-app
       app.kubernetes.io/instance: 0.0.2
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: blockmap-frontend
+        app.kubernetes.io/name: blockmap-app
         app.kubernetes.io/instance: 0.0.2
     spec:
       containers:
         - name: blockmap
-          image: luoweb/blockmap:0.0.2
+          image: luoweb/blockmap:all
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80
@@ -74,15 +74,15 @@ spec:
             - name: nginx-conf
               mountPath: /etc/nginx/conf.d
             - mountPath: "/usr/share/nginx/html"
-              name: blockmap-frontend
+              name: blockmap-app
       volumes:
         - name: nginx-conf
           configMap:
-            name: blockmap-frontend
-        # - name: blockmap-frontend
+            name: blockmap-app
+        # - name: blockmap-app
         #   hostPath:
         #     path: /opt/nginx/data_dir
-        - name: blockmap-frontend
+        - name: blockmap-app
           nfs:
             server: 10.2.1.204
             path: /data/blockmap/app
@@ -90,10 +90,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: blockmap-frontend
+  name: blockmap-app
   namespace: default
   labels:
-    app.kubernetes.io/name: blockmap-frontend
+    app.kubernetes.io/name: blockmap-app
     app.kubernetes.io/instance: 0.0.2
 spec:
   type: NodePort
@@ -102,5 +102,5 @@ spec:
       targetPort: 80
       nodePort: 32700
   selector:
-    app.kubernetes.io/name: blockmap-frontend
+    app.kubernetes.io/name: blockmap-app
     app.kubernetes.io/instance: 0.0.2
