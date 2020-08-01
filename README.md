@@ -7,6 +7,10 @@
 - The best way to work: recommend the shortest path + risk avoidance path
 - Risk diffusion trend map: personnel migration map, generating migration map based on heat map
 
+#### BlockMap Manual Video Induction：
+
+[![BlockMap Manual Video Induction](http://github.roweb.cn/mapblock/public/assets/blockmap_manual_v3.png)](https://beyondsoftcloud-my.sharepoint.cn/personal/localization-01_beyondsoftcloud_partner_onmschina_cn/Documents/DW020/temp0728/send/BlockMap_New_V5_Subtitle.mp4)
+
 ### R & D RoadMap
 
 ![roadmap_en](http://github.roweb.cn/mapblock/public/assets/roadmap_en.png)
@@ -69,16 +73,17 @@ Users can truly rely on the ownership of digital identity without relying on a t
 
 ### Video demo
 
-|                                                                User presents epidemic prevention QrCode                                                                |                                                             Institutional verification of epidemic prevention QrCode                                                             |
-| :--------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                                                         User presents epidemic prevention QrCode                                                          |                                                      Institutional verification of epidemic prevention QrCode                                                       |
+| :-------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------: |
 | [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/show.jpg)](http://pic.6and.ltd/show.mp4) | [![The user presents a video preview of the anti-epidemic QR code](http://github.roweb.cn/mapblock/public/assets/verify.jpg)](http://pic.6and.ltd/verification.mp4) |
 
 # Tech Stack
 
-- Kubernetes/Docker
-- DB(MySQL/PostreSQL)
-- BlockChain(Hyperledger Fabric)
-- GIS(Geoserver)
-- Frontend(Nodejs/Vuejs)
-- Backend(Java/Golang)
-- CD(DevOps/Shell)
+- Kubernetes/Docker/Registry
+- Cloud DB(MySQL/PostgreSQL with PostGIS)
+- BlockChain(IBM IBP/Hyperledger Fabric)
+- OpenGIS(Geoserver with OGC)
+- Frontend(Nodejs/Vuejs/iView)
+- Backend (Java/Golang/Maven)
+- CD/DevOps(IBM ToolChain/Shell)
+- AI/BigData(IBM Watson)

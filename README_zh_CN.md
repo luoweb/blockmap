@@ -5,6 +5,10 @@
 - 最佳上班路径：推荐最短路径+风险规避路径
 - 风险扩散趋势图：人员迁徙图，根据热力图生成迁徙地图
 
+#### BlockMap 视频简介：
+
+[![BlockMap视频简介](http://github.roweb.cn/mapblock/public/assets/blockmap_manual_v3.png)](https://beyondsoftcloud-my.sharepoint.cn/personal/localization-01_beyondsoftcloud_partner_onmschina_cn/Documents/DW020/temp0728/send/BlockMap_New_V5_Subtitle.mp4)
+
 ### R & D Roadmap (研发路线图)
 
 ![roadmap_en](http://github.roweb.cn/mapblock/public/assets/roadmap_en.png)
