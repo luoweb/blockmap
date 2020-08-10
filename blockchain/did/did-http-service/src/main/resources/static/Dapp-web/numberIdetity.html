@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>数字身份系统</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="css/mui.min.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="css/app.css" />
+		<link rel="stylesheet" type="text/css" href="css/app_number.css" />
+		<!--我的css-->
+		<link rel="stylesheet" type="text/css" href="css/iconfont_number.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont_myinfo.css" />
+	</head>
+
+	<body>
+		<div class="body_style">
+			<div id="offCanvasWrapper" class="mui-off-canvas-wrap mui-draggable">
+				<!--主界面部分-->
+				<div class="mui-inner-wrap">
+					<!-- 菜单容器 -->
+					<aside class="mui-off-canvas-left" id="offCanvasSide">
+						<div class="mui-scroll-wrapper">
+							<div class="mui-scroll">
+								<!-- 菜单具体展示内容 -->
+								
+							</div>
+						</div>
+					</aside>
+					<!--头部内容-->
+					<div class="mui-bar mui-bar-nav" id="head-contract">
+						<a href="#contractPopover" style="font-size: 35px; margin-top: -5px;"></a>
+						<a class=" mui-pull-right mui-btn-link" id="showList">编辑</a>
+						<h1 class="mui-title mui-pull-left">我的数字凭证</h1>
+					</div>
+					<!--底部菜单-->
+					<nav class="mui-bar mui-bar-tab">
+						<a class="mui-tab-item" id="tab-index" href="#tabbar-1">
+							<span class="mui-icon iconfont_number icon-instruction"></span>
+							<span class="mui-tab-label">申请数字证明</span>
+						</a>
+						<a class="mui-tab-item mui-active" id="tab-contract" href="#tabbar-2">
+							<span class="mui-icon iconfont_number icon-addresslist"></span>
+							<span class="mui-tab-label">我的数字凭证</span>
+						</a>
+						<a class="mui-tab-item" id="tab-community">
+							<span class="mui-icon iconfont_number icon-scanQR"></span>
+							<span class="mui-tab-label">扫一扫</span>
+						</a>
+						<a class="mui-tab-item" id="tab-setting" href="#tabbar-4">
+							<span class="mui-icon mui-icon-gear"></span>
+							<span class="mui-tab-label">设置</span>
+						</a>
+					</nav>
+					<!--非侧滑内容-->
+					<div id="offCanvasContentScroll" class="mui-content mui-scroll-wrapper">
+						<div class="mui-scroll">
+							
+							<!--我的数字凭证-->
+							<div id="tabbar-2" class="mui-control-content mui-active">
+								<ul class="mui-table-view" id="papers-list">
+								</ul>
+							</div>
+							
+						</div>
+					</div>
+					<!-- off-canvas backdrop -->
+					<div class="mui-off-canvas-backdrop"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.min.js"></script>
+	<script src="js/jquery-3.4.1.min.js"></script>
+	<script src="js/app3.js"></script>
+	<script src="js/identity_env.js"></script>
+	<script type="text/javascript">
+		var	did = JSON.parse(localStorage.did);
+		$(document).ready(function(){
+			getAllCredential();
+		});
+
+		//多凭证验证
+		// document.getElementById("showList").addEventListener('tap', function()
+		// {	
+		// 	mui.ajax(server.url + 'invoke', {
+		// 		dataType:'json',
+		// 		data :{
+		// 		    "functionArg": {
+		// 		    	"invokerDid":did
+		// 		    },
+		// 		    "transactionArg": {
+		// 		    },
+		// 		    "functionName": "getAllCredential",
+		// 		    "v": "1.0.0"
+		// 		},
+		// 		type:'post',//HTTP请求类型
+		// 		timeout:5000,//超时时间设置为10秒； 
+		// 		crossDomain:true,
+		// 		headers:{
+		// 			'Access-Control-Allow-Origin':'*',
+		// 			'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+		// 			'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+		// 			'X-Powered-By':'3.2.1',
+		// 			'Content-Type':'application/json;charset=utf-8'
+		// 		},
+		// 		success:function(data){
+		// 			console.log(JSON.stringify(data));
+		// 			if(data.errorCode == '0'){
+		// 				var papersList = JSON.stringify(data.respBody);
+		// 				localStorage.papersList = papersList;
+		// 				mui.openWindow({
+		// 				    url: 'checkboxList.html', 
+		// 				    id:'checkboxList',
+		// 				    extras:{
+		// 			      		papersList: papersList
+		// 			    	}
+		// 				});
+		// 			} else {
+		// 				mui.alert(data.errorMsg);
+		// 			}
+					
+		// 		},
+		// 		error:function(xhr,type,errorThrown){
+		// 			//异常处理；
+		// 			mui.alert("数据请求失败:"+type);
+					
+		// 		}
+		// 	});
+
+			
+		// });
+		$("#showList").on("click", function(){
+			$.ajax({
+				url: server.url + 'invoke', 
+				dataType:'json',
+				data: JSON.stringify({
+				    "functionArg": {
+				    	"invokerDid":did
+				    },
+				    "transactionArg": {
+				    },
+				    "functionName": "getAllCredential",
+				    "v": "1.0.0"
+				}),
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒； 
+				crossDomain:true,
+				headers:{
+					'Access-Control-Allow-Origin':'*',
+					'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+					'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+					'X-Powered-By':'3.2.1',
+					'Content-Type':'application/json;charset=utf-8'
+				},
+				success:function(data){
+					console.log(JSON.stringify(data));
+					if(data.errorCode == '0'){
+						var papersList = JSON.stringify(data.respBody);
+						localStorage.papersList = papersList;
+						window.location.href="checkboxList.html"
+						// mui.openWindow({
+						//     url: 'checkboxList.html', 
+						//     id:'checkboxList',
+						//     extras:{
+					    //   		papersList: papersList
+					    // 	}
+						// });
+					} else {
+						// mui.alert(data.errorMsg);
+						alert(data.errorMsg);
+					}
+					
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+					// mui.alert("数据请求失败:"+type);
+					alert("数据请求失败:"+type);
+				}
+			});
+		});
+
+		//查看凭证列表
+		// document.getElementById("tab-contract").addEventListener('tap',function(){
+		// 	mui.ajax(server.url + 'invoke', {
+		// 		dataType:'json',
+		// 		data :{
+		// 		    "functionArg": {
+		// 		    	"invokerDid":did
+		// 		    },
+		// 		    "transactionArg": {
+		// 		    },
+		// 		    "functionName": "getAllCredential",
+		// 		    "v": "1.0.0"
+		// 		},
+		// 		type:'post',//HTTP请求类型
+		// 		timeout:5000,//超时时间设置为10秒； 
+		// 		crossDomain:true,
+		// 		headers:{
+		// 			'Access-Control-Allow-Origin':'*',
+		// 			'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+		// 			'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+		// 			'X-Powered-By':'3.2.1',
+		// 			'Content-Type':'application/json;charset=utf-8'
+		// 		},
+		// 		success:function(data){
+		// 			console.log(JSON.stringify(data));
+		// 			if(data.errorCode == '0'){
+		// 				var papersList = data.respBody;
+		// 				var table = document.body.querySelector('#papers-list');
+		// 				var str = "";//定义用于拼接的字符串
+		// 				document.getElementById("papers-list").innerHTML="";
+		// 		        for (var i = 0; i < papersList.length; i++) {
+		// 		         	//拼接表格的行和列
+		// 		        	var item = papersList[i];
+		// 		        	papersId = item.id;
+		// 		        	papersName = item.claim.papersName;
+		// 		        	bank= item.claim.bank;
+		// 		        	issuanceDate = formatDate("yyyy-MM-ddThh:mm:ssZ",item.issuanceDate);
+		// 		        	var li = document.createElement('li');
+		// 					li.className = 'papers-list-cell';
+		// 					//li.id = 'detail';
+		// 		        	li.papersId = papersId;
+		// 		        	li.innerHTML =
+		// 		        	'<li class="mui-table-view-cell">'+
+		// 		        	'<a id="detail" class="mui-navigate-right">' +papersName +"---"+bank+"---"+formatDate("yyyy-MM-dd hh:mm:ss", issuanceDate)+'</a></li>';
+		// 		        	table.insertBefore(li, table.firstChild);
+		// 		        }
+		// 			} else {
+		// 				mui.alert(data.errorMsg);
+		// 			}
+					
+		// 		},
+		// 		error:function(xhr,type,errorThrown){
+		// 			//异常处理；
+		// 			mui.alert("数据请求失败:"+type);
+					
+		// 		}
+		// 	});
+		// });
+		$("#tab-contract").on("click", function(){
+			getAllCredential();
+		});
+		function getAllCredential(){
+			$.ajax({
+				url: server.url + 'invoke',
+				dataType:'json',
+				data: JSON.stringify({
+				    "functionArg": {
+				    	"invokerDid":did
+				    },
+				    "transactionArg": {
+				    },
+				    "functionName": "getAllCredential",
+				    "v": "1.0.0"
+				}),
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒； 
+				crossDomain:true,
+				headers:{
+					'Access-Control-Allow-Origin':'*',
+					'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+					'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+					'X-Powered-By':'3.2.1',
+					'Content-Type':'application/json;charset=utf-8'
+				},
+				success:function(data){
+					console.log(JSON.stringify(data));
+					if(data.errorCode == '0'){
+						var papersList = data.respBody;
+						var table = document.body.querySelector('#papers-list');
+						var str = "";//定义用于拼接的字符串
+						document.getElementById("papers-list").innerHTML="";
+				        for (var i = 0; i < papersList.length; i++) {
+				         	//拼接表格的行和列
+				        	var item = papersList[i];
+				        	papersId = item.id;
+				        	papersName = item.claim.papersName;
+				        	bank= item.claim.bank;
+				        	issuanceDate = formatDate("yyyy-MM-ddThh:mm:ssZ",item.issuanceDate);
+				        	var li = document.createElement('li');
+							li.className = 'papers-list-cell';
+							//li.id = 'detail';
+				        	li.papersId = papersId;
+				        	li.innerHTML =
+				        	'<li class="mui-table-view-cell">'+
+				        	'<a id="detail" class="mui-navigate-right">' +papersName +"---"+bank+"---"+formatDate("yyyy-MM-dd hh:mm:ss", issuanceDate)+'</a></li>';
+				        	table.insertBefore(li, table.firstChild);
+				        }
+					} else {
+						// mui.alert(data.errorMsg);
+						alert(data.errorMsg);
+					}
+					
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+					// mui.alert("数据请求失败:"+type);
+					alert("数据请求失败:"+type);
+					
+				}
+			});
+		}
+		// mui("#papers-list").on('tap', '.papers-list-cell', function(e) {
+		// 	var papersId = this.papersId;
+		//     console.log("papersId:"+papersId);
+		// 	mui.ajax(server.url + 'invoke', {
+		// 		dataType:'json',
+		// 		data :{
+		// 		    "functionArg": {
+		// 		        "id": papersId
+		// 		    },
+		// 		    "transactionArg": {},
+		// 		    "functionName": "getCredentialDetail",
+		// 		    "v": "1.0.0"
+		// 		},
+		// 		type:'post',//HTTP请求类型
+		// 		timeout:5000,//超时时间设置为10秒； 
+		// 		crossDomain:true,
+		// 		headers:{
+		// 			'Access-Control-Allow-Origin':'*',
+		// 			'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+		// 			'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+		// 			'X-Powered-By':'3.2.1',
+		// 			'Content-Type':'application/json;charset=utf-8'
+		// 		},
+		// 		success:function(data){
+		// 			var respBody = data.respBody;
+		// 			console.log("详情data:"+JSON.stringify(data));
+		// 			console.log("respBody:"+JSON.stringify(respBody));
+		// 			var str = JSON.stringify(respBody);  
+		// 		    localStorage.papers = str;  
+				    
+		// 			mui.openWindow({
+		// 			    url: 'detail.html', 
+		// 			    id:'detail',
+		// 			});
+		// 		},
+		// 		error:function(xhr,type,errorThrown){
+		// 			//异常处理；
+		// 			mui.alert("数据请求失败:"+type);
+		// 		}
+		// 	});
+		// });
+		$("#papers-list").on("click", function(){
+			var papersId = this.children[0].papersId;
+		    console.log("papersId:"+papersId);
+			$.ajax({
+				url: server.url + 'invoke',
+				dataType:'json',
+				data: JSON.stringify({
+				    "functionArg": {
+				        "id": papersId
+				    },
+				    "transactionArg": {},
+				    "functionName": "getCredentialDetail",
+				    "v": "1.0.0"
+				}),
+				type:'post',//HTTP请求类型
+				timeout:10000,//超时时间设置为10秒； 
+				crossDomain:true,
+				headers:{
+					'Access-Control-Allow-Origin':'*',
+					'Access-Control-Allow-Headers':'Content-Type,Content-Length,Authorization,Accept,X-Requested-With,yourHeaderFeild',
+					'Access-Control-Allow-Methods':'PUT,POST,GET,DELETE,OPTIONS',
+					'X-Powered-By':'3.2.1',
+					'Content-Type':'application/json;charset=utf-8'
+				},
+				success:function(data){
+					var respBody = data.respBody;
+					console.log("详情data:"+JSON.stringify(data));
+					console.log("respBody:"+JSON.stringify(respBody));
+					var str = JSON.stringify(respBody);  
+				    localStorage.papers = str;  
+				    
+					// mui.openWindow({
+					//     url: 'detail.html', 
+					//     id:'detail',
+					// });
+					window.location.href="detail.html";
+				},
+				error:function(xhr,type,errorThrown){
+					//异常处理；
+					// mui.alert("数据请求失败:"+type);
+					alert("数据请求失败:"+type);
+				}
+			});
+		});
+		//格式化时间 yyyy-MM-dd hh:mm:ss
+		function formatDate(fmt, date) {
+		    date = new Date(date);
+		    var o = {
+		        "M+": date.getMonth() + 1, //月份
+		        "d+": date.getDate(), //日
+		        "h+": date.getHours(), //小时
+		        "m+": date.getMinutes(), //分
+		        "s+": date.getSeconds(), //秒
+		        "q+": Math.floor((date.getMonth() + 3) / 3), //季度
+		        "S": date.getMilliseconds() //毫秒
+		    };
+		    if (/(y+)/.test(fmt))
+		        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+		    for (var k in o)
+		        if (new RegExp("(" + k + ")").test(fmt))
+		            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+		    return fmt;
+		}
+	</script>
+</html>

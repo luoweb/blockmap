@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "iconfont_number";
+  src: url('../fonts/iconfont_number.woff') format('truetype');
+}
+
+.iconfont_number {
+  font-family: "iconfont_number" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-addresslist:before {
+  content: "\e6db";
+}
+
+.icon-infopersonal:before {
+  content: "\e6de";
+}
+
+.icon-scanQR:before {
+  content: "\e6e2";
+}
+
+.icon-instruction:before {
+  content: "\e6e3";
+}
+

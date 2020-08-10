@@ -1,0 +1,102 @@
+/* 数字身份样式*/
+
+/* 网页提示样式 begin*/
+.body-tip{
+    font-size: 15px;
+    text-align: center;
+    margin-top: 10;
+    padding-top: 5%;
+    margin-bottom: -5%;
+}
+/* 网页提示样式 end*/
+
+/* 类手机风格样式调整 begin*/
+.body_style{
+	width: 20%;
+    margin: 0 auto;
+    height: 75%;
+    padding-top: 6%;
+}
+
+.mui-fullscreen .mui-segmented-control~.mui-slider-group{
+	position: initial;
+	top: 40px;
+	bottom: 0;
+	width: 100%;
+	height: auto;
+}
+
+.background-style{
+	background-image: url(../img/mailpic/background2.jpg); 
+	background-size: 100%;
+	background-repeat:no-repeat; 
+	background-attachment:fixed;
+	width: 20%; 
+	margin: 0 auto; 
+	height: 64%; 
+	/* padding-top: 6%; */
+	margin-top: 6%;
+}
+/* 类手机风格样式调整 end*/
+
+
+/* 凭证模板详情页面样式 begin*/
+.applyForm-wrapper-style{
+    background-color: white; 	
+}
+
+.applyForm-content-style{
+    background-color: white;
+}
+/* 凭证模板详情页面样式 end*/
+
+
+/* 扫码页面样式 begin*/
+.bcid{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: #000000;
+}
+.barcode-body-style .div{
+    height:100%;
+    width: 100%;
+}
+.fbt{
+    color: #0E76E1;
+    width: 50%;
+    background-color: #ffffff;
+    float: left; 
+    line-height: 44px;
+    text-align: center;
+}
+/* 扫码页面样式 end*/
+
+
+/* 凭证详情页面样式 begin*/
+.detail-content-style{
+    background-color: white;
+    min-height: 880px;
+}
+/* .mui-control-content .mui-loading {
+    margin-top: 50px;
+} */
+/* 凭证详情页面样式 end*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

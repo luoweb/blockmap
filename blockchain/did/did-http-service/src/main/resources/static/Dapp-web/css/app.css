@@ -1,0 +1,122 @@
+.title{
+	margin: 20px 15px 10px;
+	color: #6d6d72;
+	font-size: 15px;
+}
+.title.time{
+	margin: 3px;
+	color: #6d6d72;
+	font-size: 15px;
+}
+.mui-table-view-cell {
+	padding:10px 12px;
+	font-size: 15px;
+}
+ul{
+	list-style:none;
+	margin: 0px;
+	padding: 0px;
+}
+#topPopover {
+	position: fixed;
+	top: 16px;
+	right: 6px;
+}
+#topPopover .mui-popover-arrow {
+	left: auto;
+	right: 6px;
+}
+
+.mui-popover {
+	height: 180px;
+}
+
+.mui-content>.mui-table-view:first-child {
+	margin-top: -1px;
+}
+
+.pullrefresh-table-cell {
+	background: #efeff4;
+	outline: none;
+	padding: 1px 0px;
+}
+.pullrefresh-table-cell2 {
+	background: #efeff4;
+	outline: none;
+	padding: 1px 0px;
+}
+.mytitleinfo {
+	margin: 20px 10px 10px;
+	color: #6d6d72;
+	font-size: 15px;
+	/*width: 355px;*/
+    height: 164px;
+    left: 10px;
+    top: 77px;
+    z-index: 14;
+    border-color: rgb(227, 227, 227);
+    box-shadow: rgb(191, 191, 191) 0px 0px 4px 0px;
+    border-radius: 6px;
+    padding: 0px;
+    border-width: 0px;
+    border-style: solid;
+    background: white;
+}
+.mytitleinfo .logo img{
+	width: 70px;
+	margin-top: 10px;
+	margin-right: 25px;
+}
+
+.title_text .p1{
+	font-family: PingFangSC;
+    font-weight: 400;
+    font-size: 18px;
+    color: rgb(16, 16, 16);
+    font-style: normal;
+    letter-spacing: 0px;
+    line-height: 26px;
+    text-decoration: none;
+    text-indent: 1em;
+    padding-top: 10px;
+}
+.title_text .p2{
+    margin-left: 18px;
+    margin-bottom: 15px;
+}
+.title_img img{
+	width: 90px;
+	margin-left: 18px;
+}
+.iconstyle{
+	color: #007aff;
+	font-size: 28px!important;
+}
+.li_text_style {
+	padding-left: 5px;
+	font-size: 18px;
+}
+
+* { touch-action: none; }
+
+.mui-col-sm-3 img{
+	width: 50px;
+}
+
+.mui-contract-ul li{
+	/*width: 91px;
+	margin-left: -10px;*/
+}
+.mui-table-view.mui-grid-view{
+	height: 500px;
+	padding: 0 0px 10px 0;
+	font-size: 10px;
+}
+.mui-table-view.mui-grid-view .mui-table-view-cell{
+	padding: 10px 0 10px 14px;
+}
+
+
+
+
+
